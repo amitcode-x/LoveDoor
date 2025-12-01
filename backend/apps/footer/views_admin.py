@@ -11,6 +11,8 @@ from .models import (
     FooterColumn,
     FooterLink,
     PaymentMethod,
+    FooterAboutPage,
+    ContactPage
 )
 
 from .serializers import (
@@ -20,6 +22,9 @@ from .serializers import (
     FooterColumnSerializer,
     FooterLinkSerializer,
     PaymentMethodSerializer,
+    FooterAboutPageSerializer,
+    ContactPageSerializer
+    
 )
 
 # -----------------------------------------------------------------------
@@ -268,3 +273,66 @@ class AdminFooterPaymentDetailAPIView(APIView):
         obj.delete()
         return Response({"message": "Deleted"}, status=200)
 
+# -----------------------------------------------------------------------
+# ⭐ ABOUT PAGE (GET + UPDATE)
+# -----------------------------------------------------------------------
+class AdminFooterAboutPageAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = FooterAboutPage.objects.get_or_create(id=1)
+        serializer = FooterAboutPageSerializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj, _ = FooterAboutPage.objects.get_or_create(id=1)
+
+        # print("PUT DATA =", request.data)
+
+        # Clean request data
+        data = request.data.copy()
+        data.pop("id", None)
+        data.pop("cta_link", None)
+
+        serializer = FooterAboutPageSerializer(
+            obj,
+            data=data,
+            partial=True   # ← ⭐ IMPORTANT
+        )
+
+        # Ab yaha safe hai — serializer exist karta hai
+        if not serializer.is_valid():
+            print("❌ VALIDATION ERRORS =", serializer.errors)
+            return Response(serializer.errors, status=400)
+
+        saved_obj = serializer.save()  # model.clean() runs here
+        out = FooterAboutPageSerializer(saved_obj).data
+        return Response(out)
+
+
+# -----------------------------------------------------------------------
+# ⭐ CONTACT PAGE (GET + UPDATE)
+# -----------------------------------------------------------------------
+class AdminContactPageAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = ContactPage.objects.get_or_create(id=1)
+        serializer = ContactPageSerializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj, _ = ContactPage.objects.get_or_create(id=1)
+
+        # ID हटाओ
+        data = request.data.copy()
+        data.pop("id", None)
+
+        serializer = ContactPageSerializer(obj, data=data, partial=True)
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            out = ContactPageSerializer(obj).data
+            return Response(out)
+
+        return Response(serializer.errors, status=400)

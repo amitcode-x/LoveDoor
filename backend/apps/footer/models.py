@@ -202,51 +202,70 @@ class NewsletterSubscriber(models.Model):
 
 class FooterAboutPage(models.Model):
     # Hero section
-    title = models.CharField(max_length=200, default="About Us")
+    title = models.CharField(max_length=200, default="About Us", blank=True)
     intro_text = models.TextField(blank=True)
 
     # Mission
-    mission_title = models.CharField(max_length=200, default="Our Mission")
+    mission_title = models.CharField(max_length=200, default="Our Mission", blank=True)
     mission_description = models.TextField(blank=True)
 
     # Vision
-    vision_title = models.CharField(max_length=200, default="Our Vision")
+    vision_title = models.CharField(max_length=200, default="Our Vision", blank=True)
     vision_description = models.TextField(blank=True)
 
     # Stats (4 cards)
-    stat_1_label = models.CharField(max_length=200, default="Happy Customers")
-    stat_1_value = models.CharField(max_length=100, default="10K+")
+    stat_1_label = models.CharField(max_length=200, default="Happy Customers", blank=True)
+    stat_1_value = models.CharField(max_length=100, default="10K+", blank=True)
 
-    stat_2_label = models.CharField(max_length=200, default="Cities Served")
-    stat_2_value = models.CharField(max_length=100, default="12+")
+    stat_2_label = models.CharField(max_length=200, default="Cities Served", blank=True)
+    stat_2_value = models.CharField(max_length=100, default="12+", blank=True)
 
-    stat_3_label = models.CharField(max_length=200, default="Products Delivered")
-    stat_3_value = models.CharField(max_length=100, default="500+")
+    stat_3_label = models.CharField(max_length=200, default="Products Delivered", blank=True)
+    stat_3_value = models.CharField(max_length=100, default="500+", blank=True)
 
-    stat_4_label = models.CharField(max_length=200, default="Customer Rating")
-    stat_4_value = models.CharField(max_length=100, default="4.9★")
+    stat_4_label = models.CharField(max_length=200, default="Customer Rating", blank=True)
+    stat_4_value = models.CharField(max_length=100, default="4.9★", blank=True)
 
     # Who we are
     who_we_are = models.TextField(blank=True)
 
-    # Why Choose Us (textarea, line break = bullet)
-    why_choose_us = models.TextField(
-        blank=True,
-        help_text="Add each point in new line."
-    )
+    # Why Choose Us
+    why_choose_us = models.TextField(blank=True)
 
     # CTA
-    cta_text = models.CharField(max_length=200, default="Explore Our Store")
+    cta_text = models.CharField(max_length=200, default="Explore Our Store", blank=True)
     cta_link = models.CharField(max_length=200, default="/shop", editable=False)
 
     is_active = models.BooleanField(default=True)
 
-    def get_why_list(self):
-        return [line.strip() for line in self.why_choose_us.split("\n") if line.strip()]
+    # AUTO DEFAULTS
+    def clean(self):
+        defaults = {
+            "title": "About Us",
+            "mission_title": "Our Mission",
+            "vision_title": "Our Vision",
+            "stat_1_label": "Happy Customers",
+            "stat_1_value": "10K+",
+            "stat_2_label": "Cities Served",
+            "stat_2_value": "12+",
+            "stat_3_label": "Products Delivered",
+            "stat_3_value": "500+",
+            "stat_4_label": "Customer Rating",
+            "stat_4_value": "4.9★",
+            "cta_text": "Explore Our Store",
+        }
+
+        for field, default_value in defaults.items():
+            if not getattr(self, field):
+                setattr(self, field, default_value)
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return "About Us Page Settings"
-    
+
 class ContactPage(models.Model):
     # Header Section
     title = models.CharField(max_length=200, default="Contact Us")

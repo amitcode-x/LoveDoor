@@ -9,7 +9,7 @@ import {
   Home,
   Link2,
   Mail,
-
+  Phone,        // ⭐ Contact icon added
 } from "lucide-react";
 
 const menuItems = [
@@ -21,18 +21,20 @@ const menuItems = [
   { to: "/payments", label: "Payments", icon: CreditCard },
   { to: "/homepage", label: "Homepage", icon: Home },
 
-  // ✅ only these 2 footer items
+  /* ------------------------------
+        FOOTER MANAGEMENT
+  ------------------------------ */
+
   { to: "/footer", label: "Manage Footer", icon: Link2 },
   { to: "/newsletter", label: "Newsletter", icon: Mail },
-    // ⭐ NEW: Footer Social Links
 
   { to: "/footer/social", label: "Footer Social Links", icon: Link2 },
-  // Sidebar me jaha footer/social ka item banaya hai, uske paas:
-{ to: "/footer/columns", label: "Footer Columns", icon: Link2 },
+  { to: "/footer/columns", label: "Footer Columns", icon: Link2 },
   { to: "/footer/payments", label: "Footer Payments", icon: CreditCard },
+  { to: "/footer/about", label: "About Page", icon: Home },
 
-
-
+  // ⭐ NEW — Contact Page Settings
+  { to: "/footer/contact", label: "Contact Page", icon: Phone },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
@@ -53,6 +55,7 @@ export default function Sidebar({ collapsed, onToggle }) {
             </span>
           )}
         </div>
+
         <button
           onClick={onToggle}
           className="hidden md:inline-flex text-xs text-slate-400 hover:text-slate-100"

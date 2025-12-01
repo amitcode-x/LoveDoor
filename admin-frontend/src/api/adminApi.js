@@ -147,3 +147,24 @@ export const updateFooterPayment = (id, data) =>
 export const deleteFooterPayment = (id) =>
   adminAxios.delete(`/admin/footer/payments/${id}/`);
 
+
+/* ============================================================
+   🦶 FOOTER : ABOUT PAGE
+============================================================ */
+export const getFooterAboutPage = () =>
+  adminAxios.get("/admin/footer/about-page/");
+
+export const updateFooterAboutPage = (data) =>
+  adminAxios.put("/admin/footer/about-page/", data);
+
+/* ============================================================
+   🦶 FOOTER : contact
+============================================================ */
+
+
+export const getContactPage = () =>
+  adminAxios.get("/admin/footer/contact-page/");
+
+export const updateContactPage = (data) =>
+  adminAxios.put("/admin/footer/contact-page/", data);
+

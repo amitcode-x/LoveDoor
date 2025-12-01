@@ -75,24 +75,34 @@ class NewsletterSubscribeAPIView(APIView):
     permission_classes = []
 
     def post(self, request):
-        email = request.data.get("email", "").strip()
+        email = request.data.get("email", "").strip().lower()
 
-        if email and NewsletterSubscriber.objects.filter(email=email).exists():
+        # 1️⃣ Email empty
+        if not email:
             return Response(
-                {"message": "This email is already subscribed."},
+                {"message": "Email is required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # 2️⃣ Duplicate email (409 conflict)
+        if NewsletterSubscriber.objects.filter(email=email).exists():
+            return Response(
+                {"message": "This email is already subscribed."},
+                status=status.HTTP_409_CONFLICT,   # ⭐ No red console error
+            )
+
+        # 3️⃣ Validate serializer
         serializer = NewsletterSubscribeSerializer(data={"email": email})
         if not serializer.is_valid():
             return Response(
-                {"message": "Subscription failed."},
+                {"message": "Invalid email address."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # 4️⃣ Save subscriber
         subscriber = serializer.save()
 
-        # Send Welcome Mail
+        # 5️⃣ Send Welcome Email (optional)
         try:
             brand = FooterBrandInfo.objects.first()
             site_name = brand.site_name if brand else "Our Store"
@@ -114,8 +124,8 @@ class NewsletterSubscribeAPIView(APIView):
         except Exception as e:
             print("Newsletter user email error:", e)
 
-        return Response({"message": "Subscribed successfully!"}, status=201)
-
+        # 6️⃣ Return success
+        return Response({"message": "Subscribed successfully!"}, status=status.HTTP_201_CREATED)
 
 # ======================================================
 #  ABOUT PAGE

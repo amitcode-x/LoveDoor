@@ -19,36 +19,52 @@ export default function AboutUs() {
   }, []);
 
   // If no backend data → default static content
-  const d =  {
-    title: "About Us",
-    intro_text:
-      "Welcome to Our E-Commerce Store — Your trusted destination for premium quality products.",
-    mission_title: "Our Mission",
-    mission_description:
-      "To provide customers with top-quality products at fair prices.",
-    vision_title: "Our Vision",
-    vision_description:
-      "To become a leading and trusted online brand known for value and satisfaction.",
-    stat_1_value: "10K+",
-    stat_1_label: "Happy Customers",
-    stat_2_value: "12+",
-    stat_2_label: "Cities Served",
-    stat_3_value: "500+",
-    stat_3_label: "Products Delivered",
-    stat_4_value: "4.9★",
-    stat_4_label: "Customer Rating",
-    who_we_are:
-      "We are a passionate team committed to offering genuine, high-quality products.",
-    why_list: [
-      "✔ Premium quality products",
-      "✔ Fast & secure delivery",
-      "✔ Easy and hassle-free returns",
-      "✔ Friendly 24/7 customer support",
-      "✔ Best prices with trusted service",
-    ],
-    cta_text: "Explore Our Store",
-    cta_link: "/shop",
-  };
+  const d = {
+  title: data?.title || "About Us",
+  intro_text:
+    data?.intro_text ||
+    "Welcome to Our E-Commerce Store — Your trusted destination for premium quality products.",
+
+  mission_title: data?.mission_title || "Our Mission",
+  mission_description:
+    data?.mission_description ||
+    "To provide customers with top-quality products at fair prices.",
+
+  vision_title: data?.vision_title || "Our Vision",
+  vision_description:
+    data?.vision_description ||
+    "To become a leading and trusted online brand known for value and satisfaction.",
+
+  stat_1_value: data?.stat_1_value || "10K+",
+  stat_1_label: data?.stat_1_label || "Happy Customers",
+
+  stat_2_value: data?.stat_2_value || "12+",
+  stat_2_label: data?.stat_2_label || "Cities Served",
+
+  stat_3_value: data?.stat_3_value || "500+",
+  stat_3_label: data?.stat_3_label || "Products Delivered",
+
+  stat_4_value: data?.stat_4_value || "4.9★",
+  stat_4_label: data?.stat_4_label || "Customer Rating",
+
+  who_we_are:
+    data?.who_we_are ||
+    "We are a passionate team committed to offering genuine, high-quality products.",
+
+  why_list:
+    data?.why_list && data?.why_list.length > 0
+      ? data.why_list
+      : [
+          "✔ Premium quality products",
+          "✔ Fast & secure delivery",
+          "✔ Easy and hassle-free returns",
+          "✔ Friendly 24/7 customer support",
+          "✔ Best prices with trusted service",
+        ],
+
+  cta_text: data?.cta_text || "Explore Our Store",
+  cta_link: data?.cta_link || "/shop",
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6">

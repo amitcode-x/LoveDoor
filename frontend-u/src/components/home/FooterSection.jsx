@@ -17,7 +17,9 @@ export default function FooterSection({ footer }) {
   const safeBrand = footer.brand || {};
   const safeNewsletter = footer.newsletter || {};
 
-  const socialLinks = Array.isArray(footer.social_links) ? footer.social_links : [];
+  const socialLinks = Array.isArray(footer.social_links)
+    ? footer.social_links
+    : [];
   const columns = Array.isArray(footer.columns) ? footer.columns : [];
   const payments = Array.isArray(footer.payments) ? footer.payments : [];
 
@@ -31,27 +33,46 @@ export default function FooterSection({ footer }) {
     }
   }, [message]);
 
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    setMessage("");
+ const handleSubscribe = async (e) => {
+  e.preventDefault();
+  setMessage("");
 
-    try {
-      await axiosClient.post("/footer/subscribe/", { email });
-      setMessage("🎉 Subscription successful! Please check your inbox.");
+  try {
+    const res = await axiosClient.post("/footer/subscribe/", { email });
+
+    // Success (201)
+    if (res.status === 201) {
+      setMessage("🎉 Subscription successful!");
       setEmail("");
-    } catch (err) {
-      setMessage("Subscription failed. Try again!");
     }
-  };
+  } catch (err) {
+    const status = err.response?.status;
+    const msg = err.response?.data?.message;
+
+    // 🟡 Duplicate Email (409)
+    if (status === 409 || msg === "This email is already subscribed.") {
+      setMessage("Use another email — this one is already subscribed!");
+      return;
+    }
+
+    // 🔴 Invalid email / Missing email (400)
+    if (status === 400) {
+      setMessage("Please enter a valid email address!");
+      return;
+    }
+
+    // 🔴 Any other unexpected error
+    setMessage("Subscription failed. Try again!");
+  }
+};
+
 
   return (
     <footer className="w-full bg-gray-900 text-gray-300 pt-14 rounded-t-3xl">
-
       {/* Newsletter Section */}
       {safeNewsletter?.is_enabled && (
         <div className="max-w-7xl mx-auto px-4 pb-10">
           <div className="bg-gray-800/50 backdrop-blur-lg p-8 rounded-2xl border border-gray-700 shadow-lg">
-
             <h3 className="text-2xl font-bold mb-2 text-white">
               {safeNewsletter?.title || "Get Updates"}
             </h3>
@@ -81,7 +102,9 @@ export default function FooterSection({ footer }) {
               </button>
             </form>
 
-            {message && <p className="text-sm mt-3 text-green-400">{message}</p>}
+            {message && (
+              <p className="text-sm mt-3 text-green-400">{message}</p>
+            )}
           </div>
         </div>
       )}
@@ -89,25 +112,32 @@ export default function FooterSection({ footer }) {
       {/* Footer Middle */}
       <div className="border-t border-gray-800 border-b">
         <div className="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-10 text-sm">
-
           {/* Brand Info */}
           <div>
             <h4 className="text-lg font-semibold mb-4 text-white">
               {safeBrand?.site_name || "Brand"}
             </h4>
 
-            <p className="text-gray-400 mb-4">
-              {safeBrand?.description || ""}
-            </p>
+            <p className="text-gray-400 mb-4">{safeBrand?.description || ""}</p>
 
             <div className="flex items-center gap-4 mt-4">
               {socialLinks.map((s, i) => (
                 <a key={i} href={s.url} target="_blank">
-                  {s.platform === "facebook" && <FaFacebookF className="text-gray-400 hover:text-white cursor-pointer text-lg" />}
-                  {s.platform === "instagram" && <FaInstagram className="text-gray-400 hover:text-white cursor-pointer text-lg" />}
-                  {s.platform === "twitter" && <FaTwitter className="text-gray-400 hover:text-white cursor-pointer text-lg" />}
-                  {s.platform === "linkedin" && <FaLinkedinIn className="text-gray-400 hover:text-white cursor-pointer text-lg" />}
-                  {s.platform === "youtube" && <FaYoutube className="text-gray-400 hover:text-white cursor-pointer text-lg" />}
+                  {s.platform === "facebook" && (
+                    <FaFacebookF className="text-gray-400 hover:text-white cursor-pointer text-lg" />
+                  )}
+                  {s.platform === "instagram" && (
+                    <FaInstagram className="text-gray-400 hover:text-white cursor-pointer text-lg" />
+                  )}
+                  {s.platform === "twitter" && (
+                    <FaTwitter className="text-gray-400 hover:text-white cursor-pointer text-lg" />
+                  )}
+                  {s.platform === "linkedin" && (
+                    <FaLinkedinIn className="text-gray-400 hover:text-white cursor-pointer text-lg" />
+                  )}
+                  {s.platform === "youtube" && (
+                    <FaYoutube className="text-gray-400 hover:text-white cursor-pointer text-lg" />
+                  )}
                 </a>
               ))}
             </div>
@@ -156,7 +186,6 @@ export default function FooterSection({ footer }) {
         <br />
         {safeBrand?.owner_text}
       </div>
-
     </footer>
   );
 }

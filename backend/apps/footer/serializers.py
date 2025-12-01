@@ -148,40 +148,68 @@ class NewsletterSubscribeSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         value = value.strip().lower()
+
+        # Duplicate email check
         if NewsletterSubscriber.objects.filter(email=value).exists():
-            raise serializers.ValidationError("This email is already subscribed.")
+            # Message shorter aur readable rakhenge
+            raise serializers.ValidationError(
+                "This email is already subscribed."
+            )
+
         return value
 
 
+
+
 class FooterAboutPageSerializer(serializers.ModelSerializer):
-    why_list = serializers.SerializerMethodField()
+
+    # allow_blank + required False for all user-editable fields
+    stat_1_label = serializers.CharField(allow_blank=True, required=False)
+    stat_1_value = serializers.CharField(allow_blank=True, required=False)
+    stat_2_label = serializers.CharField(allow_blank=True, required=False)
+    stat_2_value = serializers.CharField(allow_blank=True, required=False)
+    stat_3_label = serializers.CharField(allow_blank=True, required=False)
+    stat_3_value = serializers.CharField(allow_blank=True, required=False)
+    stat_4_label = serializers.CharField(allow_blank=True, required=False)
+    stat_4_value = serializers.CharField(allow_blank=True, required=False)
+
+    title = serializers.CharField(allow_blank=True, required=False)
+    intro_text = serializers.CharField(allow_blank=True, required=False)
+    mission_title = serializers.CharField(allow_blank=True, required=False)
+    mission_description = serializers.CharField(allow_blank=True, required=False)
+    vision_title = serializers.CharField(allow_blank=True, required=False)
+    vision_description = serializers.CharField(allow_blank=True, required=False)
+    who_we_are = serializers.CharField(allow_blank=True, required=False)
+    why_choose_us = serializers.CharField(allow_blank=True, required=False)
+    cta_text = serializers.CharField(allow_blank=True, required=False)
 
     class Meta:
         model = FooterAboutPage
-        fields = [
-            "title",
-            "intro_text",
-            "mission_title",
-            "mission_description",
-            "vision_title",
-            "vision_description",
-            "stat_1_label",
-            "stat_1_value",
-            "stat_2_label",
-            "stat_2_value",
-            "stat_3_label",
-            "stat_3_value",
-            "stat_4_label",
-            "stat_4_value",
-            "who_we_are",
-            "why_list",
-            "cta_text",
-            "cta_link",
-        ]
+        fields = "__all__"
 
-    def get_why_list(self, obj):
-        return obj.get_why_list()
+    def validate(self, data):
+        # Backend defaults
+        defaults = {
+            "title": "About Us",
+            "mission_title": "Our Mission",
+            "vision_title": "Our Vision",
+            "stat_1_label": "Happy Customers",
+            "stat_1_value": "10K+",
+            "stat_2_label": "Cities Served",
+            "stat_2_value": "12+",
+            "stat_3_label": "Products Delivered",
+            "stat_3_value": "500+",
+            "stat_4_label": "Customer Rating",
+            "stat_4_value": "4.9★",
+            "cta_text": "Explore Our Store",
+        }
 
+        for field, default in defaults.items():
+            val = data.get(field)
+            if val is None or str(val).strip() == "":
+                data[field] = default
+
+        return data
 
 class ContactPageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -194,7 +222,9 @@ class ContactPageSerializer(serializers.ModelSerializer):
             "address",
             "working_hours",
             "map_embed_url",
+            "is_active",
         ]
+
 
 
 class ReturnRefundPageSerializer(serializers.ModelSerializer):

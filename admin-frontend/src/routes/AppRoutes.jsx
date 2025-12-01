@@ -24,6 +24,12 @@ import ManageSocialLinks from "../pages/footer/ManageSocialLinks";
 import ManageFooterColumns from "../pages/footer/ManageFooterColumns";
 import ManageFooterPayments from "../pages/footer/ManageFooterPayments";
 
+import ManageFooterAbout from "../pages/footer/ManageFooterAbout";
+import ManageContactPage from "../pages/footer/ManageContactPage";
+
+
+
+
 import AdminLogin from "../pages/auth/AdminLogin";
 import ProtectedRoute from "../auth/ProtectedRoute";
 
@@ -74,6 +80,10 @@ export default function AppRoutes() {
         <Route path="footer/social" element={<ManageSocialLinks />} />
         <Route path="footer/columns" element={<ManageFooterColumns />} />
         <Route path="footer/payments" element={<ManageFooterPayments />} />
+        <Route path="footer/about" element={<ManageFooterAbout />} />
+        <Route path="/footer/contact" element={<ManageContactPage />} />
+
+
 
       </Route>
     </Routes>
