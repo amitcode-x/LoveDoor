@@ -1,0 +1,140 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getOrders } from "../../api/adminApi";
+import Card from "../../components/UI/Card";
+import Button from "../../components/UI/Button";
+import { Table, THead, TBody, Tr, Th, Td } from "../../components/UI/Table";
+import { Filter, Eye } from "lucide-react";
+
+const STATUS_OPTIONS = [
+  "PENDING",
+  "PROCESSING",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+];
+
+export default function OrderList() {
+  const [orders, setOrders] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+  const navigate = useNavigate();
+
+  const loadOrders = async (statusParam = "") => {
+    setLoading(true);
+    setErr("");
+    try {
+      const res = await getOrders(statusParam);
+      setOrders(res.data);
+    } catch (error) {
+      console.error(error);
+      setErr("Failed to load orders.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const handleFilterChange = (e) => {
+    const value = e.target.value;
+    setStatusFilter(value);
+    loadOrders(value);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-lg font-semibold text-slate-50">Orders</h1>
+          <p className="text-xs text-slate-400">
+            View and manage customer orders.
+          </p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Card className="flex items-center gap-2 px-3 py-1.5 !rounded-xl">
+            <Filter className="w-3 h-3 text-slate-500" />
+            <select
+              value={statusFilter}
+              onChange={handleFilterChange}
+              className="bg-transparent outline-none text-slate-100 text-xs"
+            >
+              <option value="">All Status</option>
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </Card>
+        </div>
+      </div>
+
+      {err && (
+        <Card>
+          <div className="text-sm text-red-400">{err}</div>
+        </Card>
+      )}
+
+      <Table>
+        <THead>
+          <Tr>
+            <Th>Order #</Th>
+            <Th>User</Th>
+            <Th>Status</Th>
+            <Th>Payment</Th>
+            <Th>Total</Th>
+            <Th>Date</Th>
+            <Th align="right">Actions</Th>
+          </Tr>
+        </THead>
+        <TBody>
+          {loading ? (
+            <Tr>
+              <Td colSpan={7} align="center">
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-7 w-7 border-2 border-emerald-500 border-t-transparent" />
+                </div>
+              </Td>
+            </Tr>
+          ) : orders.length ? (
+            orders.map((o) => (
+              <Tr key={o.id}>
+                <Td>{o.order_number}</Td>
+                <Td>{o.user?.username || "-"}</Td>
+                <Td>
+                  <span className="inline-flex rounded-full px-2 py-0.5 text-[11px] bg-slate-800 text-slate-200">
+                    {o.status}
+                  </span>
+                </Td>
+                <Td>{o.payment_status}</Td>
+                <Td className="text-emerald-300 font-semibold">
+                  ₹{o.total_amount}
+                </Td>
+                <Td>{new Date(o.created_at).toLocaleString()}</Td>
+                <Td align="right">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate(`/orders/${o.order_number}`)}
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    View
+                  </Button>
+                </Td>
+              </Tr>
+            ))
+          ) : (
+            <Tr>
+              <Td colSpan={7} align="center" className="py-4 text-slate-500">
+                No orders found.
+              </Td>
+            </Tr>
+          )}
+        </TBody>
+      </Table>
+    </div>
+  );
+}

@@ -1,0 +1,11 @@
+Welcome to {{ site_name }}
+
+Thank you for subscribing with {{ email }}.
+
+You will now receive:
+- Exclusive discounts
+- New product updates
+- Special festival offers
+
+Regards,
+{{ site_name }}

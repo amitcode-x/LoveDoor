@@ -1,0 +1,46 @@
+# apps/footer/urls_admin.py
+from django.urls import path
+from .views_admin import (
+    AdminFooterBrandAPIView,
+    AdminNewsletterSettingsAPIView,
+    AdminSocialLinksAPIView,
+    AdminSocialLinkDetailAPIView,
+    AdminFooterColumnsAPIView,
+    AdminFooterColumnDetailAPIView,
+    AdminFooterColumnLinksAPIView,
+    AdminFooterLinkDetailAPIView,
+    AdminFooterPaymentsAPIView,
+)
+
+app_name = "footer_admin"
+
+urlpatterns = [
+    # BRAND
+    path("brand/", AdminFooterBrandAPIView.as_view(), name="brand"),
+
+    # NEWSLETTER
+    path("newsletter/", AdminNewsletterSettingsAPIView.as_view(), name="newsletter"),
+
+    # SOCIAL LINKS
+    path("social/", AdminSocialLinksAPIView.as_view(), name="social-list-create"),
+    path("social/<int:pk>/", AdminSocialLinkDetailAPIView.as_view(), name="social-update-delete"),
+
+    # COLUMNS
+    path("columns/", AdminFooterColumnsAPIView.as_view(), name="columns-list-create"),
+    path("columns/<int:pk>/", AdminFooterColumnDetailAPIView.as_view(), name="column-update-delete"),
+
+    # LINKS (by column) + single link
+    path(
+        "columns/<int:column_id>/links/",
+        AdminFooterColumnLinksAPIView.as_view(),
+        name="column-links-list-create",
+    ),
+    path(
+        "links/<int:pk>/",
+        AdminFooterLinkDetailAPIView.as_view(),
+        name="link-update-delete",
+    ),
+
+    # PAYMENTS
+    path("payments/", AdminFooterPaymentsAPIView.as_view(), name="payment-list-create"),
+]

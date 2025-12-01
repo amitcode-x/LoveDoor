@@ -1,0 +1,7 @@
+New Newsletter Subscriber
+
+Email: {{ email }}
+Subscribed at: {{ subscribed_at }}
+Site: {{ site_name }}
+
+This is an automatic notification from your {{ site_name }} website.
