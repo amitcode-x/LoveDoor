@@ -140,3 +140,10 @@ export const getFooterPayments = () =>
 
 export const createFooterPayment = (data) =>
   adminAxios.post("/admin/footer/payments/", data);
+
+export const updateFooterPayment = (id, data) =>
+  adminAxios.put(`/admin/footer/payments/${id}/`, data);
+
+export const deleteFooterPayment = (id) =>
+  adminAxios.delete(`/admin/footer/payments/${id}/`);
+

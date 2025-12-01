@@ -10,6 +10,7 @@ from .views_admin import (
     AdminFooterColumnLinksAPIView,
     AdminFooterLinkDetailAPIView,
     AdminFooterPaymentsAPIView,
+    AdminFooterPaymentDetailAPIView,   # <-- ADD THIS
 )
 
 app_name = "footer_admin"
@@ -43,4 +44,6 @@ urlpatterns = [
 
     # PAYMENTS
     path("payments/", AdminFooterPaymentsAPIView.as_view(), name="payment-list-create"),
+     # ⭐⭐⭐ UPDATE + DELETE FIX ⭐⭐⭐
+    path("payments/<int:pk>/", AdminFooterPaymentDetailAPIView.as_view(), name="payments-update-delete"),
 ]

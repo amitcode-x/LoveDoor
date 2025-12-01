@@ -243,3 +243,28 @@ class AdminFooterPaymentsAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AdminFooterPaymentDetailAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def put(self, request, pk):
+        try:
+            obj = PaymentMethod.objects.get(pk=pk)
+        except PaymentMethod.DoesNotExist:
+            return Response({"error": "Not found"}, status=404)
+
+        serializer = PaymentMethodSerializer(obj, data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request, pk):
+        try:
+            obj = PaymentMethod.objects.get(pk=pk)
+        except PaymentMethod.DoesNotExist:
+            return Response({"error": "Not found"}, status=404)
+
+        obj.delete()
+        return Response({"message": "Deleted"}, status=200)
+

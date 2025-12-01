@@ -29,6 +29,7 @@ const menuItems = [
   { to: "/footer/social", label: "Footer Social Links", icon: Link2 },
   // Sidebar me jaha footer/social ka item banaya hai, uske paas:
 { to: "/footer/columns", label: "Footer Columns", icon: Link2 },
+  { to: "/footer/payments", label: "Footer Payments", icon: CreditCard },
 
 
 

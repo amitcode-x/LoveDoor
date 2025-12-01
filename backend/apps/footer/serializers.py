@@ -109,15 +109,28 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            "image",
-            "image_url",
+            "image",        # final computed image
+            "image_url",    # raw URL input allowed
             "sort_order",
             "is_active",
         ]
 
     def get_image(self, obj):
-        final = obj.get_final_image()
-        return build_absolute_url(final) if final else None
+        """
+        Final image priority:
+        1) uploaded file
+        2) image_url provided by admin
+        """
+        # 1) File image
+        if obj.image:
+            return build_absolute_url(obj.image.url)
+
+        # 2) URL provided manually
+        if obj.image_url:
+            return obj.image_url
+
+        return None
+
 
 
 class FooterConfigSerializer(serializers.Serializer):
