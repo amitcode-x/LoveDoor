@@ -13,18 +13,18 @@ export default function ManagePrivacyPolicy() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await getPrivacyPolicy();
-        setForm(res.data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load page.");
-      }
-      setLoading(false);
-    }
     load();
   }, []);
+
+  async function load() {
+    try {
+      const res = await getPrivacyPolicy();
+      setForm(res.data);
+    } catch (err) {
+      setError("Failed to load policy.");
+    }
+    setLoading(false);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,32 +37,25 @@ export default function ManagePrivacyPolicy() {
     setError("");
 
     try {
-      let cleanForm = { ...form };
-      delete cleanForm.id;
+      let clean = { ...form };
+      delete clean.id;
 
-      // blank → null → backend will apply defaults
-      Object.keys(cleanForm).forEach((key) => {
-        
-      });
-
-      await updatePrivacyPolicy(cleanForm);
+      await updatePrivacyPolicy(clean);
 
       const res = await getPrivacyPolicy();
       setForm(res.data);
-
       setMsg("Saved successfully!");
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
       setError("Failed to save.");
     }
 
     setSaving(false);
   };
 
-  if (loading || !form) {
+  if (!form || loading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        <div className="animate-spin h-8 w-8 rounded-full border-2 border-emerald-500 border-t-transparent" />
       </div>
     );
   }
@@ -70,50 +63,47 @@ export default function ManagePrivacyPolicy() {
   return (
     <div className="space-y-4">
       <h1 className="text-lg font-semibold text-slate-50">Privacy Policy</h1>
+      <p className="text-xs text-slate-400">Manage privacy policy content</p>
 
       {(msg || error) && (
-        <Card>
-          {msg && <p className="text-emerald-400 text-xs">{msg}</p>}
-          {error && <p className="text-red-400 text-xs">{error}</p>}
-        </Card>
+        <Card>{msg ? <p className="text-emerald-400 text-xs">{msg}</p> : <p className="text-red-400 text-xs">{error}</p>}</Card>
       )}
 
       <Card className="space-y-6">
-        <Input label="Title" name="title" value={form.title} onChange={handleChange} />
 
-        <div className="space-y-1 text-xs">
-          <label className="text-slate-300">Intro Text</label>
-          <textarea
-            name="intro_text"
-            value={form.intro_text}
-            onChange={handleChange}
-            rows={3}
-            className="w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-slate-100"
-          />
-        </div>
+        <Input label="Title" name="title" value={form.title || ""} onChange={handleChange} />
 
-        {Array.from({ length: 5 }).map((_, i) => (
+        <textarea
+          name="intro_text"
+          rows={3}
+          value={form.intro_text || ""}
+          onChange={handleChange}
+          className="w-full rounded-xl border border-slate-700 bg-slate-900/70 p-2 text-xs text-slate-100"
+        />
+
+        {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="space-y-2">
             <Input
-              label={`Section ${i + 1} Title`}
-              name={`section${i + 1}_title`}
-              value={form[`section${i + 1}_title`] || ""}
+              label={`Section ${i} Title`}
+              name={`section${i}_title`}
+              value={form[`section${i}_title`] || ""}
               onChange={handleChange}
             />
-
             <textarea
-              name={`section${i + 1}_content`}
-              value={form[`section${i + 1}_content`] || ""}
-              onChange={handleChange}
+              name={`section${i}_content`}
               rows={3}
-              className="w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-xs text-slate-100"
+              value={form[`section${i}_content`] || ""}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-slate-700 bg-slate-900/70 p-2 text-xs text-slate-100"
             />
           </div>
         ))}
 
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? "Saving..." : "Save Changes"}
-        </Button>
+        <Input label="Last Updated" name="last_updated" value={form.last_updated || ""} onChange={handleChange} />
+
+        <div className="flex justify-end">
+          <Button onClick={handleSave}>{saving ? "Saving..." : "Save Changes"}</Button>
+        </div>
       </Card>
     </div>
   );

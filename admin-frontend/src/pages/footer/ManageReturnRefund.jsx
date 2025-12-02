@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
-import { getShippingPolicy, updateShippingPolicy } from "../../api/adminApi";
+import { getReturnRefund, updateReturnRefund } from "../../api/adminApi";
+
 
 import Card from "../../components/UI/Card";
 import Input from "../../components/UI/Input";
 import Button from "../../components/UI/Button";
 
-export default function ManageShippingPolicy() {
+export default function ManageReturnRefund() {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
+  const [msg, setMsg] = useState("");
 
   useEffect(() => { load(); }, []);
 
   async function load() {
     try {
-      const res = await getShippingPolicy();
+      const res = await getReturnRefund();
       setForm(res.data);
     } catch (err) {
-      setError("Failed to load shipping policy");
+      setError("Failed to load");
     }
     setLoading(false);
   }
@@ -29,32 +30,41 @@ export default function ManageShippingPolicy() {
     setForm((f) => ({ ...f, [name]: value }));
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    setMsg("");
-    setError("");
+ const handleSave = async () => {
+  setSaving(true);
+  setMsg("");
+  setError("");
 
-    try {
-      let clean = { ...form };
-      delete clean.id;
-
-      await updateShippingPolicy(clean);
-
-      const res = await getShippingPolicy();
-      setForm(res.data);
-
-      setMsg("Saved successfully!");
-    } catch (err) {
-      setError("Failed to save.");
-    }
-
+  // ❌ TITLE MUST NOT BE EMPTY
+  if (!form.title || form.title.trim() === "") {
+    setError("⚠️ Title cannot be empty.");
     setSaving(false);
-  };
+    return;
+  }
+
+  try {
+    let clean = { ...form };
+    delete clean.id;
+
+    await updateReturnRefund(clean);
+
+    const res = await getReturnRefund();
+    setForm(res.data);
+
+    setMsg("Saved successfully!");
+  } catch (err) {
+    console.error(err);
+    setError("Failed to save.");
+  }
+
+  setSaving(false);
+};
+
 
   if (!form || loading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
       </div>
     );
   }
@@ -62,8 +72,8 @@ export default function ManageShippingPolicy() {
   return (
     <div className="space-y-4">
 
-      <h1 className="text-lg font-semibold text-slate-50">Shipping Policy</h1>
-      <p className="text-xs text-slate-400">Manage shipping policy content</p>
+      <h1 className="text-lg font-semibold text-slate-50">Return & Refund Policy</h1>
+      <p className="text-xs text-slate-400">Manage refund/returns content</p>
 
       {(msg || error) && (
         <Card>
@@ -80,10 +90,10 @@ export default function ManageShippingPolicy() {
           rows={3}
           value={form.intro_text || ""}
           onChange={handleChange}
-          className="w-full p-2 rounded-xl text-xs bg-slate-900/70 text-slate-100 border border-slate-700"
+          className="w-full rounded-xl border border-slate-700 bg-slate-900/70 p-2 text-xs text-slate-100"
         />
 
-        {[1, 2, 3, 4, 5].map((i) => (
+        {[1, 2, 3].map((i) => (
           <div key={i} className="space-y-2">
             <Input
               label={`Section ${i} Title`}
@@ -92,11 +102,11 @@ export default function ManageShippingPolicy() {
               onChange={handleChange}
             />
             <textarea
-              name={`section${i}_content`}
               rows={3}
+              name={`section${i}_content`}
               value={form[`section${i}_content`] || ""}
               onChange={handleChange}
-              className="w-full p-2 rounded-xl text-xs bg-slate-900/70 text-slate-100 border border-slate-700"
+              className="w-full rounded-xl border border-slate-700 bg-slate-900/70 p-2 text-xs text-slate-100"
             />
           </div>
         ))}
@@ -106,6 +116,7 @@ export default function ManageShippingPolicy() {
         <div className="flex justify-end">
           <Button onClick={handleSave}>{saving ? "Saving..." : "Save Changes"}</Button>
         </div>
+
       </Card>
     </div>
   );

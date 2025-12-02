@@ -31,6 +31,14 @@ import ManageTermsOfUse from "../pages/footer/ManageTermsOfUse";
 // AppRouter.jsx
 import ManageShippingPolicy from "../pages/footer/ManageShippingPolicy";
 
+import ManageReturnRefund from "../pages/footer/ManageReturnRefund";
+
+
+
+
+
+
+
 
 
 
@@ -91,6 +99,10 @@ export default function AppRoutes() {
         <Route path="/footer/privacy-policy" element={<ManagePrivacyPolicy />} />
         <Route path="/footer/terms" element={<ManageTermsOfUse />} />   {/* 👈 NEW */}
         <Route path="/footer/shipping-policy" element={<ManageShippingPolicy />} />
+        <Route path="/footer/return-refund" element={<ManageReturnRefund />} />
+
+       
+
 
 
 

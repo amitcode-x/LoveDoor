@@ -15,7 +15,9 @@ from .models import (
     ContactPage,
     PrivacyPolicyPage,
     TermsOfUsePage,
-    ShippingPolicyPage
+    ShippingPolicyPage,
+    ReturnRefundPage,
+  
 )
 
 from .serializers import (
@@ -29,7 +31,9 @@ from .serializers import (
     ContactPageSerializer,
     PrivacyPolicyPageSerializer,
     TermsOfUsePageSerializer,
-    ShippingPolicyPageSerializer
+    ShippingPolicyPageSerializer,
+    ReturnRefundPageSerializer,
+  
     
 )
 
@@ -383,8 +387,7 @@ class AdminTermsOfUseAPIView(APIView):
 
     def get(self, request):
         obj, _ = TermsOfUsePage.objects.get_or_create(id=1)
-        serializer = TermsOfUsePageSerializer(obj)
-        return Response(serializer.data)
+        return Response(TermsOfUsePageSerializer(obj).data)
 
     def put(self, request):
         obj, _ = TermsOfUsePage.objects.get_or_create(id=1)
@@ -425,6 +428,54 @@ class AdminShippingPolicyAPIView(APIView):
         if serializer.is_valid():
             obj = serializer.save()
             return Response(ShippingPolicyPageSerializer(obj).data)
+
+        print("VALIDATION ERRORS =", serializer.errors)
+        return Response(serializer.errors, status=400)
+
+
+
+class AdminReturnRefundAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = ReturnRefundPage.objects.get_or_create(id=1)
+        return Response(ReturnRefundPageSerializer(obj).data)
+
+    def put(self, request):
+        obj, _ = ReturnRefundPage.objects.get_or_create(id=1)
+        data = request.data.copy()
+        data.pop("id", None)
+
+        serializer = ReturnRefundPageSerializer(obj, data=data, partial=True)
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(ReturnRefundPageSerializer(obj).data)
+
+        return Response(serializer.errors, status=400)
+
+
+class AdminOrderReturnAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = OrderReturnPage.objects.get_or_create(id=1)
+        serializer = OrderReturnPageSerializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj, _ = OrderReturnPage.objects.get_or_create(id=1)
+
+        print("PUT DATA =", request.data)
+
+        data = request.data.copy()
+        data.pop("id", None)
+
+        serializer = OrderReturnPageSerializer(obj, data=data, partial=True)
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(OrderReturnPageSerializer(obj).data)
 
         print("VALIDATION ERRORS =", serializer.errors)
         return Response(serializer.errors, status=400)

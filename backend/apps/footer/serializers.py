@@ -16,6 +16,7 @@ from .models import (
     PrivacyPolicyPage,
     TermsOfUsePage,
     ShippingPolicyPage,
+   
 )
 
 
@@ -257,17 +258,7 @@ class ContactPageSerializer(serializers.ModelSerializer):
 class ReturnRefundPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReturnRefundPage
-        fields = [
-            "title",
-            "intro_text",
-            "section1_title", "section1_content",
-            "section2_title", "section2_content",
-            "section3_title", "section3_content",
-            "section4_title", "section4_content",
-            "section5_title", "section5_content",
-            "section6_title", "section6_content",
-            "footer_note",
-        ]
+        fields = "__all__"
 
 
 class PrivacyPolicyPageSerializer(serializers.ModelSerializer):
@@ -309,68 +300,13 @@ class PrivacyPolicyPageSerializer(serializers.ModelSerializer):
 class TermsOfUsePageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TermsOfUsePage
-        fields = [
-            "id",
-            "title",
-            "intro_text",
-            "section1_title", "section1_content",
-            "section2_title", "section2_content",
-            "section3_title", "section3_content",
-            "section4_title", "section4_content",
-            "section5_title", "section5_content",
-            "footer_note",
-            "is_active",
-        ]
+        fields = "__all__"
 
     def validate(self, data):
-        defaults = {
-            "title": "Terms of Use",
-            "intro_text": (
-                "By using this website, you agree to the terms and conditions mentioned "
-                "on this page. Please read them carefully."
-            ),
-
-            "section1_title": "1. Use of Our Website",
-            "section1_content": (
-                "You agree to use this website only for lawful purposes and in a way "
-                "that does not harm our brand, services, or other users."
-            ),
-
-            "section2_title": "2. Account & Security",
-            "section2_content": (
-                "You are responsible for maintaining the confidentiality of your "
-                "account details and for all activities that happen under your account."
-            ),
-
-            "section3_title": "3. Orders & Payments",
-            "section3_content": (
-                "All orders placed on our website are subject to availability and "
-                "final confirmation. Payments are processed securely through trusted partners."
-            ),
-
-            "section4_title": "4. Content & Ownership",
-            "section4_content": (
-                "All content, logos, images, and product information on this site are "
-                "owned or licensed by us and cannot be copied or used without permission."
-            ),
-
-            "section5_title": "5. Changes to These Terms",
-            "section5_content": (
-                "We may update these Terms of Use from time to time. Continued use of "
-                "the website after changes means you accept the updated terms."
-            ),
-
-            "footer_note": "Last updated: 01 Jan 2025",
-        }
-
-        for field, default in defaults.items():
-            if field in data:
-                val = data.get(field)
-                if val is None or str(val).strip() == "":
-                    data[field] = default
-
         return data
-    
+
+
+
 class ShippingPolicyPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShippingPolicyPage
@@ -379,3 +315,6 @@ class ShippingPolicyPageSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # NULL allowed → no restriction
         return data
+
+
+

@@ -15,7 +15,9 @@ from .views_admin import (
     AdminContactPageAPIView,
     AdminPrivacyPolicyAPIView,
     AdminTermsOfUseAPIView,
-    AdminShippingPolicyAPIView
+    AdminShippingPolicyAPIView,
+    AdminReturnRefundAPIView,
+   
      
  
      
@@ -67,6 +69,15 @@ urlpatterns = [
     # apps/footer/urls_admin.py
 
  path("shipping-policy/", AdminShippingPolicyAPIView.as_view(), name="shipping-policy"),
+ 
+ path("return-refund/", AdminReturnRefundAPIView.as_view(),name="return-refund-page"),
+ 
+
+ 
+
+
+
+
 
 
 

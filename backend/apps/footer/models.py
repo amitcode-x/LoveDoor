@@ -294,41 +294,32 @@ class ContactPage(models.Model):
     
 class ReturnRefundPage(models.Model):
     title = models.CharField(max_length=200, default="Return & Refund Policy")
-    intro_text = models.TextField(
-        blank=True,
-        default=(
-            "We want you to have a smooth and worry-free shopping experience. "
-            "If you are not fully satisfied, you may be eligible for a return or refund."
-        )
-    )
 
-    section1_title = models.CharField(max_length=200, default="1. Return Eligibility")
-    section1_content = models.TextField(blank=True)
+    intro_text = models.TextField(blank=True, null=True)
 
-    section2_title = models.CharField(max_length=200, default="2. Refund Process")
-    section2_content = models.TextField(blank=True)
+    section1_title = models.CharField(max_length=200, blank=True, null=True, default="1. Return Eligibility")
+    section1_content = models.TextField(blank=True, null=True)
 
-    section3_title = models.CharField(max_length=200, default="3. Replacement Policy")
-    section3_content = models.TextField(blank=True)
+    section2_title = models.CharField(max_length=200, blank=True, null=True, default="2. Refund Process")
+    section2_content = models.TextField(blank=True, null=True)
 
-    section4_title = models.CharField(max_length=200, default="4. Non-Returnable Items")
-    section4_content = models.TextField(blank=True)
+    section3_title = models.CharField(max_length=200, blank=True, null=True, default="3. Non-Returnable Items")
+    section3_content = models.TextField(blank=True, null=True)
 
-    section5_title = models.CharField(max_length=200, default="5. Cancellation Policy")
-    section5_content = models.TextField(blank=True)
+    section4_title = models.CharField(max_length=200, blank=True, null=True, default="4. Cancellation Policy")
+    section4_content = models.TextField(blank=True, null=True)
 
-    section6_title = models.CharField(max_length=200, default="6. How to Request a Return")
-    section6_content = models.TextField(blank=True)
+    section5_title = models.CharField(max_length=200, blank=True, null=True, default="5. Contact Support")
+    section5_content = models.TextField(blank=True, null=True)
 
-    footer_note = models.TextField(
-        blank=True,
-        default="We are committed to ensuring you have a smooth experience with us."
+    footer_note = models.CharField(
+        max_length=250, blank=True, null=True, default="Last updated: 01 Jan 2025"
     )
 
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return "Return & Refund Policy Page"
+        return "Return & Refund Policy"
 
 class PrivacyPolicyPage(models.Model):
     title = models.CharField(max_length=200, default="Privacy Policy")
@@ -359,54 +350,25 @@ class PrivacyPolicyPage(models.Model):
 
 class TermsOfUsePage(models.Model):
     title = models.CharField(max_length=200, default="Terms of Use")
-    intro_text = models.TextField(
-        blank=True,
-        default=(
-            "By using this website, you agree to the terms and conditions mentioned on "
-            "this page. Please read them carefully."
-        )
-    )
 
-    section1_title = models.CharField(max_length=200, default="1. Use of Our Website")
-    section1_content = models.TextField(
-        blank=True,
-        default="You agree to use this website only for lawful purposes and in a way "
-                "that does not harm our brand, services, or other users."
-    )
+    intro_text = models.TextField(blank=True, null=True)
 
-    section2_title = models.CharField(max_length=200, default="2. Account & Security")
-    section2_content = models.TextField(
-        blank=True,
-        default="You are responsible for maintaining the confidentiality of your "
-                "account details and for all activities that happen under your account."
-    )
+    section1_title = models.CharField(max_length=200, blank=True, null=True, default="1. Acceptance of Terms")
+    section1_content = models.TextField(blank=True, null=True)
 
-    section3_title = models.CharField(max_length=200, default="3. Orders & Payments")
-    section3_content = models.TextField(
-        blank=True,
-        default="All orders placed on our website are subject to availability and "
-                "final confirmation. Payments are processed securely through trusted partners."
-    )
+    section2_title = models.CharField(max_length=200, blank=True, null=True, default="2. Use of Our Services")
+    section2_content = models.TextField(blank=True, null=True)
 
-    section4_title = models.CharField(max_length=200, default="4. Content & Ownership")
-    section4_content = models.TextField(
-        blank=True,
-        default="All content, logos, images, and product information on this site are "
-                "owned or licensed by us and cannot be copied or used without permission."
-    )
+    section3_title = models.CharField(max_length=200, blank=True, null=True, default="3. User Responsibilities")
+    section3_content = models.TextField(blank=True, null=True)
 
-    section5_title = models.CharField(max_length=200, default="5. Changes to These Terms")
-    section5_content = models.TextField(
-        blank=True,
-        default="We may update these Terms of Use from time to time. Continued use of "
-                "the website after changes means you accept the updated terms."
-    )
+    section4_title = models.CharField(max_length=200, blank=True, null=True, default="4. Limitations of Liability")
+    section4_content = models.TextField(blank=True, null=True)
 
-    footer_note = models.CharField(
-        max_length=200,
-        default="Last updated: 01 Jan 2025",
-        blank=True
-    )
+    section5_title = models.CharField(max_length=200, blank=True, null=True, default="5. Governing Law")
+    section5_content = models.TextField(blank=True, null=True)
+
+    footer_note = models.CharField(max_length=300, blank=True, null=True, default="Last updated: 01 Jan 2025")
 
     is_active = models.BooleanField(default=True)
 
@@ -452,3 +414,7 @@ class ShippingPolicyPage(models.Model):
 
     def __str__(self):
         return "Shipping Policy Page"
+
+
+
+

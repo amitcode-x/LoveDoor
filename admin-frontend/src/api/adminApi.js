@@ -193,3 +193,17 @@ export const getShippingPolicy = () =>
 
 export const updateShippingPolicy = (data) =>
   adminAxios.put("/admin/footer/shipping-policy/", data);
+
+
+
+
+// ==========================
+// RETURN & REFUND PAGE
+// ==========================
+export const getReturnRefund = () =>
+  adminAxios.get("/admin/footer/return-refund/");
+
+export const updateReturnRefund = (data) =>
+  adminAxios.put("/admin/footer/return-refund/", data);
+
+

@@ -11,6 +11,9 @@ import {
   Mail,
   Phone,
   FileText, // ⭐ Contact icon added
+  RotateCcw,
+   Truck,
+   Undo2
 } from "lucide-react";
 
 const menuItems = [
@@ -44,7 +47,14 @@ const menuItems = [
   { to: "/footer/terms", label: "Terms of Use", icon: FileText }, // 👈 NEW
 
   // Inside menuItems:
-{ to: "/footer/shipping-policy", label: "Shipping Policy", icon: FileText },
+{ to: "/footer/shipping-policy", label: "Shipping Policy", icon: Truck },
+
+{ to: "/footer/return-refund", label: "Return & Refund", icon: RotateCcw },
+
+
+
+
+
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
