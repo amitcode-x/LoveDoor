@@ -13,5 +13,8 @@ urlpatterns = [
     path("privacy/", PrivacyPolicyPageAPIView.as_view(), name="privacy-policy"),
     path("terms/", TermsOfUsePageAPIView.as_view(), name="terms-of-use"),
     path("shipping/", ShippingPolicyPageAPIView.as_view(), name="shipping-policy"),
+    
+  
+
 ]
 

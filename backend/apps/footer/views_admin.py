@@ -12,7 +12,8 @@ from .models import (
     FooterLink,
     PaymentMethod,
     FooterAboutPage,
-    ContactPage
+    ContactPage,
+    PrivacyPolicyPage
 )
 
 from .serializers import (
@@ -23,7 +24,8 @@ from .serializers import (
     FooterLinkSerializer,
     PaymentMethodSerializer,
     FooterAboutPageSerializer,
-    ContactPageSerializer
+    ContactPageSerializer,
+    PrivacyPolicyPageSerializer
     
 )
 
@@ -324,7 +326,7 @@ class AdminContactPageAPIView(APIView):
     def put(self, request):
         obj, _ = ContactPage.objects.get_or_create(id=1)
         
-        print("PUT DATA =", request.data)
+        # print("PUT DATA =", request.data)
 
         # ID हटाओ
         data = request.data.copy()
@@ -336,6 +338,34 @@ class AdminContactPageAPIView(APIView):
             obj = serializer.save()
             # out = ContactPageSerializer(obj).data
             return Response(ContactPageSerializer(obj).data)
+        # print("VALIDATION ERRORS =", serializer.errors)
+
+        return Response(serializer.errors, status=400)
+
+
+class AdminPrivacyPolicyAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = PrivacyPolicyPage.objects.get_or_create(id=1)
+        serializer = PrivacyPolicyPageSerializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj, _ = PrivacyPolicyPage.objects.get_or_create(id=1)
+        
+        print("PUT DATA =", request.data)
+
+        data = request.data.copy()
+        data.pop("id", None)
+
+        serializer = PrivacyPolicyPageSerializer(
+            obj, data=data, partial=True
+        )
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(PrivacyPolicyPageSerializer(obj).data)
         print("VALIDATION ERRORS =", serializer.errors)
 
         return Response(serializer.errors, status=400)

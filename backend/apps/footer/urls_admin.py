@@ -12,7 +12,8 @@ from .views_admin import (
     AdminFooterPaymentsAPIView,
     AdminFooterPaymentDetailAPIView,   # <-- ADD THIS
      AdminFooterAboutPageAPIView,
-     AdminContactPageAPIView
+     AdminContactPageAPIView,
+     AdminPrivacyPolicyAPIView
 )
 
 app_name = "footer_admin"
@@ -53,4 +54,6 @@ urlpatterns = [
     path("about-page/", AdminFooterAboutPageAPIView.as_view(), name="about-page"),
     
      path("contact-page/", AdminContactPageAPIView.as_view()),
+     path("privacy-policy/", AdminPrivacyPolicyAPIView.as_view()),
+
 ]

@@ -40,6 +40,8 @@ urlpatterns = [
        path("api/admin/footer/", include("apps.footer.urls_admin", namespace="footer_admin")),
       
 
+      
+
 
 
     

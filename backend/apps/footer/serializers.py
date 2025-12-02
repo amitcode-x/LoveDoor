@@ -274,6 +274,7 @@ class PrivacyPolicyPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrivacyPolicyPage
         fields = [
+            "id",
             "title",
             "intro_text",
             "section1_title", "section1_content",
@@ -282,7 +283,27 @@ class PrivacyPolicyPageSerializer(serializers.ModelSerializer):
             "section4_title", "section4_content",
             "section5_title", "section5_content",
             "last_updated",
+            "is_active",
         ]
+
+    def validate(self, data):
+        defaults = {
+            "intro_text": "",
+            "section1_content": "",
+            "section2_content": "",
+            "section3_content": "",
+            "section4_content": "",
+            "section5_content": "",
+        }
+
+        for field, default in defaults.items():
+            val = data.get(field)
+
+            # convert null → default
+            if val is None:
+                data[field] = default
+
+        return data
 
 
 class TermsOfUsePageSerializer(serializers.ModelSerializer):

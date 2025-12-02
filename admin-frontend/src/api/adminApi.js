@@ -168,3 +168,12 @@ export const getContactPage = () =>
 export const updateContactPage = (data) =>
   adminAxios.put("/admin/footer/contact-page/", data);
 
+/* ============================================================
+   🦶 FOOTER : Privacy-policy
+============================================================ */
+
+export const getPrivacyPolicy = () =>
+  adminAxios.get("/admin/footer/privacy-policy/");
+
+export const updatePrivacyPolicy = (data) =>
+  adminAxios.put("/admin/footer/privacy-policy/", data);

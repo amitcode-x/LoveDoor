@@ -67,7 +67,7 @@ export default function PrivacyPolicy() {
       })}
 
       <div className="text-xs text-gray-500 border-t pt-4">
-        Last updated: {page.last_updated}
+        Last updated: {page.last_updated || fallback.last_updated}
       </div>
     </div>
   );

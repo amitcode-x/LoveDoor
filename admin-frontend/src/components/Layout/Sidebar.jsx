@@ -9,7 +9,8 @@ import {
   Home,
   Link2,
   Mail,
-  Phone,        // ⭐ Contact icon added
+  Phone,  
+  FileText,       // ⭐ Contact icon added
 } from "lucide-react";
 
 const menuItems = [
@@ -35,6 +36,12 @@ const menuItems = [
 
   // ⭐ NEW — Contact Page Settings
   { to: "/footer/contact", label: "Contact Page", icon: Phone },
+
+  // privacy-policy
+
+ { to: "/footer/privacy-policy", label: "Privacy Policy", icon: FileText },
+
+
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
