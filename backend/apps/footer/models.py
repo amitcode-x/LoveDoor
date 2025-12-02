@@ -416,53 +416,36 @@ class TermsOfUsePage(models.Model):
 
 class ShippingPolicyPage(models.Model):
     title = models.CharField(max_length=200, default="Shipping Policy")
+
     intro_text = models.TextField(
         blank=True,
+        null=True,
         default=(
             "This page explains how your orders are packed, shipped, and delivered. "
             "Please read carefully before placing an order."
         ),
     )
 
-    section1_title = models.CharField(max_length=200, default="1. Order Processing Time")
-    section1_content = models.TextField(
-        blank=True,
-        default="Most orders are processed and dispatched within 1–2 business days. "
-                "During high demand, processing may take slightly longer."
-    )
+    section1_title = models.CharField(max_length=200, blank=True, null=True, default="1. Order Processing Time")
+    section1_content = models.TextField(blank=True, null=True, default="Most orders are processed...")
 
-    section2_title = models.CharField(max_length=200, default="2. Delivery Time")
-    section2_content = models.TextField(
-        blank=True,
-        default="Delivery usually takes 3–7 business days depending on your location "
-                "and courier availability."
-    )
+    section2_title = models.CharField(max_length=200, blank=True, null=True, default="2. Delivery Time")
+    section2_content = models.TextField(blank=True, null=True, default="Delivery usually takes 3–7 days...")
 
-    section3_title = models.CharField(max_length=200, default="3. Shipping Charges")
-    section3_content = models.TextField(
-        blank=True,
-        default="Shipping charges, if applicable, will be shown during checkout before "
-                "you complete your order."
-    )
+    section3_title = models.CharField(max_length=200, blank=True, null=True, default="3. Shipping Charges")
+    section3_content = models.TextField(blank=True, null=True, default="Shipping charges...")
 
-    section4_title = models.CharField(max_length=200, default="4. Order Tracking")
-    section4_content = models.TextField(
-        blank=True,
-        default="Once your order is shipped, you will receive a tracking link or AWB "
-                "number on your email/SMS to track your shipment."
-    )
+    section4_title = models.CharField(max_length=200, blank=True, null=True, default="4. Order Tracking")
+    section4_content = models.TextField(blank=True, null=True, default="Once shipped you will receive tracking...")
 
-    section5_title = models.CharField(max_length=200, default="5. Delayed or Lost Orders")
-    section5_content = models.TextField(
-        blank=True,
-        default="In rare cases of delay or lost shipments, please contact our support "
-                "team. We will coordinate with the courier partner and resolve the issue."
-    )
+    section5_title = models.CharField(max_length=200, blank=True, null=True, default="5. Delayed or Lost Orders")
+    section5_content = models.TextField(blank=True, null=True, default="In rare cases of delay...")
 
     footer_note = models.CharField(
         max_length=200,
+        blank=True,
+        null=True,   # ⭐ FIXED
         default="Last updated: 01 Jan 2025",
-        blank=True
     )
 
     is_active = models.BooleanField(default=True)

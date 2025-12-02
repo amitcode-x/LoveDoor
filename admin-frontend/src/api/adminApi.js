@@ -177,3 +177,19 @@ export const getPrivacyPolicy = () =>
 
 export const updatePrivacyPolicy = (data) =>
   adminAxios.put("/admin/footer/privacy-policy/", data);
+
+/* ============================================================
+   📜 FOOTER : TERMS OF USE
+============================================================ */
+export const getTermsOfUse = () =>
+  adminAxios.get("/admin/footer/terms-of-use/");
+
+export const updateTermsOfUse = (data) =>
+  adminAxios.put("/admin/footer/terms-of-use/", data);
+
+
+export const getShippingPolicy = () =>
+  adminAxios.get("/admin/footer/shipping-policy/");
+
+export const updateShippingPolicy = (data) =>
+  adminAxios.put("/admin/footer/shipping-policy/", data);

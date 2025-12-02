@@ -11,9 +11,14 @@ from .views_admin import (
     AdminFooterLinkDetailAPIView,
     AdminFooterPaymentsAPIView,
     AdminFooterPaymentDetailAPIView,   # <-- ADD THIS
-     AdminFooterAboutPageAPIView,
-     AdminContactPageAPIView,
-     AdminPrivacyPolicyAPIView
+    AdminFooterAboutPageAPIView,
+    AdminContactPageAPIView,
+    AdminPrivacyPolicyAPIView,
+    AdminTermsOfUseAPIView,
+    AdminShippingPolicyAPIView
+     
+ 
+     
 )
 
 app_name = "footer_admin"
@@ -53,7 +58,16 @@ urlpatterns = [
       # ⭐ ABOUT PAGE
     path("about-page/", AdminFooterAboutPageAPIView.as_view(), name="about-page"),
     
-     path("contact-page/", AdminContactPageAPIView.as_view()),
-     path("privacy-policy/", AdminPrivacyPolicyAPIView.as_view()),
+     path("contact-page/", AdminContactPageAPIView.as_view(), name="contact-page"),
+  
+     
+         path("privacy-policy/", AdminPrivacyPolicyAPIView.as_view(), name="privacy-policy"),
+    path("terms-of-use/", AdminTermsOfUseAPIView.as_view(), name="terms-of-use"),  # 👈 NEW
+    
+    # apps/footer/urls_admin.py
+
+ path("shipping-policy/", AdminShippingPolicyAPIView.as_view(), name="shipping-policy"),
+
+
 
 ]

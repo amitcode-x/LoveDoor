@@ -13,7 +13,9 @@ from .models import (
     PaymentMethod,
     FooterAboutPage,
     ContactPage,
-    PrivacyPolicyPage
+    PrivacyPolicyPage,
+    TermsOfUsePage,
+    ShippingPolicyPage
 )
 
 from .serializers import (
@@ -25,7 +27,9 @@ from .serializers import (
     PaymentMethodSerializer,
     FooterAboutPageSerializer,
     ContactPageSerializer,
-    PrivacyPolicyPageSerializer
+    PrivacyPolicyPageSerializer,
+    TermsOfUsePageSerializer,
+    ShippingPolicyPageSerializer
     
 )
 
@@ -368,4 +372,59 @@ class AdminPrivacyPolicyAPIView(APIView):
             return Response(PrivacyPolicyPageSerializer(obj).data)
         print("VALIDATION ERRORS =", serializer.errors)
 
+        return Response(serializer.errors, status=400)
+
+
+# -----------------------------------------------------------------------
+# ⭐ TERMS OF USE (GET + UPDATE)
+# -----------------------------------------------------------------------
+class AdminTermsOfUseAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = TermsOfUsePage.objects.get_or_create(id=1)
+        serializer = TermsOfUsePageSerializer(obj)
+        return Response(serializer.data)
+
+    def put(self, request):
+        obj, _ = TermsOfUsePage.objects.get_or_create(id=1)
+
+        data = request.data.copy()
+        data.pop("id", None)
+
+        serializer = TermsOfUsePageSerializer(obj, data=data, partial=True)
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(TermsOfUsePageSerializer(obj).data)
+
+        return Response(serializer.errors, status=400)
+
+
+# apps/footer/views_admin.py
+
+# apps/footer/views_admin.py
+
+class AdminShippingPolicyAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        obj, _ = ShippingPolicyPage.objects.get_or_create(id=1)
+        return Response(ShippingPolicyPageSerializer(obj).data)
+
+    def put(self, request):
+        obj, _ = ShippingPolicyPage.objects.get_or_create(id=1)
+
+        data = request.data.copy()
+        data.pop("id", None)
+
+        print("PUT DATA =", data)
+
+        serializer = ShippingPolicyPageSerializer(obj, data=data, partial=True)
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(ShippingPolicyPageSerializer(obj).data)
+
+        print("VALIDATION ERRORS =", serializer.errors)
         return Response(serializer.errors, status=400)

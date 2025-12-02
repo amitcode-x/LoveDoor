@@ -27,6 +27,10 @@ import ManageFooterPayments from "../pages/footer/ManageFooterPayments";
 import ManageFooterAbout from "../pages/footer/ManageFooterAbout";
 import ManageContactPage from "../pages/footer/ManageContactPage";
 import ManagePrivacyPolicy from "../pages/footer/ManagePrivacyPolicy";
+import ManageTermsOfUse from "../pages/footer/ManageTermsOfUse";
+// AppRouter.jsx
+import ManageShippingPolicy from "../pages/footer/ManageShippingPolicy";
+
 
 
 
@@ -85,6 +89,10 @@ export default function AppRoutes() {
         <Route path="footer/about" element={<ManageFooterAbout />} />
         <Route path="/footer/contact" element={<ManageContactPage />} />
         <Route path="/footer/privacy-policy" element={<ManagePrivacyPolicy />} />
+        <Route path="/footer/terms" element={<ManageTermsOfUse />} />   {/* 👈 NEW */}
+        <Route path="/footer/shipping-policy" element={<ManageShippingPolicy />} />
+
+
 
 
 

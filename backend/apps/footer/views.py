@@ -161,6 +161,7 @@ class ContactPageAPIView(APIView):
         return Response(serializer.data, status=200)
 
 
+
 class ContactFormAPIView(APIView):
     authentication_classes = []
     permission_classes = []

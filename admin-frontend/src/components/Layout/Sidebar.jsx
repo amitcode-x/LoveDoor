@@ -9,8 +9,8 @@ import {
   Home,
   Link2,
   Mail,
-  Phone,  
-  FileText,       // ⭐ Contact icon added
+  Phone,
+  FileText, // ⭐ Contact icon added
 } from "lucide-react";
 
 const menuItems = [
@@ -39,9 +39,12 @@ const menuItems = [
 
   // privacy-policy
 
- { to: "/footer/privacy-policy", label: "Privacy Policy", icon: FileText },
+  { to: "/footer/privacy-policy", label: "Privacy Policy", icon: FileText },
 
+  { to: "/footer/terms", label: "Terms of Use", icon: FileText }, // 👈 NEW
 
+  // Inside menuItems:
+{ to: "/footer/shipping-policy", label: "Shipping Policy", icon: FileText },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
