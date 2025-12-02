@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getOrders } from "../../api/adminApi";
+
 import Card from "../../components/UI/Card";
 import Button from "../../components/UI/Button";
 import { Table, THead, TBody, Tr, Th, Td } from "../../components/UI/Table";
@@ -19,21 +20,23 @@ export default function OrderList() {
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+
   const navigate = useNavigate();
 
-  const loadOrders = async (statusParam = "") => {
-    setLoading(true);
-    setErr("");
+  async function loadOrders(filter = "") {
     try {
-      const res = await getOrders(statusParam);
-      setOrders(res.data);
-    } catch (error) {
-      console.error(error);
+      setLoading(true);
+      setErr("");
+      const res = await getOrders(filter);
+      setOrders(res.data || []);
+    } catch (e) {
+      console.error(e);
       setErr("Failed to load orders.");
+      setOrders([]);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     loadOrders();
@@ -47,38 +50,37 @@ export default function OrderList() {
 
   return (
     <div className="space-y-4">
+
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-lg font-semibold text-slate-50">Orders</h1>
-          <p className="text-xs text-slate-400">
-            View and manage customer orders.
-          </p>
+          <p className="text-xs text-slate-400">View and manage all customer orders.</p>
         </div>
-        <div className="flex gap-2 items-center">
-          <Card className="flex items-center gap-2 px-3 py-1.5 !rounded-xl">
-            <Filter className="w-3 h-3 text-slate-500" />
-            <select
-              value={statusFilter}
-              onChange={handleFilterChange}
-              className="bg-transparent outline-none text-slate-100 text-xs"
-            >
-              <option value="">All Status</option>
-              {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </Card>
-        </div>
+
+        <Card className="flex items-center gap-2 px-3 py-1.5 rounded-xl">
+          <Filter className="w-3 h-3 text-slate-500" />
+          <select
+            value={statusFilter}
+            onChange={handleFilterChange}
+            className="bg-transparent text-xs text-slate-100 outline-none"
+          >
+            <option value="">All Status</option>
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </Card>
       </div>
 
+      {/* Error */}
       {err && (
         <Card>
-          <div className="text-sm text-red-400">{err}</div>
+          <p className="text-sm text-red-400">{err}</p>
         </Card>
       )}
 
+      {/* Table */}
       <Table>
         <THead>
           <Tr>
@@ -91,48 +93,51 @@ export default function OrderList() {
             <Th align="right">Actions</Th>
           </Tr>
         </THead>
+
         <TBody>
-          {loading ? (
+          {/* Loading */}
+          {loading && (
             <Tr>
-              <Td colSpan={7} align="center">
-                <div className="flex justify-center py-4">
-                  <div className="animate-spin rounded-full h-7 w-7 border-2 border-emerald-500 border-t-transparent" />
-                </div>
+              <Td colSpan={7} align="center" className="py-4">
+                <div className="animate-spin h-7 w-7 border-2 border-emerald-500 border-t-transparent rounded-full" />
               </Td>
             </Tr>
-          ) : orders.length ? (
-            orders.map((o) => (
-              <Tr key={o.id}>
-                <Td>{o.order_number}</Td>
-                <Td>{o.user?.username || "-"}</Td>
-                <Td>
-                  <span className="inline-flex rounded-full px-2 py-0.5 text-[11px] bg-slate-800 text-slate-200">
-                    {o.status}
-                  </span>
-                </Td>
-                <Td>{o.payment_status}</Td>
-                <Td className="text-emerald-300 font-semibold">
-                  ₹{o.total_amount}
-                </Td>
-                <Td>{new Date(o.created_at).toLocaleString()}</Td>
-                <Td align="right">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate(`/orders/${o.order_number}`)}
-                  >
-                    <Eye className="w-3 h-3 mr-1" />
-                    View
-                  </Button>
-                </Td>
-              </Tr>
-            ))
-          ) : (
+          )}
+
+          {/* No data */}
+          {!loading && orders.length === 0 && (
             <Tr>
               <Td colSpan={7} align="center" className="py-4 text-slate-500">
                 No orders found.
               </Td>
             </Tr>
           )}
+
+          {/* Data */}
+          {!loading &&
+            orders.map((o) => (
+              <Tr key={o.id}>
+                <Td>{o.order_number}</Td>
+                <Td>{o.user?.username || "-"}</Td>
+                <Td>
+                  <span className="bg-slate-800 text-slate-200 px-2 py-0.5 text-[11px] rounded-full">
+                    {o.status}
+                  </span>
+                </Td>
+                <Td>{o.payment_status}</Td>
+                <Td className="text-emerald-300 font-semibold">₹{o.total_amount}</Td>
+                <Td>{new Date(o.created_at).toLocaleString()}</Td>
+
+                <Td align="right">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate(`/orders/${o.order_number}`)}
+                  >
+                    <Eye className="w-3 h-3 mr-1" /> View
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
         </TBody>
       </Table>
     </div>

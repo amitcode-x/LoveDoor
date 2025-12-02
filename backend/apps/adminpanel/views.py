@@ -148,6 +148,7 @@ class AdminOrderListView(generics.ListAPIView):
     """
     permission_classes = [IsAuthenticated, IsAdminOrStaff]
     serializer_class = AdminOrderSerializer
+    pagination_class = None 
 
     def get_queryset(self):
         qs = Order.objects.select_related("user").prefetch_related("items").order_by(

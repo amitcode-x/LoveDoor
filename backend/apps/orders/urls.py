@@ -28,7 +28,6 @@ urlpatterns = [
     # Detail last
     path("<str:order_number>/", OrderDetailView.as_view(), name="order_detail"),
     
-    #invoice download
-    path("<str:order_number>/invoice/", OrderInvoiceView.as_view(), name="order_invoice"),
+
 
 ]

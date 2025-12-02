@@ -25,29 +25,20 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Users app auth routes
+    # USER ROUTES
     path("api/auth/", include("apps.users.urls", namespace="users")),
     path("api/products/", include("apps.products.urls", namespace="products")),
-     path("api/orders/", include("apps.orders.urls", namespace="orders")),
-     
-      path("api/admin/", include("apps.adminpanel.urls", namespace="adminpanel")),  # ✅ ye line add karo
-      path("api/payments/", include("apps.payments.urls", namespace="payments")),  # ✅ ye add karo
-       path("api/wishlist/", include("apps.wishlist.urls", namespace="wishlist")),  # ✅ ye add karo
-       path("api/homepage/", include("apps.homepage.urls", namespace="homepage")),  # ✅ ye add karo
-       path("api/footer/", include("apps.footer.urls", namespace="footer")),
-    
-       
-       path("api/admin/footer/", include("apps.footer.urls_admin", namespace="footer_admin")),
-      
+    path("api/orders/", include("apps.orders.urls", namespace="orders")),
+    path("api/payments/", include("apps.payments.urls", namespace="payments")),
+    path("api/wishlist/", include("apps.wishlist.urls", namespace="wishlist")),
+    path("api/homepage/", include("apps.homepage.urls", namespace="homepage")),
+    path("api/footer/", include("apps.footer.urls", namespace="footer")),
 
-      
+    # ADMIN PANEL (includes admin orders)
+    path("api/admin/", include("apps.adminpanel.urls", namespace="adminpanel")),
 
-
-
-    
-
-
-    
+    # ADMIN FOOTER
+    path("api/admin/footer/", include("apps.footer.urls_admin", namespace="footer_admin")),
 ]
 
 

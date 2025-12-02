@@ -4,8 +4,9 @@ import { Routes, Route } from "react-router-dom";
 import AdminLayout from "../components/Layout/AdminLayout";
 
 import Dashboard from "../pages/dashboard/Dashboard";
-import OrderList from "../pages/orders/OrderList";
 import OrderDetail from "../pages/orders/OrderDetail";
+import OrderList from "../pages/orders/OrderList";
+import OrderStatusUpdate from "../pages/orders/OrderStatusUpdate";
 
 import ProductList from "../pages/products/ProductList";
 import ProductCreate from "../pages/products/ProductCreate";
@@ -44,6 +45,7 @@ import ManageReturnRefund from "../pages/footer/ManageReturnRefund";
 
 
 
+
 import AdminLogin from "../pages/auth/AdminLogin";
 import ProtectedRoute from "../auth/ProtectedRoute";
 
@@ -67,7 +69,8 @@ export default function AppRoutes() {
 
         {/* Orders */}
         <Route path="orders" element={<OrderList />} />
-        <Route path="orders/:order_number" element={<OrderDetail />} />
+        <Route path="orders/:orderNumber" element={<OrderDetail />} />
+        <Route path="/orders/:orderNumber/status" element={<OrderStatusUpdate />} />
 
         {/* Products */}
         <Route path="products" element={<ProductList />} />

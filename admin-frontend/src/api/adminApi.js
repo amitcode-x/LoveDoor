@@ -43,14 +43,28 @@ export const updateProduct = (id, data) =>
 export const deleteProduct = (id) =>
   adminAxios.delete(`/admin/products/${id}/`);
 
-/* ============================================================
-   📦 ORDERS
-============================================================ */
-export const getOrders = () => adminAxios.get("/admin/orders/");
-export const getOrderDetails = (no) =>
-  adminAxios.get(`/admin/orders/${no}/`);
-export const updateOrderStatus = (no, data) =>
-  adminAxios.patch(`/admin/orders/${no}/status/`, data);
+// =============== ORDERS (ADMIN PANEL) ===============
+// ===================== ORDERS (ADMIN) =====================
+
+// ===================== ORDERS (ADMIN) =====================
+
+// List orders (with optional ?status=)
+export function getOrders(status = "") {
+  const url = status ? `/admin/orders/?status=${status}` : `/admin/orders/`;
+  return adminAxios.get(url);
+}
+
+// Get order details using order_number
+export function getOrderDetails(orderNumber) {
+  return adminAxios.get(`/admin/orders/${orderNumber}/`);
+}
+
+// Update order status
+export function updateOrderStatus(orderNumber, data) {
+  return adminAxios.patch(`/admin/orders/${orderNumber}/status/`, data);
+}
+
+
 
 /* ============================================================
    💳 PAYMENTS
@@ -205,5 +219,9 @@ export const getReturnRefund = () =>
 
 export const updateReturnRefund = (data) =>
   adminAxios.put("/admin/footer/return-refund/", data);
+
+
+
+
 
 
