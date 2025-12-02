@@ -290,6 +290,7 @@ class ContactPage(models.Model):
 
     def __str__(self):
         return "Contact Page Settings"
+  
     
 class ReturnRefundPage(models.Model):
     title = models.CharField(max_length=200, default="Return & Refund Policy")

@@ -48,35 +48,36 @@ export default function ManageContactPage() {
   // ================================
   // SAVE CHANGES
   // ================================
-  const handleSave = async () => {
-    setSaving(true);
-    setMsg("");
-    setError("");
+const handleSave = async () => {
+  setSaving(true);
+  setError("");
+  setMsg("");
 
-    try {
-      let cleanForm = { ...form };
+  try {
+    let cleanForm = { ...form };
 
-      // Never send ID
-      delete cleanForm.id;
+    delete cleanForm.id;
 
-      // Blank => null
-      Object.keys(cleanForm).forEach((key) => {
-        if (cleanForm[key] === "") cleanForm[key] = null;
-      });
+    // blank → null (backend default apply)
+    Object.keys(cleanForm).forEach((key) => {
+      if (cleanForm[key] === "") {
+        cleanForm[key] = null;
+      }
+    });
 
-      await updateContactPage(cleanForm);
+    await updateContactPage(cleanForm);
 
-      const refreshed = await getContactPage();
-      setForm(refreshed.data);
+    const res = await getContactPage();
+    setForm(res.data);
 
-      setMsg("Saved successfully!");
-    } catch (err) {
-      console.error(err);
-      setError("Failed to save.");
-    }
+    setMsg("Saved successfully!");
+  } catch (err) {
+    console.error(err);
+    setError("Failed to save.");
+  }
 
-    setSaving(false);
-  };
+  setSaving(false);
+};
 
   // ================================
   // LOADING UI

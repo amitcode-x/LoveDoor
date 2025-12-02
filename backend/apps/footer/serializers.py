@@ -212,9 +212,18 @@ class FooterAboutPageSerializer(serializers.ModelSerializer):
         return data
 
 class ContactPageSerializer(serializers.ModelSerializer):
+    phone_number = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    email = serializers.EmailField(allow_blank=True, allow_null=True, required=False)
+    address = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    working_hours = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    map_embed_url = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    intro_text = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    title = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+
     class Meta:
         model = ContactPage
         fields = [
+            "id",
             "title",
             "intro_text",
             "phone_number",
@@ -225,6 +234,24 @@ class ContactPageSerializer(serializers.ModelSerializer):
             "is_active",
         ]
 
+    def validate(self, data):
+        defaults = {
+            "title": "Contact Us",
+            "intro_text": "Have questions or need support? Our team is here to help you.",
+            "phone_number": "+91 98765 43210",
+            "email": "support@myecommerce.com",
+            "address": "123 Market Road, Delhi, India",
+            "working_hours": "Mon - Sat: 9:00 AM - 7:00 PM",
+            "map_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12...",
+        }
+
+        # blank/null → default
+        for field, default in defaults.items():
+            val = data.get(field)
+            if val is None or str(val).strip() == "":
+                data[field] = default
+
+        return data
 
 
 class ReturnRefundPageSerializer(serializers.ModelSerializer):

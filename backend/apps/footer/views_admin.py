@@ -323,6 +323,8 @@ class AdminContactPageAPIView(APIView):
 
     def put(self, request):
         obj, _ = ContactPage.objects.get_or_create(id=1)
+        
+        print("PUT DATA =", request.data)
 
         # ID हटाओ
         data = request.data.copy()
@@ -332,7 +334,8 @@ class AdminContactPageAPIView(APIView):
 
         if serializer.is_valid():
             obj = serializer.save()
-            out = ContactPageSerializer(obj).data
-            return Response(out)
+            # out = ContactPageSerializer(obj).data
+            return Response(ContactPageSerializer(obj).data)
+        print("VALIDATION ERRORS =", serializer.errors)
 
         return Response(serializer.errors, status=400)
