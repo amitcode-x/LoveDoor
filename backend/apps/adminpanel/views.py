@@ -151,35 +151,34 @@ class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 # Orders Management
 # -----------------------
 class AdminOrderListView(generics.ListAPIView):
-    """
-    GET /api/admin/orders/
-    Query params:
-      - status: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-    """
     permission_classes = [IsAuthenticated, IsAdminOrStaff]
     serializer_class = AdminOrderSerializer
-    pagination_class = None 
+    pagination_class = None
 
     def get_queryset(self):
-        qs = Order.objects.select_related("user").prefetch_related("items").order_by(
-            "-created_at"
-        )
+        qs = Order.objects.select_related("user").prefetch_related("items").order_by("-created_at")
         status_param = self.request.query_params.get("status")
         if status_param:
             qs = qs.filter(status=status_param)
         return qs
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request  # 👈 Must for absolute image URL
+        return context
 
 class AdminOrderDetailView(generics.RetrieveAPIView):
-    """
-    GET /api/admin/orders/<str:order_number>/
-    """
     permission_classes = [IsAuthenticated, IsAdminOrStaff]
     serializer_class = AdminOrderSerializer
     lookup_field = "order_number"
 
     def get_queryset(self):
         return Order.objects.select_related("user").prefetch_related("items")
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request  # 👈 MUST
+        return context
 
 
 class AdminOrderStatusUpdateView(APIView):

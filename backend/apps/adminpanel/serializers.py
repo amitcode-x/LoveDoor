@@ -79,16 +79,24 @@ class AdminOrderItemSerializer(serializers.ModelSerializer):
             "product_price",
             "quantity",
             "line_total",
-            "product_image",  # 👈 ADD THIS
+            "product_image",
         ]
         read_only_fields = ["id", "product_name", "product_price", "line_total"]
 
     def get_product_image(self, obj):
         try:
-            request = self.context.get("request")
-            if obj.product and obj.product.thumbnail:
-                url = obj.product.thumbnail.url
+            thumb = obj.product.thumbnail
+
+            # Case 1: ImageField → has .url
+            if hasattr(thumb, "url"):
+                request = self.context.get("request")
+                url = thumb.url
                 return request.build_absolute_uri(url) if request else url
+
+            # Case 2: URL string stored in DB
+            if isinstance(thumb, str) and thumb.startswith("http"):
+                return thumb
+
             return None
         except:
             return None
