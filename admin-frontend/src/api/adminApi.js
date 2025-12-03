@@ -39,6 +39,26 @@ export const deleteCategory = (id) =>
   adminAxios.delete(`/admin/categories/${id}/`);
 
 
+
+
+// =================== BOTTOM NAV CATEGORY ===================
+export const getBottomNavCategories = () =>
+  adminAxios.get("/admin/homepage/bottom-nav/");
+
+export const getBottomNavCategoryDetail = (id) =>
+  adminAxios.get(`/admin/homepage/bottom-nav/${id}/`);
+
+export const createBottomNavCategory = (data) =>
+  adminAxios.post("/admin/homepage/bottom-nav/", data);
+
+export const updateBottomNavCategory = (id, data) =>
+  adminAxios.put(`/admin/homepage/bottom-nav/${id}/`, data);
+
+export const deleteBottomNavCategory = (id) =>
+  adminAxios.delete(`/admin/homepage/bottom-nav/${id}/`);
+
+
+
 /* ============================================================
    🛒 PRODUCTS
 ============================================================ */

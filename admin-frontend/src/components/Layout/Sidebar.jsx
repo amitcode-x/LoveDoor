@@ -28,7 +28,8 @@ const menuItems = [
   { to: "/homepage", label: "Homepage", icon: Home },
 
   // **BOTTOM NAV CATEGORIES (NEW)**
-  { to: "/bottom-nav", label: "Bottom Nav Categories", icon: Shapes },
+ { to: "/bottom-nav", label: "Bottom Nav Categories", icon: Shapes },
+
 
   { to: "/users", label: "Users", icon: Users },
   { to: "/payments", label: "Payments", icon: CreditCard },

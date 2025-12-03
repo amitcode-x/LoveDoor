@@ -37,6 +37,8 @@ import ManagePrivacyPolicy from "../pages/footer/ManagePrivacyPolicy";
 import ManageTermsOfUse from "../pages/footer/ManageTermsOfUse";
 import ManageShippingPolicy from "../pages/footer/ManageShippingPolicy";
 import ManageReturnRefund from "../pages/footer/ManageReturnRefund";
+import BottomNavForm from "../pages/categories/BottomNavForm";
+import BottomNavList from "../pages/categories/BottomNavList";
 
 // Auth
 import AdminLogin from "../pages/auth/AdminLogin";
@@ -103,6 +105,9 @@ export default function AppRoutes() {
         <Route path="categories" element={<CategoryList />} />
         <Route path="categories/create" element={<CategoryForm />} />
         <Route path="categories/:id" element={<CategoryForm />} />
+        <Route path="bottom-nav" element={<BottomNavList />} />
+        <Route path="bottom-nav/create" element={<BottomNavForm />} />
+        <Route path="bottom-nav/:id" element={<BottomNavForm />} />
       </Route>
     </Routes>
   );
