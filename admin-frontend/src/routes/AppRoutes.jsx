@@ -11,6 +11,7 @@ import OrderStatusUpdate from "../pages/orders/OrderStatusUpdate";
 import ProductList from "../pages/products/ProductList";
 import ProductCreate from "../pages/products/ProductCreate";
 import ProductEdit from "../pages/products/ProductEdit";
+import ProductView from "../pages/products/ProductView";
 
 import CategoryList from "../pages/categories/CategoryList";
 import CategoryCreateEdit from "../pages/categories/CategoryCreateEdit";
@@ -76,6 +77,8 @@ export default function AppRoutes() {
         <Route path="products" element={<ProductList />} />
         <Route path="products/create" element={<ProductCreate />} />
         <Route path="products/:id/edit" element={<ProductEdit />} />
+        <Route path="products/:id/view" element={<ProductView />} />
+
 
         {/* Categories */}
         <Route path="categories" element={<CategoryList />} />

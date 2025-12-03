@@ -132,6 +132,11 @@ class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Product.objects.all().select_related("category")
 
+    # ⭐ IMPORTANT FIX — Boolean fields (false values) now update correctly
+    def patch(self, request, *args, **kwargs):
+        kwargs["partial"] = True
+        return super().update(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 

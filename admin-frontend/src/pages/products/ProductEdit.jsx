@@ -7,7 +7,6 @@ import {
   updateProduct,
 } from "../../api/adminApi";
 
-
 import Card from "../../components/UI/Card";
 import Input from "../../components/UI/Input";
 import Button from "../../components/UI/Button";
@@ -35,7 +34,6 @@ export default function ProductEdit() {
 
         setCategories(catRes.data.results || []);
 
-
         const p = prodRes.data;
 
         setForm({
@@ -47,9 +45,10 @@ export default function ProductEdit() {
           thumbnail: p.thumbnail || "",
           short_description: p.short_description || "",
           description: p.description || "",
-          is_active: p.is_active,
-          is_featured: p.is_featured,
-          is_new: p.is_new,
+          // ⭐ FIXED BOOLEAN FIELDS
+          is_active: p.is_active ?? false,
+          is_featured: p.is_featured ?? false,
+          is_new: p.is_new ?? false,
         });
       } catch (err) {
         console.error(err);
@@ -123,9 +122,7 @@ export default function ProductEdit() {
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold text-slate-50">
-            Edit Product
-          </h1>
+          <h1 className="text-lg font-semibold text-slate-50">Edit Product</h1>
           <p className="text-xs text-slate-400">
             Update product details and status.
           </p>

@@ -75,6 +75,7 @@ export default function ProductList() {
       <Table>
         <THead>
           <Tr>
+            <Th>Image</Th>
             <Th>Name</Th>
             <Th>Category</Th>
             <Th>Price</Th>
@@ -97,6 +98,15 @@ export default function ProductList() {
           ) : products.length ? (
             products.map((p) => (
               <Tr key={p.id}>
+                <Td>
+                  <img
+                    src={p.thumbnail}
+                    alt={p.name}
+                    className="h-10 w-10 rounded object-cover border border-slate-700"
+                  />
+                </Td>
+                <Td>{p.name}</Td>
+
                 <Td>{p.name}</Td>
                 <Td>{p.category?.name || "-"}</Td>
                 <Td>₹{p.price}</Td>
@@ -112,15 +122,19 @@ export default function ProductList() {
                 <Td align="right">
                   <div className="flex gap-2 justify-end">
                     <Button
+                      variant="ghost"
+                      onClick={() => navigate(`/products/${p.id}/view`)}
+                    >
+                      View
+                    </Button>
+
+                    <Button
                       variant="outline"
                       onClick={() => navigate(`/products/${p.id}/edit`)}
                     >
                       Edit
                     </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => setDeleteTarget(p)}
-                    >
+                    <Button variant="danger" onClick={() => setDeleteTarget(p)}>
                       Delete
                     </Button>
                   </div>

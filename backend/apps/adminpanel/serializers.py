@@ -58,6 +58,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "stock",
             "is_active",
             "is_featured",
+            "is_new",
             "thumbnail",
             "category",
             "category_id",
