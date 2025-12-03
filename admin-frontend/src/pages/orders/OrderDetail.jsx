@@ -50,7 +50,6 @@ export default function OrderDetail() {
 
   return (
     <div className="space-y-4">
-
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -75,10 +74,29 @@ export default function OrderDetail() {
           </Button>
         </div>
       </div>
+      <Card>
+        <h2 className="text-sm font-semibold text-slate-50 mb-2">
+          Customer Info
+        </h2>
+        <div className="text-xs text-slate-200 space-y-1">
+          <div>
+            <strong>Name:</strong> {order.user?.first_name}{" "}
+            {order.user?.last_name}
+          </div>
+          <div>
+            <strong>Username:</strong> {order.user?.username}
+          </div>
+          <div>
+            <strong>Email:</strong> {order.user?.email}
+          </div>
+        </div>
+      </Card>
 
       {/* Summary */}
       <Card>
-        <h2 className="text-sm text-slate-50 mb-2 font-semibold">Order Summary</h2>
+        <h2 className="text-sm text-slate-50 mb-2 font-semibold">
+          Order Summary
+        </h2>
 
         <div className="grid sm:grid-cols-2 gap-2 text-xs text-slate-300">
           <div>
@@ -98,7 +116,9 @@ export default function OrderDetail() {
 
       {/* Shipping */}
       <Card>
-        <h2 className="text-sm font-semibold text-slate-50 mb-2">Shipping Address</h2>
+        <h2 className="text-sm font-semibold text-slate-50 mb-2">
+          Shipping Address
+        </h2>
 
         <div className="text-xs text-slate-300 space-y-1">
           <div>{order.shipping_full_name}</div>
@@ -129,7 +149,17 @@ export default function OrderDetail() {
           <TBody>
             {order.items.map((item) => (
               <Tr key={item.id}>
-                <Td>{item.product_name}</Td>
+                <Td>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={item.product_image}
+                      alt={item.product_name}
+                      className="w-10 h-10 rounded object-cover border border-slate-700"
+                    />
+                    <span>{item.product_name}</span>
+                  </div>
+                </Td>
+
                 <Td>₹{item.product_price}</Td>
                 <Td>{item.quantity}</Td>
                 <Td>₹{item.line_total}</Td>
@@ -142,12 +172,19 @@ export default function OrderDetail() {
       {/* Status History */}
       {order.status_history?.length > 0 && (
         <Card>
-          <h2 className="text-sm font-semibold text-slate-50 mb-2">Status History</h2>
+          <h2 className="text-sm font-semibold text-slate-50 mb-2">
+            Status History
+          </h2>
 
           <ul className="text-xs text-slate-300 space-y-1">
             {order.status_history.map((h) => (
-              <li key={h.id} className="flex justify-between border-b border-slate-800 pb-1">
-                <span>{h.status} — {h.message}</span>
+              <li
+                key={h.id}
+                className="flex justify-between border-b border-slate-800 pb-1"
+              >
+                <span>
+                  {h.status} — {h.message}
+                </span>
                 <span className="text-slate-500">
                   {new Date(h.created_at).toLocaleString()}
                 </span>
@@ -156,7 +193,6 @@ export default function OrderDetail() {
           </ul>
         </Card>
       )}
-
     </div>
   );
 }

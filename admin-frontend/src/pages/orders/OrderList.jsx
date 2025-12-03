@@ -117,7 +117,17 @@ export default function OrderList() {
           {!loading &&
             orders.map((o) => (
               <Tr key={o.id}>
-                <Td>{o.order_number}</Td>
+                <Td>
+  <div className="flex items-center gap-2">
+    <img
+      src={o.items?.[0]?.product_image}
+      className="w-10 h-10 rounded object-cover border border-slate-700"
+      alt=""
+    />
+    <span>{o.order_number}</span>
+  </div>
+</Td>
+
                 <Td>{o.user?.username || "-"}</Td>
                 <Td>
                   <span className="bg-slate-800 text-slate-200 px-2 py-0.5 text-[11px] rounded-full">

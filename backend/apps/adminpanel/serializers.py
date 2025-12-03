@@ -68,6 +68,8 @@ class AdminProductSerializer(serializers.ModelSerializer):
 
 
 class AdminOrderItemSerializer(serializers.ModelSerializer):
+    product_image = serializers.SerializerMethodField()
+
     class Meta:
         model = OrderItem
         fields = [
@@ -77,8 +79,19 @@ class AdminOrderItemSerializer(serializers.ModelSerializer):
             "product_price",
             "quantity",
             "line_total",
+            "product_image",  # 👈 ADD THIS
         ]
         read_only_fields = ["id", "product_name", "product_price", "line_total"]
+
+    def get_product_image(self, obj):
+        try:
+            request = self.context.get("request")
+            if obj.product and obj.product.thumbnail:
+                url = obj.product.thumbnail.url
+                return request.build_absolute_uri(url) if request else url
+            return None
+        except:
+            return None
 
 
 class AdminOrderSerializer(serializers.ModelSerializer):

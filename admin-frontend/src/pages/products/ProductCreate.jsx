@@ -37,7 +37,8 @@ export default function ProductCreate() {
     async function load() {
       try {
         const res = await getCategories();   // returns array
-        setCategories(res.data);
+        setCategories(res.data.results || []);
+
       } catch (err) {
         console.error("Category load failed", err);
       }

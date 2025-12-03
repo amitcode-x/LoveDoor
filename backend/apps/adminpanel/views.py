@@ -13,7 +13,9 @@ from .serializers import (
     AdminProductSerializer,
     AdminOrderSerializer,
     AdminOrderStatusUpdateSerializer,
-    AdminFooterBrandInfoSerializer
+    AdminFooterBrandInfoSerializer,
+    
+    
 )
 from .permissions import IsAdminOrStaff
 
@@ -124,18 +126,26 @@ class AdminProductListCreateView(generics.ListCreateAPIView):
 
 
 class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    GET    /api/admin/products/<int:pk>/
-    PUT    /api/admin/products/<int:pk>/
-    PATCH  /api/admin/products/<int:pk>/
-    DELETE /api/admin/products/<int:pk>/
-    """
     permission_classes = [IsAuthenticated, IsAdminOrStaff]
     serializer_class = AdminProductSerializer
 
     def get_queryset(self):
         return Product.objects.all().select_related("category")
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # 👉 ORDER वाले products को SOFT DELETE
+        if instance.order_items.exists():
+            instance.is_active = False
+            instance.save()
+            return Response(
+                {"message": "Product deactivated (soft deleted)."},
+                status=status.HTTP_200_OK
+            )
+
+        # 👉 Bina order वाले products को normal delete
+        return super().destroy(request, *args, **kwargs)
 
 # -----------------------
 # Orders Management

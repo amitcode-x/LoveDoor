@@ -33,7 +33,8 @@ export default function ProductEdit() {
           getProductDetail(id), // product detail
         ]);
 
-        setCategories(catRes.data);
+        setCategories(catRes.data.results || []);
+
 
         const p = prodRes.data;
 
