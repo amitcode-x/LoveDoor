@@ -30,7 +30,11 @@ class AdminCategorySerializer(serializers.ModelSerializer):
             "name",
             "slug",
             "description",
+            "banner_image",
             "is_active",
+            "category_image",
+            "category_icon",
+            "category_image_url",
             "created_at",
             "updated_at",
         ]

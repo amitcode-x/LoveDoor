@@ -80,6 +80,9 @@ class AdminUserListView(generics.ListAPIView):
 # -----------------------
 # Category Management
 # -----------------------
+# -----------------------
+# Category Management
+# -----------------------
 class AdminCategoryListCreateView(generics.ListCreateAPIView):
     """
     GET  /api/admin/categories/
@@ -91,20 +94,27 @@ class AdminCategoryListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Category.objects.all().order_by("name")
 
+    def get_serializer(self, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().get_serializer(*args, **kwargs)
+
 
 class AdminCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET    /api/admin/categories/<int:pk>/
-    PUT    /api/admin/categories/<int:pk>/
-    PATCH  /api/admin/categories/<int:pk>/
-    DELETE /api/admin/categories/<int:pk>/
+    GET    /api/admin/categories/<id>/
+    PATCH  /api/admin/categories/<id>/
+    DELETE /api/admin/categories/<id>/
     """
     permission_classes = [IsAuthenticated, IsAdminOrStaff]
     serializer_class = AdminCategorySerializer
+    lookup_field = "pk"
 
     def get_queryset(self):
         return Category.objects.all()
 
+    def get_serializer(self, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().get_serializer(*args, **kwargs)
 
 # -----------------------
 # Product Management

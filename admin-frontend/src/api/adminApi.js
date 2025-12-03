@@ -20,8 +20,14 @@ export const getUsers = () => adminAxios.get("/admin/users/");
 /* ============================================================
    🧭 CATEGORIES
 ============================================================ */
+/* ============================================================
+   🧭 CATEGORIES (ADMIN)
+============================================================ */
 export const getCategories = () =>
   adminAxios.get("/admin/categories/");
+
+export const getCategoryDetail = (id) =>
+  adminAxios.get(`/admin/categories/${id}/`);
 
 export const createCategory = (data) =>
   adminAxios.post("/admin/categories/", data);
@@ -31,6 +37,7 @@ export const updateCategory = (id, data) =>
 
 export const deleteCategory = (id) =>
   adminAxios.delete(`/admin/categories/${id}/`);
+
 
 /* ============================================================
    🛒 PRODUCTS

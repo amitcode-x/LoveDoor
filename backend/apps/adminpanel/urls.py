@@ -42,6 +42,9 @@ urlpatterns = [
         name="order_status_update",
     ),
     path("footer/brand/", AdminFooterBrandView.as_view(), name="footer_brand"),
+    
+
+
    
 ]
 

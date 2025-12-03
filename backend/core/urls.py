@@ -39,6 +39,9 @@ urlpatterns = [
 
     # ADMIN FOOTER
     path("api/admin/footer/", include("apps.footer.urls_admin", namespace="footer_admin")),
+    
+    # path("api/admin/products/", include("apps.products.urls", namespace="products_admin")),
+
 ]
 
 

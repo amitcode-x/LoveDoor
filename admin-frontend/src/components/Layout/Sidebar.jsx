@@ -20,42 +20,32 @@ const menuItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/orders", label: "Orders", icon: ShoppingBag },
   { to: "/products", label: "Products", icon: Package },
+
+  // MAIN PRODUCT CATEGORIES
   { to: "/categories", label: "Categories", icon: Shapes },
-  { to: "/users", label: "Users", icon: Users },
-  { to: "/payments", label: "Payments", icon: CreditCard },
+
+  // HOMEPAGE
   { to: "/homepage", label: "Homepage", icon: Home },
 
-  /* ------------------------------
-        FOOTER MANAGEMENT
-  ------------------------------ */
+  // **BOTTOM NAV CATEGORIES (NEW)**
+  { to: "/bottom-nav", label: "Bottom Nav Categories", icon: Shapes },
+
+  { to: "/users", label: "Users", icon: Users },
+  { to: "/payments", label: "Payments", icon: CreditCard },
 
   { to: "/footer", label: "Manage Footer", icon: Link2 },
   { to: "/newsletter", label: "Newsletter", icon: Mail },
-
   { to: "/footer/social", label: "Footer Social Links", icon: Link2 },
   { to: "/footer/columns", label: "Footer Columns", icon: Link2 },
   { to: "/footer/payments", label: "Footer Payments", icon: CreditCard },
   { to: "/footer/about", label: "About Page", icon: Home },
-
-  // ⭐ NEW — Contact Page Settings
   { to: "/footer/contact", label: "Contact Page", icon: Phone },
-
-  // privacy-policy
-
   { to: "/footer/privacy-policy", label: "Privacy Policy", icon: FileText },
-
-  { to: "/footer/terms", label: "Terms of Use", icon: FileText }, // 👈 NEW
-
-  // Inside menuItems:
-{ to: "/footer/shipping-policy", label: "Shipping Policy", icon: Truck },
-
-{ to: "/footer/return-refund", label: "Return & Refund", icon: RotateCcw },
-
-
-
-
-
+  { to: "/footer/terms", label: "Terms of Use", icon: FileText },
+  { to: "/footer/shipping-policy", label: "Shipping Policy", icon: Truck },
+  { to: "/footer/return-refund", label: "Return & Refund", icon: RotateCcw },
 ];
+
 
 export default function Sidebar({ collapsed, onToggle }) {
   return (
