@@ -23,6 +23,26 @@ from apps.footer.models import FooterBrandInfo
 
 
 
+from decimal import Decimal
+
+def recalc_order_totals(order: Order):
+    """
+    Order ke saare items se subtotal nikal ke
+    subtotal_amount / total_amount ko update karega.
+    Discount & shipping ko as-is rakhega.
+    """
+    subtotal = Decimal("0.00")
+    for item in order.items.all():
+        subtotal += item.line_total
+
+    order.subtotal_amount = subtotal
+    # total = subtotal - discount + shipping
+    order.total_amount = subtotal - order.discount_amount + order.shipping_amount
+    order.save(update_fields=["subtotal_amount", "total_amount", "updated_at"])
+
+
+
+
 # -----------------------
 # Dashboard / Stats
 # -----------------------
@@ -224,6 +244,130 @@ class AdminOrderStatusUpdateView(APIView):
             {"message": "Order updated successfully."},
             status=status.HTTP_200_OK,
         )
+
+
+
+class AdminOrderItemUpdateDeleteView(APIView):
+    """
+    PATCH /api/admin/orders/<order_number>/items/<item_id>/
+      body: { "quantity": 2 }
+
+    DELETE /api/admin/orders/<order_number>/items/<item_id>/
+      → item delete, stock restore, totals recalc
+      → agar last item delete hua to order CANCEL + totals 0
+    """
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def _get_order_and_item(self, order_number, item_id):
+        try:
+            order = Order.objects.get(order_number=order_number)
+        except Order.DoesNotExist:
+            raise Http404("Order not found")
+
+        try:
+            item = order.items.get(pk=item_id)
+        except OrderItem.DoesNotExist:
+            raise Http404("Order item not found")
+
+        return order, item
+
+    def patch(self, request, order_number, item_id, *args, **kwargs):
+        """
+        Quantity update
+        - stock check
+        - product.stock adjust
+        - line_total update
+        - order totals recalc
+        """
+        order, item = self._get_order_and_item(order_number, item_id)
+
+        try:
+            new_qty = int(request.data.get("quantity", 0))
+        except (TypeError, ValueError):
+            return Response(
+                {"detail": "Invalid quantity."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if new_qty < 1:
+            return Response(
+                {"detail": "Quantity must be at least 1."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        product = item.product
+        diff = new_qty - item.quantity  # +ve => increase, -ve => decrease
+
+        # Agar qty badha rahe ho to stock check
+        if diff > 0 and product.stock < diff:
+            return Response(
+                {
+                    "detail": f"Not enough stock for {product.name}. "
+                              f"Available: {product.stock}"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Stock adjust (diff negative ho to + ho jayega)
+        product.stock -= diff
+        product.save(update_fields=["stock"])
+
+        # Item update
+        item.quantity = new_qty
+        item.line_total = item.product_price * new_qty
+        item.save(update_fields=["quantity", "line_total"])
+
+        # Order totals recalc
+        recalc_order_totals(order)
+
+        serializer = AdminOrderSerializer(
+            order, context={"request": request}
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, order_number, item_id, *args, **kwargs):
+        """
+        Item delete:
+        - product.stock wapas add
+        - item delete
+        - agar items bache hain → totals recalc
+        - agar koi item nahi bacha → order CANCEL + amounts 0
+        """
+        order, item = self._get_order_and_item(order_number, item_id)
+        product = item.product
+
+        # stock wapas
+        product.stock += item.quantity
+        product.save(update_fields=["stock"])
+
+        # item delete
+        item.delete()
+
+        if order.items.exists():
+            recalc_order_totals(order)
+        else:
+            # last item gaya, order cancel
+            order.status = "CANCELLED"
+            order.subtotal_amount = 0
+            order.discount_amount = 0
+            order.shipping_amount = 0
+            order.total_amount = 0
+            order.save(
+                update_fields=[
+                    "status",
+                    "subtotal_amount",
+                    "discount_amount",
+                    "shipping_amount",
+                    "total_amount",
+                    "updated_at",
+                ]
+            )
+
+        serializer = AdminOrderSerializer(
+            order, context={"request": request}
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class AdminFooterBrandView(APIView):

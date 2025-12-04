@@ -13,6 +13,7 @@ from .views import (
     AdminOrderDetailView,
     AdminOrderStatusUpdateView,
     AdminFooterBrandView , # agar already nahi hai
+     AdminOrderItemUpdateDeleteView,
  
 )
 
@@ -36,11 +37,10 @@ urlpatterns = [
     # Orders
     path("orders/", AdminOrderListView.as_view(), name="orders_list"),
     path("orders/<str:order_number>/", AdminOrderDetailView.as_view(), name="order_detail"),
-    path(
-        "orders/<str:order_number>/status/",
-        AdminOrderStatusUpdateView.as_view(),
-        name="order_status_update",
-    ),
+    path("orders/<str:order_number>/status/",AdminOrderStatusUpdateView.as_view(),name="order_status_update"),
+    
+    path("orders/<str:order_number>/items/<int:item_id>/",AdminOrderItemUpdateDeleteView.as_view(),name="order_item_update_delete"),
+    
     path("footer/brand/", AdminFooterBrandView.as_view(), name="footer_brand"),
     
 

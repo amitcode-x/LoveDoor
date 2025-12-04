@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getOrderDetails } from "../../api/adminApi";
+import {
+  getOrderDetails,
+  updateOrderItem,
+  deleteOrderItem,
+} from "../../api/adminApi";
 
 import Card from "../../components/UI/Card";
 import Button from "../../components/UI/Button";
@@ -13,9 +17,13 @@ export default function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [updatingItemId, setUpdatingItemId] = useState(null);
+  const [deletingItemId, setDeletingItemId] = useState(null);
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
+      setErr("");
       try {
         const res = await getOrderDetails(orderNumber);
         setOrder(res.data);
@@ -28,6 +36,50 @@ export default function OrderDetail() {
     }
     load();
   }, [orderNumber]);
+
+  const handleQtyChange = async (item, newQty) => {
+    if (newQty < 1) return;
+
+    try {
+      setUpdatingItemId(item.id);
+      const res = await updateOrderItem(order.order_number, item.id, newQty);
+      setOrder(res.data);
+    } catch (error) {
+      console.error(error);
+      let msg = "Failed to update quantity.";
+      if (error.response?.data?.detail) {
+        msg = error.response.data.detail;
+      }
+      alert(msg);
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
+
+  const handleDeleteItem = async (item) => {
+    if (!window.confirm("Remove this item from the order?")) return;
+
+    try {
+      setDeletingItemId(item.id);
+      const res = await deleteOrderItem(order.order_number, item.id);
+
+      const updated = res.data;
+
+      // Agar items khatam ho gaye ya order CANCELLED ho gaya
+      if (!updated.items || updated.items.length === 0 || updated.status === "CANCELLED") {
+        alert("Last item removed. Order has been cancelled.");
+        navigate("/orders");
+        return;
+      }
+
+      setOrder(updated);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to remove item from order.");
+    } finally {
+      setDeletingItemId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -74,6 +126,8 @@ export default function OrderDetail() {
           </Button>
         </div>
       </div>
+
+      {/* Customer Info */}
       <Card>
         <h2 className="text-sm font-semibold text-slate-50 mb-2">
           Customer Info
@@ -144,6 +198,7 @@ export default function OrderDetail() {
               <Th>Price</Th>
               <Th>Qty</Th>
               <Th>Total</Th>
+              <Th align="right">Actions</Th>
             </Tr>
           </THead>
           <TBody>
@@ -151,18 +206,53 @@ export default function OrderDetail() {
               <Tr key={item.id}>
                 <Td>
                   <div className="flex items-center gap-2">
-                    <img
-                      src={item.product_image}
-                      alt={item.product_name}
-                      className="w-10 h-10 rounded object-cover border border-slate-700"
-                    />
+                    {item.product_image && (
+                      <img
+                        src={item.product_image}
+                        alt={item.product_name}
+                        className="w-10 h-10 rounded object-cover border border-slate-700"
+                      />
+                    )}
                     <span>{item.product_name}</span>
                   </div>
                 </Td>
 
                 <Td>₹{item.product_price}</Td>
-                <Td>{item.quantity}</Td>
+
+                <Td>
+                  <div className="inline-flex items-center gap-2 border border-slate-700 rounded-full px-2 py-1">
+                    <button
+                      className="px-2 text-xs"
+                      disabled={item.quantity <= 1 || updatingItemId === item.id}
+                      onClick={() => handleQtyChange(item, item.quantity - 1)}
+                    >
+                      −
+                    </button>
+                    <span className="min-w-[16px] text-center text-xs">
+                      {updatingItemId === item.id ? "..." : item.quantity}
+                    </span>
+                    <button
+                      className="px-2 text-xs"
+                      disabled={updatingItemId === item.id}
+                      onClick={() => handleQtyChange(item, item.quantity + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </Td>
+
                 <Td>₹{item.line_total}</Td>
+
+                <Td align="right">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteItem(item)}
+                    disabled={deletingItemId === item.id}
+                  >
+                    {deletingItemId === item.id ? "Removing..." : "Remove"}
+                  </Button>
+                </Td>
               </Tr>
             ))}
           </TBody>

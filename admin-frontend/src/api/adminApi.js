@@ -92,6 +92,19 @@ export function updateOrderStatus(orderNumber, data) {
   return adminAxios.patch(`/admin/orders/${orderNumber}/status/`, data);
 }
 
+// ✅ NEW: Update single order item quantity
+export function updateOrderItem(orderNumber, itemId, quantity) {
+  return adminAxios.patch(
+    `/admin/orders/${orderNumber}/items/${itemId}/`,
+    { quantity }
+  );
+}
+
+// ✅ NEW: Delete single order item
+export function deleteOrderItem(orderNumber, itemId) {
+  return adminAxios.delete(`/admin/orders/${orderNumber}/items/${itemId}/`);
+}
+
 
 
 /* ============================================================
