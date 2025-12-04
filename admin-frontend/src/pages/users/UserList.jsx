@@ -14,7 +14,8 @@ export default function UserList() {
       setErr("");
       try {
         const res = await getUsers();
-        setUsers(res.data);
+        setUsers(res.data.results || res.data);
+
       } catch (error) {
         console.error(error);
         setErr("Failed to load users.");

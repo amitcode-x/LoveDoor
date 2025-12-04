@@ -16,7 +16,7 @@ export default function BottomNavList() {
     setErr("");
     try {
       const res = await getBottomNavCategories();
-      console.log("BOTTOM NAV DATA →", res.data);
+      // console.log("BOTTOM NAV DATA →", res.data);
 
       // 🔴 res.data = { count, next, previous, results: [] }
       const data = res.data;
