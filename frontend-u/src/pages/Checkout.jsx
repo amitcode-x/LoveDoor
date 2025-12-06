@@ -16,40 +16,36 @@ export default function Checkout() {
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
 
+  // Selected address object
+  const selectedAddress = useMemo(() => {
+    if (!Array.isArray(addresses)) return null;
+    return addresses.find((a) => a.id === Number(addressId));
+  }, [addresses, addressId]);
 
-    // Selected address object
- const selectedAddress = useMemo(() => {
-  if (!Array.isArray(addresses)) return null;
-  return addresses.find((a) => a.id === Number(addressId));
-}, [addresses, addressId]);
-
-
-    // Load addresses on mount
-useEffect(() => {
-  axiosClient.get("/auth/addresses/")
-    .then((res) => {
-      const list =
-        Array.isArray(res.data)
+  // Load addresses on mount
+  useEffect(() => {
+    axiosClient
+      .get("/auth/addresses/")
+      .then((res) => {
+        const list = Array.isArray(res.data)
           ? res.data
           : res.data.results || [];
 
-      setAddresses(list);
+        setAddresses(list);
 
-      // auto-select first address
-      if (list.length > 0) {
-        setAddressId(list[0].id);
-      }
-    })
-    .finally(() => setLoading(false));
-}, []);
-
+        // auto-select first address
+        if (list.length > 0) {
+          setAddressId(list[0].id);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const buildOrderItems = () =>
     cart.map((item) => ({
       product_id: item.id,
       quantity: item.quantity,
     }));
-
 
   // User not logged in
   if (!user) {
@@ -76,74 +72,71 @@ useEffect(() => {
     );
   }
 
-
-
-
   // MAIN handler - Place order btn
-const handlePlaceOrder = async () => {
-  try {
-    setError("");
+  const handlePlaceOrder = async () => {
+    try {
+      setError("");
 
-    if (!addressId) {
-      setError("Please select an address.");
-      return;
+      if (!addressId) {
+        setError("Please select an address.");
+        return;
+      }
+
+      if (!selectedAddress) {
+        setError("Selected address not found.");
+        return;
+      }
+
+      if (totalAmount <= 0) {
+        setError("Invalid total amount.");
+        return;
+      }
+
+      // 🔥 If Razorpay is selected → DO NOTHING, only show coming soon
+      if (paymentMethod === "RAZORPAY") {
+        setPlacing(true);
+        await handleRazorpayOrder();
+        return;
+      }
+
+      // COD → proceed with actual order
+      setPlacing(true);
+      await handleCodOrder();
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Try again.");
+    } finally {
+      setPlacing(false);
     }
-
-    if (!selectedAddress) {
-      setError("Selected address not found.");
-      return;
-    }
-
-    if (totalAmount <= 0) {
-      setError("Invalid total amount.");
-      return;
-    }
-
-    // 🔥 If Razorpay is selected → DO NOTHING, only show coming soon
-    if (paymentMethod === "RAZORPAY") {
-      setError("Online Payment Coming Soon!");
-      return; // ❌ Stop execution here
-    }
-
-    // COD → proceed with actual order
-    setPlacing(true);
-    await handleCodOrder();
-
-  } catch (err) {
-    console.error(err);
-    setError("Something went wrong. Try again.");
-  } finally {
-    setPlacing(false);
-  }
-};
-
+  };
 
   // COD flow
   const handleCodOrder = async () => {
-  const itemsData = buildOrderItems();
-
-  const res = await axiosClient.post("/orders/create/", {
-    shipping_address_id: addressId,
-    payment_method: "COD",
-    items: itemsData,
-    notes: "",
-  });
-
-  // 👇 Show success message
-  setError("Order Successfully Placed!");
-
-  // Clean cart AFTER message
-  setTimeout(() => {
-    clearCart();
-    navigate(`/order/${res.data.order.order_number}`);
-  }, 1200); // 1.2 seconds delay for message visibility
-};
-
-  // Razorpay flow
-  const handleRazorpayOrder = async () => {
     const itemsData = buildOrderItems();
 
-    // 1. Create Order with payment_method = RAZORPAY
+    const res = await axiosClient.post("/orders/create/", {
+      shipping_address_id: addressId,
+      payment_method: "COD",
+      items: itemsData,
+      notes: "",
+    });
+
+    // 👇 Show success message
+    setError("Order Successfully Placed!");
+
+    // Clean cart AFTER message
+    setTimeout(() => {
+      clearCart();
+      navigate(`/order/${res.data.order.order_number}`);
+    }, 1200); // 1.2 seconds delay for message visibility
+  };
+
+  // Razorpay flow
+ const handleRazorpayOrder = async () => {
+  try {
+    const itemsData = buildOrderItems();
+
+    // 1. Create backend order
     const orderRes = await axiosClient.post("/orders/create/", {
       shipping_address_id: addressId,
       payment_method: "RAZORPAY",
@@ -154,15 +147,23 @@ const handlePlaceOrder = async () => {
     const order = orderRes.data.order;
     const orderNumber = order.order_number;
 
-    // 2. Create Razorpay Order from backend
-    const rpRes = await axiosClient.post("/payments/create-order/", {
-      order_number: orderNumber,
-    });
+    // 2. Create Razorpay order — will fail if no keys
+    let rpRes;
+
+    try {
+      rpRes = await axiosClient.post("/payments/create-order/", {
+        order_number: orderNumber,
+      });
+    } catch (err) {
+      // ⭐ FAILSAFE — no Razorpay keys
+      setError("Razorpay Keys Missing — Online Payment Disabled.");
+      return;
+    }
 
     const rpData = rpRes.data;
 
     if (!window.Razorpay) {
-      setError("Razorpay SDK not loaded. Please refresh the page.");
+      setError("Razorpay SDK not loaded.");
       return;
     }
 
@@ -176,7 +177,6 @@ const handlePlaceOrder = async () => {
       order_id: rpData.order_id,
       handler: async function (response) {
         try {
-          // 4. Verify payment
           await axiosClient.post("/payments/verify/", {
             order_number: orderNumber,
             razorpay_order_id: response.razorpay_order_id,
@@ -187,26 +187,19 @@ const handlePlaceOrder = async () => {
           clearCart();
           navigate(`/order/${orderNumber}`);
         } catch (err) {
-          console.error(err);
-          setError("Payment verification failed. If amount deducted, contact support.");
+          setError("Payment verification failed.");
         }
-      },
-      prefill: {
-        name: `${user.first_name} ${user.last_name}`.trim() || user.username,
-        email: user.email,
-        contact: selectedAddress?.phone || "",
-      },
-      notes: {
-        address: `${selectedAddress?.address_line1}, ${selectedAddress?.city}`,
-      },
-      theme: {
-        color: "#000000",
       },
     };
 
     const rzp = new window.Razorpay(options);
     rzp.open();
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Payment failed.");
+  }
+};
+
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -223,10 +216,7 @@ const handlePlaceOrder = async () => {
           <div className="border rounded p-4 shadow bg-white">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-semibold">Shipping Address</h2>
-              <Link
-                to="/addresses"
-                className="text-blue-600 underline text-sm"
-              >
+              <Link to="/addresses" className="text-blue-600 underline text-sm">
                 Manage Addresses
               </Link>
             </div>
