@@ -3,6 +3,8 @@ from django.conf import settings
 
 
 def get_razorpay_client():
+    print("🔥 KEY:", settings.RAZORPAY_KEY_ID)
+    print("🔥 SECRET:", settings.RAZORPAY_KEY_SECRET)
     """
     Razorpay client return karega (settings se key read karke).
     """

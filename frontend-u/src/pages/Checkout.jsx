@@ -168,29 +168,37 @@ export default function Checkout() {
     }
 
     // 3. Open Razorpay popup
-    const options = {
-      key: rpData.key,
-      amount: rpData.amount,
-      currency: rpData.currency,
-      name: rpData.name,
-      description: rpData.description,
-      order_id: rpData.order_id,
-      handler: async function (response) {
-        try {
-          await axiosClient.post("/payments/verify/", {
-            order_number: orderNumber,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
+   const options = {
+  key: rpData.key,
+  amount: rpData.amount,
+  currency: rpData.currency,
 
-          clearCart();
-          navigate(`/order/${orderNumber}`);
-        } catch (err) {
-          setError("Payment verification failed.");
-        }
-      },
-    };
+  name: "My E-commerce Store",
+  description: rpData.description,
+  order_id: rpData.order_id,
+
+  prefill: {
+    name: user?.full_name || "Test User",
+    email: user?.email || "test@example.com",
+    contact: selectedAddress?.phone || "9999999999",
+  },
+
+  theme: {
+    color: "#000000",
+  },
+
+  retry: {
+    enabled: true,
+    max_count: 1,
+  },
+
+  modal: {
+    ondismiss: function () {
+      console.log("Razorpay modal closed");
+    },
+  },
+};
+
 
     const rzp = new window.Razorpay(options);
     rzp.open();

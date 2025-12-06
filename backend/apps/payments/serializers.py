@@ -99,10 +99,13 @@ class RazorpayPaymentVerifySerializer(serializers.Serializer):
 # =====================================================
 # ✅ FINAL FIXED ADMIN PAYMENT SERIALIZER
 # =====================================================
+
+
 class AdminPaymentSerializer(serializers.ModelSerializer):
     order_number = serializers.CharField(source="order.order_number", read_only=True)
     username = serializers.CharField(source="user.username", read_only=True)
-    payment_id = serializers.SerializerMethodField()
+    # payment_id = serializers.SerializerMethodField()
+    payment_id = serializers.CharField(source="razorpay_payment_id", read_only=True)
 
     def get_payment_id(self, obj):
         """
