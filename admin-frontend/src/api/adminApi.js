@@ -18,6 +18,22 @@ export const getDashboardStats = () =>
 ============================================================ */
 export const getUsers = () => adminAxios.get("/admin/users/");
 
+// Single user detail
+export const getUserDetail = (id) =>
+  adminAxios.get(`/admin/users/${id}/`);
+
+// Block user
+export const blockUser = (id) =>
+  adminAxios.patch(`/admin/users/${id}/block/`);
+
+// Unblock user
+export const unblockUser = (id) =>
+  adminAxios.patch(`/admin/users/${id}/unblock/`);
+
+// Delete user
+export const deleteUser = (id) =>
+  adminAxios.delete(`/admin/users/${id}/`);
+
 /* ============================================================
    🧭 CATEGORIES
 ============================================================ */
@@ -111,6 +127,13 @@ export function deleteOrderItem(orderNumber, itemId) {
    💳 PAYMENTS
 ============================================================ */
 export const getPayments = () => adminAxios.get("/admin/payments/");
+
+export const getPaymentDetail = (id) =>
+  adminAxios.get(`/admin/payments/${id}/`);
+
+export const refundPayment = (id) =>
+  adminAxios.post(`/admin/payments/${id}/refund/`);
+
 
 /* ============================================================
    🏠 HOMEPAGE

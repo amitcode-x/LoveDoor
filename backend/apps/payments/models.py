@@ -1,3 +1,4 @@
+# apps/payments/models.py
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -5,6 +6,11 @@ from apps.orders.models import Order
 
 
 class Payment(models.Model):
+    METHOD_CHOICES = [
+        ("COD", "Cash on Delivery"),
+        ("RAZORPAY", "Razorpay"),
+    ]
+
     STATUS_CHOICES = [
         ("CREATED", "Created"),
         ("SUCCESS", "Success"),
@@ -16,13 +22,27 @@ class Payment(models.Model):
         on_delete=models.CASCADE,
         related_name="payments",
     )
+
     order = models.OneToOneField(
         Order,
         on_delete=models.CASCADE,
         related_name="payment",
     )
 
-    razorpay_order_id = models.CharField(max_length=100, unique=True)
+    # 🔥 NEW: which method user selected on checkout
+    method = models.CharField(
+        max_length=20,
+        choices=METHOD_CHOICES,
+        default="RAZORPAY",
+    )
+
+    # Razorpay fields (COD ke liye blank honge)
+    razorpay_order_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        unique=False,   # ⚠️ unique hata diya, taaki COD wala record bhi ho sake
+    )
     razorpay_payment_id = models.CharField(max_length=100, blank=True)
     razorpay_signature = models.CharField(max_length=255, blank=True)
 
@@ -44,4 +64,4 @@ class Payment(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Payment for {self.order.order_number} - {self.status}"
+        return f"Payment for {self.order.order_number} - {self.method} - {self.status}"

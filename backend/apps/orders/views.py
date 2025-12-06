@@ -4,7 +4,10 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from rest_framework.pagination import PageNumberPagination
+
+from apps.payments.models import Payment
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -18,6 +21,9 @@ from .serializers import (
 from django.shortcuts import get_object_or_404
 from reportlab.lib.units import mm
 
+# ⭐ ADD THIS IMPORT
+from apps.payments.models import Payment
+
 
 # ==========================
 # Pagination
@@ -29,17 +35,36 @@ class OrderPagination(PageNumberPagination):
 
 
 # ==========================
-# Create Order
+# Create Order (UPDATED)
 # ==========================
 class OrderCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        serializer = OrderCreateSerializer(data=request.data, context={"request": request})
+        serializer = OrderCreateSerializer(
+            data=request.data,
+            context={"request": request},
+        )
         serializer.is_valid(raise_exception=True)
+
+        # 🔥 Tumhara existing serializer save logic
         order = serializer.save()
+
+        # ⭐ ADD: Create Payment Record (Do not modify anything else)
+        Payment.objects.create(
+            user=request.user,
+            order=order,
+            method=order.payment_method,   # COD / RAZORPAY
+            amount=order.total_amount,
+            currency="INR",
+            status="CREATED",
+        )
+
         return Response(
-            {"message": "Order created successfully.", "order": OrderSerializer(order).data},
+            {
+                "message": "Order created successfully.",
+                "order": OrderSerializer(order).data,
+            },
             status=201,
         )
 
@@ -135,7 +160,6 @@ class OrderInvoiceView(APIView):
         Optional security: phone number check.
         """
 
-        # Optional: Phone number validation via GET
         phone = request.GET.get("phone", None)
 
         try:
@@ -143,7 +167,6 @@ class OrderInvoiceView(APIView):
         except Order.DoesNotExist:
             return Response({"error": "Order not found"}, status=404)
 
-        # Extra security (optional)
         if phone and phone != order.shipping_phone:
             return Response({"error": "Phone number mismatch"}, status=403)
 
@@ -194,7 +217,6 @@ class OrderInvoiceView(APIView):
 
         pdf.setFont("Helvetica", 12)
 
-        # Items loop
         for item in order.items.all():
             pdf.drawString(40, y, item.product_name[:28])
             pdf.drawString(240, y, str(item.quantity))
@@ -207,7 +229,7 @@ class OrderInvoiceView(APIView):
                 y = height - 40
                 pdf.setFont("Helvetica", 12)
 
-        # Total
+        # Totals
         y -= 20
         pdf.setFont("Helvetica-Bold", 12)
         pdf.drawString(300, y, "Subtotal:")
@@ -231,5 +253,7 @@ class OrderInvoiceView(APIView):
 
         buffer.seek(0)
         response = HttpResponse(buffer, content_type="application/pdf")
-        response["Content-Disposition"] = f'attachment; filename="invoice_{order_number}.pdf"'
+        response["Content-Disposition"] = (
+            f'attachment; filename="invoice_{order_number}.pdf"'
+        )
         return response

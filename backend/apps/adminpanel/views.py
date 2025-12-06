@@ -4,7 +4,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from apps.payments.models import Payment
+from apps.payments.serializers import AdminPaymentSerializer
 from apps.products.models import Category, Product
 from apps.orders.models import Order
 from .serializers import (
@@ -95,6 +96,43 @@ class AdminUserListView(generics.ListAPIView):
 
     def get_queryset(self):
         return User.objects.all().order_by("-date_joined")
+
+
+class AdminUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET /api/admin/users/<id>/
+    PATCH /api/admin/users/<id>/
+    DELETE /api/admin/users/<id>/
+    """
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = AdminUserSerializer
+    queryset = User.objects.all()
+
+
+class AdminBlockUserView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def patch(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            user.is_active = False
+            user.save()
+            return Response({"message": "User blocked"}, status=200)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+
+class AdminUnblockUserView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def patch(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            user.is_active = True
+            user.save()
+            return Response({"message": "User unblocked"}, status=200)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
 
 
 # -----------------------
@@ -404,3 +442,21 @@ class AdminFooterBrandView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class AdminPaymentListView(generics.ListAPIView):
+    """
+    GET /api/admin/payments/
+    Sari payments (COD + Razorpay) list hogi.
+    """
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = AdminPaymentSerializer
+
+    def get_queryset(self):
+        return Payment.objects.select_related("order", "user").order_by("-created_at")
+    
+class AdminPaymentDetailView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = AdminPaymentSerializer
+    queryset = Payment.objects.select_related("order", "user")
+    lookup_field = "id"

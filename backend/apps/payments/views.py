@@ -16,25 +16,9 @@ from .serializers import (
 from .utils import get_razorpay_client
 
 
-class RazorpayOrderCreateView(APIView):
-    """
-    POST /api/payments/create-order/
-    Body:
-    {
-      "order_number": "ORD2025..."
-    }
+# apps/payments/views.py
 
-    Response:
-    {
-      "key": "rzp_test_xxx",
-      "amount": 50000,
-      "currency": "INR",
-      "name": "Your Store Name",
-      "description": "Order ORD2025...",
-      "order_id": "order_xxx",
-      "order_number": "ORD2025..."
-    }
-    """
+class RazorpayOrderCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -52,7 +36,6 @@ class RazorpayOrderCreateView(APIView):
             )
 
         client = get_razorpay_client()
-
         amount_paise = int(Decimal(order.total_amount) * 100)
 
         razorpay_order = client.order.create(
@@ -60,27 +43,29 @@ class RazorpayOrderCreateView(APIView):
                 "amount": amount_paise,
                 "currency": "INR",
                 "receipt": order.order_number,
-                "payment_capture": 1,  # auto capture
+                "payment_capture": 1,
             }
         )
 
+        # 🔥 yahan pehle se hi Payment row honi chahiye (OrderCreateView se)
         payment, created = Payment.objects.get_or_create(
             order=order,
             defaults={
                 "user": request.user,
-                "razorpay_order_id": razorpay_order["id"],
+                "method": "RAZORPAY",
                 "amount": order.total_amount,
                 "currency": "INR",
                 "status": "CREATED",
             },
         )
 
-        if not created:
-            payment.razorpay_order_id = razorpay_order["id"]
-            payment.amount = order.total_amount
-            payment.currency = "INR"
-            payment.status = "CREATED"
-            payment.save()
+        # Always update Razorpay fields
+        payment.method = "RAZORPAY"
+        payment.razorpay_order_id = razorpay_order["id"]
+        payment.amount = order.total_amount
+        payment.currency = "INR"
+        payment.status = "CREATED"
+        payment.save()
 
         data = {
             "key": settings.RAZORPAY_KEY_ID,
@@ -93,7 +78,6 @@ class RazorpayOrderCreateView(APIView):
         }
 
         return Response(data, status=status.HTTP_200_OK)
-
 
 class RazorpayPaymentVerifyView(APIView):
     """

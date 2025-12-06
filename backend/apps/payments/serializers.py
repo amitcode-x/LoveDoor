@@ -93,3 +93,36 @@ class RazorpayPaymentVerifySerializer(serializers.Serializer):
         attrs["order"] = order
         attrs["payment"] = payment
         return attrs
+
+
+
+# =====================================================
+# ✅ FINAL FIXED ADMIN PAYMENT SERIALIZER
+# =====================================================
+class AdminPaymentSerializer(serializers.ModelSerializer):
+    order_number = serializers.CharField(source="order.order_number", read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
+    payment_id = serializers.SerializerMethodField()
+
+    def get_payment_id(self, obj):
+        """
+        COD → empty
+        Razorpay → obj.razorpay_payment_id
+        """
+        return obj.razorpay_payment_id or "-"
+
+    class Meta:
+        model = Payment
+        fields = [
+            "id",
+            "order_number",
+            "username",
+            "payment_id",
+            "method",
+            "amount",
+            "currency",
+            "status",
+            "razorpay_order_id",
+            "razorpay_payment_id",
+            "created_at",
+        ]

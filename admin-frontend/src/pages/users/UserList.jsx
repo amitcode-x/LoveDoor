@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+
+
+import { Link } from "react-router-dom";
+
 import { getUsers } from "../../api/adminApi";
 import Card from "../../components/UI/Card";
 import { Table, THead, TBody, Tr, Th, Td } from "../../components/UI/Table";
@@ -15,7 +19,6 @@ export default function UserList() {
       try {
         const res = await getUsers();
         setUsers(res.data.results || res.data);
-
       } catch (error) {
         console.error(error);
         setErr("Failed to load users.");
@@ -30,9 +33,7 @@ export default function UserList() {
     <div className="space-y-4">
       <div>
         <h1 className="text-lg font-semibold text-slate-50">Users</h1>
-        <p className="text-xs text-slate-400">
-          List of all registered users.
-        </p>
+        <p className="text-xs text-slate-400">List of all registered users.</p>
       </div>
 
       {err && (
@@ -77,6 +78,15 @@ export default function UserList() {
                   {u.date_joined
                     ? new Date(u.date_joined).toLocaleString()
                     : "-"}
+                </Td>
+
+                <Td>
+                  <Link
+                    to={`/users/${u.id}`}
+                    className="text-blue-400 hover:underline mr-3"
+                  >
+                    View
+                  </Link>
                 </Td>
               </Tr>
             ))

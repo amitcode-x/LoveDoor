@@ -14,6 +14,11 @@ from .views import (
     AdminOrderStatusUpdateView,
     AdminFooterBrandView , # agar already nahi hai
      AdminOrderItemUpdateDeleteView,
+     AdminBlockUserView,
+     AdminUnblockUserView,
+     AdminUserDetailView,
+     AdminPaymentListView,
+     AdminPaymentDetailView
  
 )
 
@@ -25,6 +30,12 @@ urlpatterns = [
 
     # Users
     path("users/", AdminUserListView.as_view(), name="users_list"),
+    
+
+    path("users/<int:pk>/block/", AdminBlockUserView.as_view()),
+    path("users/<int:pk>/unblock/", AdminUnblockUserView.as_view()),
+    path("users/<int:pk>/", AdminUserDetailView.as_view()),
+
 
     # Categories
     path("categories/", AdminCategoryListCreateView.as_view(), name="categories_list_create"),
@@ -38,6 +49,15 @@ urlpatterns = [
     path("orders/", AdminOrderListView.as_view(), name="orders_list"),
     path("orders/<str:order_number>/", AdminOrderDetailView.as_view(), name="order_detail"),
     path("orders/<str:order_number>/status/",AdminOrderStatusUpdateView.as_view(),name="order_status_update"),
+    
+    #payments
+    
+    path("payments/",AdminPaymentListView.as_view(),name="payment_list"),
+     path("payments/<int:id>/", AdminPaymentDetailView.as_view(), name="payment_detail"),  # ⭐ NEW
+
+    
+
+
     
     path("orders/<str:order_number>/items/<int:item_id>/",AdminOrderItemUpdateDeleteView.as_view(),name="order_item_update_delete"),
     

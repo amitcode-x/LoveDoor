@@ -22,7 +22,9 @@ import CategoryForm from "../pages/categories/CategoryForm";
 
 // Users & Payments
 import UserList from "../pages/users/UserList";
+import UserDetail from "../pages/users/UserDetail";
 import PaymentList from "../pages/payments/PaymentList";
+import PaymentDetail from "../pages/payments/PaymentDetail";
 
 // Homepage & Footer
 import ManageHomepage from "../pages/homepage/ManageHomepage";
@@ -78,9 +80,12 @@ export default function AppRoutes() {
 
         {/* Users */}
         <Route path="users" element={<UserList />} />
+        <Route path="users/:id" element={<UserDetail />} />
+
 
         {/* Payments */}
         <Route path="payments" element={<PaymentList />} />
+        <Route path="payments/:id" element={<PaymentDetail />} />   // ⭐ ADD THIS
 
         {/* Homepage */}
         <Route path="homepage" element={<ManageHomepage />} />

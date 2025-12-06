@@ -6,8 +6,22 @@ from apps.orders.models import Order, OrderItem
 from apps.footer.models import FooterBrandInfo
 
 
+class AdminUserOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            "id",
+            "order_number",
+            "status",
+            "total_amount",
+            "created_at",
+        ]
+
+
 
 class AdminUserSerializer(serializers.ModelSerializer):
+    orders = AdminUserOrderSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
         fields = [
@@ -19,7 +33,11 @@ class AdminUserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "date_joined",
+            "orders",
         ]
+
+        
+
 
 
 class AdminCategorySerializer(serializers.ModelSerializer):
