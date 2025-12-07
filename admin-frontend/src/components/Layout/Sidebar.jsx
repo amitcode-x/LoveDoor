@@ -27,6 +27,7 @@ const menuItems = [
   // HOMEPAGE
   { to: "/homepage", label: "Homepage", icon: Home },
   { to: "/homepage/static-hero", label: "Static Hero", icon: Home },
+    { to: "/admin/homepage/hero-slides", label: "Hero Slides", icon: Home },
 
 
   // **BOTTOM NAV CATEGORIES (NEW)**

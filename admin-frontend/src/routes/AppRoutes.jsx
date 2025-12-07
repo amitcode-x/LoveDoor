@@ -30,8 +30,9 @@ import PaymentDetail from "../pages/payments/PaymentDetail";
 import ManageHomepage from "../pages/homepage/ManageHomepage";
 
 import StaticHeroEdit from "../pages/homepage/StaticHeroEdit";
-
-
+import HeroSlideCreate from "../pages/homepage/HeroSlideCreate";
+import HeroSlidesList from "../pages/homepage/HeroSlidesList";
+import HeroSlideEdit from "../pages/homepage/HeroSlideEdit";
 
 import ManageFooter from "../pages/footer/ManageFooter";
 import ManageNewsletter from "../pages/footer/ManageNewsletter";
@@ -68,7 +69,6 @@ export default function AppRoutes() {
       >
         {/* Dashboard */}
         <Route index element={<Dashboard />} />
-
         {/* Orders */}
         <Route path="orders" element={<OrderList />} />
         <Route path="orders/:orderNumber" element={<OrderDetail />} />
@@ -76,27 +76,32 @@ export default function AppRoutes() {
           path="orders/:orderNumber/status"
           element={<OrderStatusUpdate />}
         />
-
         {/* Products */}
         <Route path="products" element={<ProductList />} />
         <Route path="products/create" element={<ProductCreate />} />
         <Route path="products/:id/edit" element={<ProductEdit />} />
         <Route path="products/:id/view" element={<ProductView />} />
-
         {/* Users */}
         <Route path="users" element={<UserList />} />
         <Route path="users/:id" element={<UserDetail />} />
-
-
         {/* Payments */}
         <Route path="payments" element={<PaymentList />} />
-        <Route path="payments/:id" element={<PaymentDetail />} />   // ⭐ ADD THIS
-
+        <Route path="payments/:id" element={<PaymentDetail />} /> // ⭐ ADD THIS
         {/* Homepage */}
         <Route path="homepage" element={<ManageHomepage />} />
         <Route path="homepage/static-hero" element={<StaticHeroEdit />} />
-
-
+        <Route
+          path="/admin/homepage/hero-slides"
+          element={<HeroSlidesList />}
+        />
+        <Route
+          path="/admin/homepage/hero-slides/create"
+          element={<HeroSlideCreate />}
+        />
+        <Route
+          path="/admin/homepage/hero-slides/:id/edit"
+          element={<HeroSlideEdit />}
+        />
         {/* Footer sections */}
         <Route path="footer" element={<ManageFooter />} />
         <Route path="newsletter" element={<ManageNewsletter />} />
@@ -112,7 +117,6 @@ export default function AppRoutes() {
           element={<ManageShippingPolicy />}
         />
         <Route path="footer/return-refund" element={<ManageReturnRefund />} />
-
         {/* Categories */}
         <Route path="categories" element={<CategoryList />} />
         <Route path="categories/create" element={<CategoryForm />} />

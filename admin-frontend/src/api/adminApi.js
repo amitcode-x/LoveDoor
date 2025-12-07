@@ -153,6 +153,30 @@ export const updateStaticHero = (data) =>
   });
 
 
+  // =====================
+// HERO SLIDES ADMIN API
+// =====================
+
+export const getHeroSlides = () =>
+  adminAxios.get("/admin/homepage/hero-slides/");
+
+export const createHeroSlide = (data) =>
+  adminAxios.post("/admin/homepage/hero-slides/", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const getHeroSlideDetail = (id) =>
+  adminAxios.get(`/admin/homepage/hero-slides/${id}/`);
+
+export const updateHeroSlide = (id, data) =>
+  adminAxios.put(`/admin/homepage/hero-slides/${id}/`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const deleteHeroSlide = (id) =>
+  adminAxios.delete(`/admin/homepage/hero-slides/${id}/`);
+
+
 
 
 

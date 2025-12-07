@@ -6,12 +6,16 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from apps.adminpanel.permissions import IsAdminOrStaff
 
-from .models import BottomNavCategory, StaticHero
-from .serializers import BottomNavCategorySerializer, StaticHeroAdminSerializer
+from .models import (BottomNavCategory, StaticHero,HeroSlide,)
+from .serializers import (BottomNavCategorySerializer, StaticHeroAdminSerializer,HeroSlideAdminSerializer)
 
 
-from .models import BottomNavCategory
-from .serializers import BottomNavCategorySerializer
+
+
+
+
+
+
 
 
 class AdminBottomNavListCreateView(generics.ListCreateAPIView):
@@ -73,3 +77,20 @@ class AdminStaticHeroView(APIView):
         serializer.save()
 
         return Response(serializer.data)
+
+
+
+class AdminHeroSlideListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = HeroSlideAdminSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_queryset(self):
+        return HeroSlide.objects.all().order_by("sort_order", "id")
+
+
+class AdminHeroSlideDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = HeroSlideAdminSerializer
+    parser_classes = [MultiPartParser, FormParser]
+    queryset = HeroSlide.objects.all()

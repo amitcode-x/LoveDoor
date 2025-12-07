@@ -93,6 +93,22 @@ class HeroSlideSerializer(serializers.ModelSerializer):
             return obj.image_url
         return None
 
+class HeroSlideAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HeroSlide
+        fields = [
+            "id",
+            "title",
+            "text",
+            "cta_text",
+            "cta_link",
+            "image",       # file upload
+            "image_url",
+            "sort_order",
+            "is_active",
+        ]
+        read_only_fields = ["id", "cta_link"]
+
 
 # ===============================
 # Featured Offers
