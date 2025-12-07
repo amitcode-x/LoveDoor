@@ -145,3 +145,61 @@ class RazorpayPaymentVerifyView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+
+# apps/payments/views.py
+
+class RefundPaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, payment_id):
+        try:
+            payment = Payment.objects.get(id=payment_id)
+        except Payment.DoesNotExist:
+            return Response({"error": "Payment not found."}, status=404)
+
+        # Only Razorpay payments can be refunded
+        if payment.method != "RAZORPAY":
+            return Response(
+                {"error": "Only Razorpay payments can be refunded."},
+                status=400,
+            )
+
+        # Only successful payments can be refunded
+        if payment.status != "SUCCESS":
+            return Response(
+                {"error": "Payment is not successful, cannot refund."},
+                status=400,
+            )
+
+        client = get_razorpay_client()
+
+        try:
+            refund = client.payment.refund(
+                payment.razorpay_payment_id,
+                {"amount": int(payment.amount * 100)}   # amount in paise
+            )
+        except Exception as e:
+            return Response(
+                {"error": "Refund failed.", "details": str(e)},
+                status=400,
+            )
+
+        # Update database
+        payment.status = "REFUNDED"
+        payment.save(update_fields=["status"])
+
+        # Update Order also
+        payment.order.status = "REFUNDED"
+        payment.order.payment_status = "REFUNDED"
+        payment.order.save(update_fields=["status", "payment_status"])
+
+        return Response(
+            {
+                "message": "Payment refunded successfully.",
+                "refund_id": refund.get("id"),
+                "status": "REFUNDED",
+            },
+            status=200,
+        )

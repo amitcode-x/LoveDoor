@@ -47,14 +47,18 @@ class OrderCreateView(APIView):
         )
         serializer.is_valid(raise_exception=True)
 
-        # 🔥 Tumhara existing serializer save logic
+        # 🔥 Serializer saves the order
         order = serializer.save()
 
-        # ⭐ ADD: Create Payment Record (Do not modify anything else)
+        # ⭐ NEW: Set order status to CONFIRMED immediately after creation
+        order.status = "CONFIRMED"
+        order.save(update_fields=["status"])
+
+        # ⭐ Payment record (KEEP AS IT IS)
         Payment.objects.create(
             user=request.user,
             order=order,
-            method=order.payment_method,   # COD / RAZORPAY
+            method=order.payment_method,   # COD or RAZORPAY
             amount=order.total_amount,
             currency="INR",
             status="CREATED",

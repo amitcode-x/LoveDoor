@@ -13,12 +13,41 @@ export default function OrderDetails() {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [productThumbs, setProductThumbs] = useState({});
 
-  const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
 
-  const getStepIndex = (status) => {
-    const idx = steps.indexOf(status);
-    return idx === -1 ? 0 : idx;
-  };
+const getVisibleSteps = () => {
+  if (!order) return [];
+
+  const isCancelled = order.status === "CANCELLED";
+  const isRefunded = order.payment_status === "REFUNDED";
+
+  // 🔥 Normal flow: PENDING → CONFIRMED → PROCESSING → SHIPPED → DELIVERED
+  if (!isCancelled && !isRefunded) {
+    return ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
+  }
+
+  // 🔥 COD Cancelled → REFUND nahi hota
+  if (isCancelled && !isRefunded) {
+    return ["PENDING", "CONFIRMED", "CANCELLED"];
+  }
+
+  // 🔥 Online payment → Cancel + Refunded
+  if (isRefunded) {
+    return ["PENDING", "CONFIRMED", "CANCELLED", "REFUNDED"];
+  }
+
+  return [];
+};
+
+
+
+const steps = getVisibleSteps();
+
+
+const getStepIndex = (status) => {
+  const idx = steps.indexOf(status);
+  return idx === -1 ? 0 : idx;
+};
+
 
   useEffect(() => {
     if (!user) {

@@ -132,7 +132,8 @@ export const getPaymentDetail = (id) =>
   adminAxios.get(`/admin/payments/${id}/`);
 
 export const refundPayment = (id) =>
-  adminAxios.post(`/admin/payments/${id}/refund/`);
+  adminAxios.post(`/payments/refund/${id}/`);
+
 
 
 /* ============================================================
