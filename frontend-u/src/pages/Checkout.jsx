@@ -11,18 +11,18 @@ export default function Checkout() {
 
   const [addresses, setAddresses] = useState([]);
   const [addressId, setAddressId] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD"); // "COD" | "RAZORPAY"
+  const [paymentMethod, setPaymentMethod] = useState("COD"); 
   const [loading, setLoading] = useState(true);
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
 
-  // Selected address object
+  // SELECTED ADDRESS
   const selectedAddress = useMemo(() => {
     if (!Array.isArray(addresses)) return null;
     return addresses.find((a) => a.id === Number(addressId));
   }, [addresses, addressId]);
 
-  // Load addresses on mount
+  // LOAD ADDRESSES
   useEffect(() => {
     axiosClient
       .get("/auth/addresses/")
@@ -33,7 +33,6 @@ export default function Checkout() {
 
         setAddresses(list);
 
-        // auto-select first address
         if (list.length > 0) {
           setAddressId(list[0].id);
         }
@@ -47,7 +46,7 @@ export default function Checkout() {
       quantity: item.quantity,
     }));
 
-  // User not logged in
+  // NOT LOGGED IN
   if (!user) {
     return (
       <div className="p-6 text-center text-xl">
@@ -60,7 +59,7 @@ export default function Checkout() {
     );
   }
 
-  // No items in cart
+  // EMPTY CART
   if (cart.length === 0) {
     return (
       <div className="p-6 text-center text-xl">
@@ -72,45 +71,33 @@ export default function Checkout() {
     );
   }
 
-  // MAIN handler - Place order btn
+  // MAIN PLACE ORDER HANDLER
   const handlePlaceOrder = async () => {
     try {
       setError("");
 
-      if (!addressId) {
-        setError("Please select an address.");
-        return;
-      }
+      if (!addressId) return setError("Please select an address.");
+      if (!selectedAddress) return setError("Address not found.");
+      if (totalAmount <= 0) return setError("Invalid total amount.");
 
-      if (!selectedAddress) {
-        setError("Selected address not found.");
-        return;
-      }
-
-      if (totalAmount <= 0) {
-        setError("Invalid total amount.");
-        return;
-      }
-
-      // 🔥 If Razorpay is selected → DO NOTHING, only show coming soon
       if (paymentMethod === "RAZORPAY") {
         setPlacing(true);
         await handleRazorpayOrder();
         return;
       }
 
-      // COD → proceed with actual order
+      // COD FLOW
       setPlacing(true);
       await handleCodOrder();
     } catch (err) {
       console.error(err);
-      setError("Something went wrong. Try again.");
+      setError("Something went wrong.");
     } finally {
       setPlacing(false);
     }
   };
 
-  // COD flow
+  // COD ORDER FLOW
   const handleCodOrder = async () => {
     const itemsData = buildOrderItems();
 
@@ -121,106 +108,112 @@ export default function Checkout() {
       notes: "",
     });
 
-    // 👇 Show success message
-    setError("Order Successfully Placed!");
+    setError("Order Placed Successfully!");
 
-    // Clean cart AFTER message
     setTimeout(() => {
       clearCart();
       navigate(`/order/${res.data.order.order_number}`);
-    }, 1200); // 1.2 seconds delay for message visibility
+    }, 1200);
   };
 
-  // Razorpay flow
- const handleRazorpayOrder = async () => {
-  try {
-    const itemsData = buildOrderItems();
-
-    // 1. Create backend order
-    const orderRes = await axiosClient.post("/orders/create/", {
-      shipping_address_id: addressId,
-      payment_method: "RAZORPAY",
-      items: itemsData,
-      notes: "",
-    });
-
-    const order = orderRes.data.order;
-    const orderNumber = order.order_number;
-
-    // 2. Create Razorpay order — will fail if no keys
-    let rpRes;
-
+  // RAZORPAY FLOW — FIXED VERSION
+  const handleRazorpayOrder = async () => {
     try {
-      rpRes = await axiosClient.post("/payments/create-order/", {
-        order_number: orderNumber,
+      const itemsData = buildOrderItems();
+
+      // CREATE ORDER
+      const orderRes = await axiosClient.post("/orders/create/", {
+        shipping_address_id: addressId,
+        payment_method: "RAZORPAY",
+        items: itemsData,
+        notes: "",
       });
+
+      const order = orderRes.data.order;
+      const orderNumber = order.order_number;
+
+      // CREATE RAZORPAY ORDER
+      let rpRes;
+      try {
+        rpRes = await axiosClient.post("/payments/create-order/", {
+          order_number: orderNumber,
+        });
+      } catch {
+        return setError("Razorpay keys missing.");
+      }
+
+      const rpData = rpRes.data;
+
+      if (!window.Razorpay) return setError("Razorpay SDK not loaded.");
+
+      // RAZORPAY OPTIONS
+      const options = {
+        key: rpData.key,
+        amount: rpData.amount,
+        currency: rpData.currency,
+        name: "My E-commerce Store",
+        description: rpData.description,
+        order_id: rpData.order_id,
+
+        prefill: {
+          name: user?.full_name || "Test User",
+          email: user?.email || "test@example.com",
+          contact: selectedAddress?.phone || "9999999999",
+        },
+
+        theme: { color: "#000000" },
+
+        retry: { enabled: true, max_count: 1 },
+
+        modal: {
+          ondismiss: function () {
+            console.log("Payment popup closed");
+          },
+        },
+
+        // 🔥 IMPORTANT: VERIFY PAYMENT HANDLER
+        handler: async function (response) {
+          try {
+            const verifyRes = await axiosClient.post("/payments/verify/", {
+              order_number: orderNumber,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            console.log("🔥 RZP RESPONSE:", response);
+
+            console.log("VERIFY SUCCESS:", verifyRes.data);
+
+            clearCart();
+            navigate(`/order/${orderNumber}?paid=true`);
+          } catch (err) {
+            console.error("Verify failed:", err);
+            setError("Payment verification failed.");
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
-      // ⭐ FAILSAFE — no Razorpay keys
-      setError("Razorpay Keys Missing — Online Payment Disabled.");
-      return;
+      console.error(err);
+      setError("Payment failed.");
     }
-
-    const rpData = rpRes.data;
-
-    if (!window.Razorpay) {
-      setError("Razorpay SDK not loaded.");
-      return;
-    }
-
-    // 3. Open Razorpay popup
-   const options = {
-  key: rpData.key,
-  amount: rpData.amount,
-  currency: rpData.currency,
-
-  name: "My E-commerce Store",
-  description: rpData.description,
-  order_id: rpData.order_id,
-
-  prefill: {
-    name: user?.full_name || "Test User",
-    email: user?.email || "test@example.com",
-    contact: selectedAddress?.phone || "9999999999",
-  },
-
-  theme: {
-    color: "#000000",
-  },
-
-  retry: {
-    enabled: true,
-    max_count: 1,
-  },
-
-  modal: {
-    ondismiss: function () {
-      console.log("Razorpay modal closed");
-    },
-  },
-};
-
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  } catch (err) {
-    console.error(err);
-    setError("Payment failed.");
-  }
-};
-
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">Checkout</h1>
 
       {error && (
-        <p className="mb-4 text-center text-green-600 font-medium">{error}</p>
+        <p className="mb-4 text-center text-red-600 font-medium">{error}</p>
       )}
 
       <div className="grid md:grid-cols-3 gap-6">
-        {/* Left: Address & Payment */}
+        {/* LEFT: Address + Payment */}
         <div className="md:col-span-2 space-y-6">
-          {/* Addresses */}
+          {/* ADDRESSES */}
           <div className="border rounded p-4 shadow bg-white">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-semibold">Shipping Address</h2>
@@ -235,7 +228,7 @@ export default function Checkout() {
               <p>
                 No addresses found.{" "}
                 <Link to="/addresses" className="text-blue-600 underline">
-                  Add a new address
+                  Add one
                 </Link>
               </p>
             ) : (
@@ -273,7 +266,7 @@ export default function Checkout() {
             )}
           </div>
 
-          {/* Payment Method */}
+          {/* PAYMENT METHOD */}
           <div className="border rounded p-4 shadow bg-white">
             <h2 className="text-xl font-semibold mb-3">Payment Method</h2>
 
@@ -301,7 +294,7 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* Right: Order Summary */}
+        {/* RIGHT: ORDER SUMMARY */}
         <div className="border rounded p-4 shadow bg-white">
           <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
 
