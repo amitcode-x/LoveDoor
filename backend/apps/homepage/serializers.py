@@ -41,6 +41,34 @@ class StaticHeroSerializer(serializers.ModelSerializer):
 
 
 # ===============================
+# Static Hero - ADMIN
+# ===============================
+class StaticHeroAdminSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(required=True)
+    subtitle = serializers.CharField(required=False, allow_blank=True)
+    button_text = serializers.CharField(required=False)
+    image = serializers.ImageField(required=False, allow_null=True)
+    image_url = serializers.CharField(required=False, allow_blank=True)
+    is_active = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = StaticHero
+        fields = [
+            "id",
+            "title",
+            "subtitle",
+            "button_text",
+            "button_link",
+            "image",
+            "image_url",
+            "is_active",
+        ]
+        read_only_fields = ["id", "button_link"]
+
+
+
+
+# ===============================
 # Hero Slides
 # ===============================
 class HeroSlideSerializer(serializers.ModelSerializer):

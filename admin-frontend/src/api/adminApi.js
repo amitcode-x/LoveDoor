@@ -143,6 +143,20 @@ export const getHomepageContent = () => adminAxios.get("/admin/homepage/");
 export const updateHomepageContent = (data) =>
   adminAxios.put("/admin/homepage/", data);
 
+
+export const getStaticHero = () =>
+  adminAxios.get("/admin/homepage/static-hero/");
+
+export const updateStaticHero = (data) =>
+  adminAxios.put("/admin/homepage/static-hero/", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+
+
+
+
+
 /* ============================================================
    🦶 FOOTER : BRAND
 ============================================================ */

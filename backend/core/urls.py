@@ -41,6 +41,11 @@ urlpatterns = [
     path("api/admin/footer/", include("apps.footer.urls_admin", namespace="footer_admin")),
     
     path("api/admin/homepage/", include("apps.homepage.urls_admin", namespace="homepage_admin")),
+    
+    
+    
+    path("api/admin/homepage/", include("apps.homepage.urls_admin")),
+
 
 
 ]

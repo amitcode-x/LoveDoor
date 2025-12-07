@@ -28,6 +28,11 @@ import PaymentDetail from "../pages/payments/PaymentDetail";
 
 // Homepage & Footer
 import ManageHomepage from "../pages/homepage/ManageHomepage";
+
+import StaticHeroEdit from "../pages/homepage/StaticHeroEdit";
+
+
+
 import ManageFooter from "../pages/footer/ManageFooter";
 import ManageNewsletter from "../pages/footer/ManageNewsletter";
 import ManageSocialLinks from "../pages/footer/ManageSocialLinks";
@@ -89,6 +94,8 @@ export default function AppRoutes() {
 
         {/* Homepage */}
         <Route path="homepage" element={<ManageHomepage />} />
+        <Route path="homepage/static-hero" element={<StaticHeroEdit />} />
+
 
         {/* Footer sections */}
         <Route path="footer" element={<ManageFooter />} />
