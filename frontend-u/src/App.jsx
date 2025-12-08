@@ -35,6 +35,10 @@ import SiteMap from "./pages/footer/SiteMap";
 
 import PaymentMethods from "./pages/footer/PaymentMethods";
 
+import VerifyOTP from "./pages/VerifyOTP";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 // ⭐ SCROLL TO TOP COMPONENT
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -72,6 +76,9 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Orders */}
         <Route path="/my-orders" element={<MyOrders />} />

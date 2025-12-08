@@ -7,7 +7,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    username: "",
+    identifier: "",
     password: "",
   });
 
@@ -18,55 +18,45 @@ export default function Login() {
     setError("");
 
     try {
-      await login(form.username, form.password);
-      navigate("/"); // login successful
+      await login(form.identifier, form.password);
+      navigate("/");
     } catch (err) {
-      setError("Invalid username or password");
+      setError("Invalid email/username or password");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh]">
-      <form
-        onSubmit={handleSubmit}
-        className="w-96 border p-6 rounded shadow-md bg-white"
-      >
+    <div className="flex justify-center items-center min-h-[80vh] px-4">
+      <form className="w-full max-w-md border p-6 rounded-lg shadow bg-white" onSubmit={handleSubmit}>
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
 
-        {error && (
-          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
 
-        <div className="mb-3">
-          <label className="block font-medium mb-1">Username</label>
-          <input
-            type="text"
-            className="border w-full p-2 rounded"
-            value={form.username}
-            onChange={(e) =>
-              setForm({ ...form, username: e.target.value })
-            }
-            required
-          />
+        <label className="font-medium">Email or Username</label>
+        <input
+          type="text"
+          className="border w-full p-2 rounded mt-1"
+          value={form.identifier}
+          onChange={(e) => setForm({ ...form, identifier: e.target.value })}
+          required
+        />
+
+        <label className="font-medium mt-3 block">Password</label>
+        <input
+          type="password"
+          className="border w-full p-2 rounded mt-1"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          required
+        />
+
+        <div className="mt-2 text-right">
+          <Link to="/forgot-password" className="text-blue-600 text-sm underline">
+            Forgot Password?
+          </Link>
         </div>
 
-        <div className="mb-3">
-          <label className="block font-medium mb-1">Password</label>
-          <input
-            type="password"
-            className="border w-full p-2 rounded"
-            value={form.password}
-            onChange={(e) =>
-              setForm({ ...form, password: e.target.value })
-            }
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-black text-white py-2 rounded mt-3"
-        >
+        <button className="w-full bg-black text-white py-2 rounded mt-4 hover:bg-gray-900 transition">
           Login
         </button>
 
