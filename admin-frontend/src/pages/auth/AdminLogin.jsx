@@ -3,7 +3,12 @@ import { useAuth } from "../../auth/useAuth";
 
 export default function AdminLogin() {
   const { login } = useAuth();
-  const [form, setForm] = useState({ username: "", password: "" });
+
+  const [form, setForm] = useState({
+    identifier: "",   // ⭐ Username or Email dono yahan ayega
+    password: "",
+  });
+
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
@@ -11,10 +16,15 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      await login(form);
-      window.location.href = "/";
+      // Backend expects "identifier"
+      await login({
+        username: form.identifier, // ⭐ send as username because context converts it to identifier
+        password: form.password,
+      });
+
+      window.location.href = "/"; // success redirect
     } catch (err) {
-      setError("Invalid credentials or not an admin");
+      setError("Invalid credentials or not an admin user");
     }
   };
 
@@ -22,31 +32,47 @@ export default function AdminLogin() {
     <div className="flex items-center justify-center h-screen bg-gray-900">
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 shadow-lg p-8 rounded-lg w-96"
+        className="bg-gray-800 shadow-lg p-8 rounded-lg w-96 border border-gray-700"
       >
-        <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
+        <h2 className="text-2xl font-bold mb-4 text-white text-center">
+          Admin Login
+        </h2>
 
-        {error && <p className="text-red-500 mb-3">{error}</p>}
+        {error && (
+          <p className="text-red-400 text-sm mb-3 text-center">{error}</p>
+        )}
 
+        {/* Identifier */}
+        <label className="text-gray-300 text-sm mb-1 block">
+          Email or Username
+        </label>
         <input
           type="text"
-          placeholder="Username"
-          className="border p-2 w-full mb-4"
-          value={form.username}
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
+          placeholder="admin@example.com"
+          className="border border-gray-600 bg-gray-700 text-white p-2 w-full mb-4 rounded"
+          value={form.identifier}
+          onChange={(e) =>
+            setForm({ ...form, identifier: e.target.value })
+          }
+          required
         />
 
+        {/* Password */}
+        <label className="text-gray-300 text-sm mb-1 block">Password</label>
         <input
           type="password"
-          placeholder="Password"
-          className="border p-2 w-full mb-4"
+          placeholder="••••••••"
+          className="border border-gray-600 bg-gray-700 text-white p-2 w-full mb-4 rounded"
           value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, password: e.target.value })
+          }
+          required
         />
 
         <button
           type="submit"
-          className="w-full bg-black text-white py-2 rounded-lg"
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg transition"
         >
           Login
         </button>

@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from .views_auth import LoginWithEmailOrUsername
+from .views_google import GoogleLoginView
 
 from .views import (
     RegisterView,
@@ -36,6 +37,7 @@ path("forgot-password/", ForgotPasswordView.as_view(), name="forgot_password"),
 path("verify-otp/", VerifyOTPView.as_view(), name="verify_otp"),
 path("reset-password/", ResetPasswordView.as_view(), name="reset_password"),
 path("resend-otp/", ResendOTPView.as_view(), name="resend_otp"),
+ path("google-login/", GoogleLoginView.as_view(), name="google_login"),
 
 
 ]

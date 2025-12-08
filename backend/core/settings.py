@@ -28,6 +28,9 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 NEWSLETTER_ADMIN_EMAIL = os.getenv("NEWSLETTER_ADMIN_EMAIL")
 
+# ⭐ ADD THIS → LOAD GOOGLE CLIENT ID FROM .env
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
 # --------------------------------------------
 # DEBUG & ALLOWED HOSTS
 # --------------------------------------------
@@ -159,8 +162,6 @@ SIMPLE_JWT = {
 # EMAIL SETTINGS
 # --------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# settings.py
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587

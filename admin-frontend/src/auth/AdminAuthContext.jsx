@@ -7,9 +7,9 @@ export default function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ------------------------------
+  // ---------------------------------------------
   // Load admin on page refresh
-  // ------------------------------
+  // ---------------------------------------------
   useEffect(() => {
     async function load() {
       const token = localStorage.getItem("admin_access_token");
@@ -44,37 +44,44 @@ export default function AdminAuthProvider({ children }) {
     load();
   }, []);
 
-  // ------------------------------
-  // Admin Login
-  // ------------------------------
+  // ---------------------------------------------
+  // FIXED ADMIN LOGIN  ⭐⭐⭐⭐⭐
+  // ---------------------------------------------
   const login = async ({ username, password }) => {
-    // 1) Login → Token get
-    const res = await adminAxios.post("/auth/login/", { username, password });
+    // backend expects "identifier", NOT "username"
+    const payload = {
+      identifier: username, // email OR username both accepted
+      password: password
+    };
 
-    const { access, refresh } = res.data || {};
-    if (!access) throw new Error("Login failed: no access token received");
+    // 1) Login → Get Tokens
+    const res = await adminAxios.post("/auth/login/", payload);
 
-    localStorage.setItem("admin_access_token", access);
-    if (refresh) {
-      localStorage.setItem("admin_refresh_token", refresh);
+    const tokens = res.data?.tokens;
+    if (!tokens?.access) {
+      throw new Error("Login failed: No token received");
     }
 
-    // 2) Get profile + staff check
+    localStorage.setItem("admin_access_token", tokens.access);
+    localStorage.setItem("admin_refresh_token", tokens.refresh);
+
+    // 2) Fetch Admin Profile
     const meRes = await adminAxios.get("/auth/me/");
 
     if (!meRes.data?.is_staff) {
+      // Not an admin
       localStorage.removeItem("admin_access_token");
       localStorage.removeItem("admin_refresh_token");
-      throw new Error("You are not an admin/staff user");
+      throw new Error("Access denied — Not an admin account");
     }
 
     setAdmin(meRes.data);
     localStorage.setItem("admin_user", JSON.stringify(meRes.data));
   };
 
-  // ------------------------------
+  // ---------------------------------------------
   // Logout
-  // ------------------------------
+  // ---------------------------------------------
   const logout = () => {
     localStorage.removeItem("admin_access_token");
     localStorage.removeItem("admin_refresh_token");
