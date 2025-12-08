@@ -197,6 +197,16 @@ export const deleteFeaturedOffer = (id) =>
   adminAxios.delete(`/admin/homepage/featured-offers/${id}/`);
 
 
+/* ============================================================
+   🌟 SECONDARY HERO
+============================================================ */
+
+export const getSecondaryHero = () =>
+  adminAxios.get("/admin/homepage/secondary-hero/");
+
+export const updateSecondaryHero = (data) =>
+  adminAxios.put("/admin/homepage/secondary-hero/", data);
+
 
 
 /* ============================================================

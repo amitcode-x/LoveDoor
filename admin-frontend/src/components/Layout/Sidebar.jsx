@@ -29,6 +29,8 @@ const menuItems = [
   { to: "/homepage/static-hero", label: "Static Hero", icon: Home },
     { to: "/admin/homepage/hero-slides", label: "Hero Slides", icon: Home },
     { to: "/homepage/featured-offers", label: "Featured Offers", icon: Home },
+    { to: "/homepage/secondary-hero", label: "Secondary Hero", icon: Home },
+
 
 
 

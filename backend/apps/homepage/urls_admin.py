@@ -5,8 +5,9 @@ from .views_admin import (
     AdminStaticHeroView,
     AdminHeroSlideDetailView,
     AdminHeroSlideListCreateView,
-        AdminFeaturedOfferListCreateView,
+    AdminFeaturedOfferListCreateView,
     AdminFeaturedOfferDetailView,
+    AdminSecondaryHeroView
 )
 
 app_name = "homepage_admin"
@@ -23,4 +24,8 @@ urlpatterns = [
      # ⭐ Featured Offers
     path("featured-offers/", AdminFeaturedOfferListCreateView.as_view()),
     path("featured-offers/<int:pk>/", AdminFeaturedOfferDetailView.as_view()),
+    
+     # ⭐ secondary NEW
+    path("secondary-hero/", AdminSecondaryHeroView.as_view()),
+
 ]

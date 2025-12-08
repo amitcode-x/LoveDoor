@@ -6,8 +6,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from apps.adminpanel.permissions import IsAdminOrStaff
 
-from .models import (BottomNavCategory, StaticHero,HeroSlide,FeaturedOffer)
-from .serializers import (BottomNavCategorySerializer, StaticHeroAdminSerializer,HeroSlideAdminSerializer,FeaturedOfferAdminSerializer,)
+from .models import (BottomNavCategory, StaticHero,HeroSlide,FeaturedOffer,SecondaryHero)
+from .serializers import (BottomNavCategorySerializer, StaticHeroAdminSerializer,HeroSlideAdminSerializer,FeaturedOfferAdminSerializer,SecondaryHeroAdminSerializer)
 
 
 
@@ -120,3 +120,44 @@ class AdminFeaturedOfferDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FeaturedOfferAdminSerializer
     parser_classes = [MultiPartParser, FormParser]
     queryset = FeaturedOffer.objects.all()
+    
+    
+class AdminSecondaryHeroView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self):
+        hero, created = SecondaryHero.objects.get_or_create(
+            id=1,
+            defaults={
+                "title": "Quality Essentials",
+                "description": "Top rated products handpicked for you.",
+                "button_text": "Browse Essentials",
+                "button_link": "/shop",
+                "image_url": "",
+                "is_active": True,
+            },
+        )
+
+        # button_link fix if empty
+        if not hero.button_link:
+            hero.button_link = "/shop"
+            hero.save()
+
+        return hero
+
+    def get(self, request):
+        hero = self.get_object()
+        return Response(SecondaryHeroAdminSerializer(hero).data)
+
+    def put(self, request):
+        hero = self.get_object()
+
+        serializer = SecondaryHeroAdminSerializer(
+            hero, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+

@@ -39,6 +39,9 @@ import FeaturedOfferList from "../pages/homepage/FeaturedOfferList";
 import FeaturedOfferCreate from "../pages/homepage/FeaturedOfferCreate";
 import FeaturedOfferEdit from "../pages/homepage/FeaturedOfferEdit";
 
+import SecondaryHeroEdit from "../pages/homepage/SecondaryHeroEdit";
+
+
 import ManageFooter from "../pages/footer/ManageFooter";
 import ManageNewsletter from "../pages/footer/ManageNewsletter";
 import ManageSocialLinks from "../pages/footer/ManageSocialLinks";
@@ -121,7 +124,12 @@ export default function AppRoutes() {
           path="homepage/featured-offers/:id/edit"
           element={<FeaturedOfferEdit />}
         />
-        
+
+        {/* Secondary Hero */}
+
+        <Route path="homepage/secondary-hero" element={<SecondaryHeroEdit />} />
+
+
         {/* Footer sections */}
         <Route path="footer" element={<ManageFooter />} />
         <Route path="newsletter" element={<ManageNewsletter />} />

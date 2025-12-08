@@ -186,6 +186,23 @@ class SecondaryHeroSerializer(serializers.ModelSerializer):
 
         return None
 
+# ===============================
+# Secondary Hero - ADMIN
+# ===============================
+class SecondaryHeroAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecondaryHero
+        fields = [
+            "id",
+            "title",
+            "description",
+            "button_text",
+            "button_link",
+            "image",        # file upload
+            "image_url",
+            "is_active",
+        ]
+        read_only_fields = ["id", "button_link"]
 
 
 # ===============================
