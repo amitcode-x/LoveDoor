@@ -100,7 +100,7 @@ export default function ManageHomepage() {
             </p>
           </div>
 
-          <Link to="/homepage/service-features">
+          <Link to="/admin/homepage/service-features">
             <Button>Manage</Button>
           </Link>
         </div>

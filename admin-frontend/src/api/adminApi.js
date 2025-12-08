@@ -210,6 +210,37 @@ export const updateSecondaryHero = (data) =>
 
 
 /* ============================================================
+   🎁 GIFT OFFER SECTION
+============================================================ */
+
+export const getGiftOffer = () =>
+  adminAxios.get("/admin/homepage/gift-offer/");
+
+export const updateGiftOffer = (data) =>
+  adminAxios.put("/admin/homepage/gift-offer/", data);
+
+
+/* ============================================================
+   SERVICE FEATURES
+============================================================ */
+
+export const getServiceFeatures = () =>
+  adminAxios.get("/admin/homepage/service-features/");
+
+export const createServiceFeature = (data) =>
+  adminAxios.post("/admin/homepage/service-features/", data);
+
+export const getServiceFeatureDetail = (id) =>
+  adminAxios.get(`/admin/homepage/service-features/${id}/`);
+
+export const updateServiceFeature = (id, data) =>
+  adminAxios.put(`/admin/homepage/service-features/${id}/`, data);
+
+export const deleteServiceFeature = (id) =>
+  adminAxios.delete(`/admin/homepage/service-features/${id}/`);
+
+
+/* ============================================================
    🦶 FOOTER : BRAND
 ============================================================ */
 

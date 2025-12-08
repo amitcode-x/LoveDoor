@@ -7,7 +7,10 @@ from .views_admin import (
     AdminHeroSlideListCreateView,
     AdminFeaturedOfferListCreateView,
     AdminFeaturedOfferDetailView,
-    AdminSecondaryHeroView
+    AdminSecondaryHeroView,
+    AdminGiftOfferView,
+    AdminServiceFeatureDetailView,
+    AdminServiceFeatureListCreateView
 )
 
 app_name = "homepage_admin"
@@ -27,5 +30,14 @@ urlpatterns = [
     
      # ⭐ secondary NEW
     path("secondary-hero/", AdminSecondaryHeroView.as_view()),
+    #   ⭐ gift offer NEW
+    path("gift-offer/", AdminGiftOfferView.as_view()),
+    
+    # sevice- features
+    
+    path("service-features/", AdminServiceFeatureListCreateView.as_view()),
+path("service-features/<int:pk>/", AdminServiceFeatureDetailView.as_view()),
+
+
 
 ]

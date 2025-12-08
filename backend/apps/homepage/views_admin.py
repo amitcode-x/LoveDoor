@@ -6,8 +6,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from apps.adminpanel.permissions import IsAdminOrStaff
 
-from .models import (BottomNavCategory, StaticHero,HeroSlide,FeaturedOffer,SecondaryHero)
-from .serializers import (BottomNavCategorySerializer, StaticHeroAdminSerializer,HeroSlideAdminSerializer,FeaturedOfferAdminSerializer,SecondaryHeroAdminSerializer)
+from .models import (BottomNavCategory, StaticHero,HeroSlide,FeaturedOffer,SecondaryHero,GiftOfferSection,ServiceFeature)
+from .serializers import (BottomNavCategorySerializer, StaticHeroAdminSerializer,HeroSlideAdminSerializer,FeaturedOfferAdminSerializer,SecondaryHeroAdminSerializer,GiftOfferAdminSerializer,ServiceFeatureAdminSerializer)
 
 
 
@@ -160,4 +160,58 @@ class AdminSecondaryHeroView(APIView):
         serializer.save()
 
         return Response(serializer.data)
+
+
+class AdminGiftOfferView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self):
+        gift, created = GiftOfferSection.objects.get_or_create(
+            id=1,
+            defaults={
+                "title": "Perfect Gifts",
+                "description": "Find the best gifts for your loved ones.",
+                "button_text": "Explore Gifts",
+                "button_link": "/shop",
+                "image_url": "",
+                "is_active": True,
+            },
+        )
+
+        if not gift.button_link:
+            gift.button_link = "/shop"
+            gift.save()
+
+        return gift
+
+    def get(self, request):
+        gift = self.get_object()
+        return Response(GiftOfferAdminSerializer(gift).data)
+
+    def put(self, request):
+        gift = self.get_object()
+
+        serializer = GiftOfferAdminSerializer(
+            gift, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+
+class AdminServiceFeatureListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = ServiceFeatureAdminSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_queryset(self):
+        return ServiceFeature.objects.all().order_by("sort_order", "id")
+
+class AdminServiceFeatureDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+    serializer_class = ServiceFeatureAdminSerializer
+    queryset = ServiceFeature.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
 

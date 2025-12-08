@@ -236,6 +236,25 @@ class GiftOfferSectionSerializer(serializers.ModelSerializer):
 
         return None
 
+
+# ===============================
+# Gift Offer Section - ADMIN
+# ===============================
+class GiftOfferAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GiftOfferSection
+        fields = [
+            "id",
+            "title",
+            "description",
+            "button_text",
+            "button_link",
+            "image",
+            "image_url",
+            "is_active",
+        ]
+        read_only_fields = ["id", "button_link"]
+
 # ===============================
 # Service Features (no images)
 # ===============================
@@ -266,6 +285,25 @@ class ServiceFeatureSerializer(serializers.ModelSerializer):
 
         return f"{base}{img}"
 
+
+class ServiceFeatureAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceFeature
+        fields = [
+            "id",
+            "icon_key",
+            "title",
+            "description",
+            "link_text",
+            "link_type",
+            "link_page",
+            "link_url",
+            "sort_order",
+            "is_active",
+            "image",
+            "image_url",
+        ]
+        read_only_fields = ["id"]
 
 
 

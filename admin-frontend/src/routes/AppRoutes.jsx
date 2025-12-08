@@ -39,7 +39,20 @@ import FeaturedOfferList from "../pages/homepage/FeaturedOfferList";
 import FeaturedOfferCreate from "../pages/homepage/FeaturedOfferCreate";
 import FeaturedOfferEdit from "../pages/homepage/FeaturedOfferEdit";
 
+// secondary hero
+
 import SecondaryHeroEdit from "../pages/homepage/SecondaryHeroEdit";
+
+// gift offer
+import GiftOfferEdit from "../pages/homepage/GiftOfferEdit";
+
+// service features
+
+import ServiceFeaturesList from "../pages/homepage/ServiceFeaturesList";
+import ServiceFeatureCreate from "../pages/homepage/ServiceFeatureCreate";
+import ServiceFeatureEdit from "../pages/homepage/ServiceFeatureEdit";
+
+
 
 
 import ManageFooter from "../pages/footer/ManageFooter";
@@ -128,6 +141,19 @@ export default function AppRoutes() {
         {/* Secondary Hero */}
 
         <Route path="homepage/secondary-hero" element={<SecondaryHeroEdit />} />
+
+        {/* gift offer */}
+
+        <Route path="homepage/gift-offer" element={<GiftOfferEdit />} />
+
+        {/* service features */}
+
+ {/* ⭐ FINAL FIXED ROUTES FOR SERVICE FEATURES */}
+        <Route path="admin/homepage/service-features" element={<ServiceFeaturesList />} />
+        <Route path="admin/homepage/service-features/create" element={<ServiceFeatureCreate />} />
+        <Route path="admin/homepage/service-features/:id/edit" element={<ServiceFeatureEdit />} />
+
+
 
 
         {/* Footer sections */}

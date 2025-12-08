@@ -30,10 +30,10 @@ const menuItems = [
     { to: "/admin/homepage/hero-slides", label: "Hero Slides", icon: Home },
     { to: "/homepage/featured-offers", label: "Featured Offers", icon: Home },
     { to: "/homepage/secondary-hero", label: "Secondary Hero", icon: Home },
+    { to: "/homepage/gift-offer", label: "Gift  offer", icon: Home },
 
-
-
-
+    
+    { to: "/admin/homepage/service-features", label: "Service Features", icon: Home },
 
 
   // **BOTTOM NAV CATEGORIES (NEW)**
