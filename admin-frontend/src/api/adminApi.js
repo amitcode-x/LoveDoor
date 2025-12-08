@@ -178,6 +178,24 @@ export const deleteHeroSlide = (id) =>
 
 
 
+/* ============================================================
+   🌟 FEATURED OFFERS (HOMEPAGE)
+============================================================ */
+export const getFeaturedOffers = () =>
+  adminAxios.get("/admin/homepage/featured-offers/");
+
+export const getFeaturedOfferDetail = (id) =>
+  adminAxios.get(`/admin/homepage/featured-offers/${id}/`);
+
+export const createFeaturedOffer = (data) =>
+  adminAxios.post("/admin/homepage/featured-offers/", data);
+
+export const updateFeaturedOffer = (id, data) =>
+  adminAxios.put(`/admin/homepage/featured-offers/${id}/`, data);
+
+export const deleteFeaturedOffer = (id) =>
+  adminAxios.delete(`/admin/homepage/featured-offers/${id}/`);
+
 
 
 

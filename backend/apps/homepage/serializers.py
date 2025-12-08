@@ -137,6 +137,26 @@ class FeaturedOfferSerializer(serializers.ModelSerializer):
 
 
 # ===============================
+# Featured Offers - ADMIN
+# ===============================
+class FeaturedOfferAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeaturedOffer
+        fields = [
+            "id",
+            "title",
+            "text",
+            "button_text",
+            "button_link",
+            "image",       # ImageField (file upload)
+            "image_url",
+            "sort_order",
+            "is_active",
+        ]
+        read_only_fields = ["id", "button_link"]
+
+
+# ===============================
 # Secondary Hero (no image here)
 # ===============================
 class SecondaryHeroSerializer(serializers.ModelSerializer):

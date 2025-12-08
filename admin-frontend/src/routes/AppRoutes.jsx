@@ -34,6 +34,11 @@ import HeroSlideCreate from "../pages/homepage/HeroSlideCreate";
 import HeroSlidesList from "../pages/homepage/HeroSlidesList";
 import HeroSlideEdit from "../pages/homepage/HeroSlideEdit";
 
+// ⭐ NEW: Featured Offers
+import FeaturedOfferList from "../pages/homepage/FeaturedOfferList";
+import FeaturedOfferCreate from "../pages/homepage/FeaturedOfferCreate";
+import FeaturedOfferEdit from "../pages/homepage/FeaturedOfferEdit";
+
 import ManageFooter from "../pages/footer/ManageFooter";
 import ManageNewsletter from "../pages/footer/ManageNewsletter";
 import ManageSocialLinks from "../pages/footer/ManageSocialLinks";
@@ -102,6 +107,21 @@ export default function AppRoutes() {
           path="/admin/homepage/hero-slides/:id/edit"
           element={<HeroSlideEdit />}
         />
+
+            {/* ⭐ Featured Offers */}
+        <Route
+          path="homepage/featured-offers"
+          element={<FeaturedOfferList />}
+        />
+        <Route
+          path="homepage/featured-offers/create"
+          element={<FeaturedOfferCreate />}
+        />
+        <Route
+          path="homepage/featured-offers/:id/edit"
+          element={<FeaturedOfferEdit />}
+        />
+        
         {/* Footer sections */}
         <Route path="footer" element={<ManageFooter />} />
         <Route path="newsletter" element={<ManageNewsletter />} />

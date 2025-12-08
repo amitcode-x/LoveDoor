@@ -13,7 +13,7 @@ import {
   FileText, // ⭐ Contact icon added
   RotateCcw,
    Truck,
-   Undo2
+   Undo2,Star
 } from "lucide-react";
 
 const menuItems = [
@@ -28,6 +28,10 @@ const menuItems = [
   { to: "/homepage", label: "Homepage", icon: Home },
   { to: "/homepage/static-hero", label: "Static Hero", icon: Home },
     { to: "/admin/homepage/hero-slides", label: "Hero Slides", icon: Home },
+    { to: "/homepage/featured-offers", label: "Featured Offers", icon: Home },
+
+
+
 
 
   // **BOTTOM NAV CATEGORIES (NEW)**

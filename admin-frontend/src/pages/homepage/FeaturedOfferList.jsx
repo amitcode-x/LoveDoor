@@ -1,43 +1,45 @@
 import { useEffect, useState } from "react";
-import { getHeroSlides, deleteHeroSlide } from "../../api/adminApi";
+import { getFeaturedOffers, deleteFeaturedOffer } from "../../api/adminApi";
 import { Link } from "react-router-dom";
 import Card from "../../components/UI/Card";
 import Button from "../../components/UI/Button";
 
-export default function HeroSlidesList() {
-  const [slides, setSlides] = useState([]);
+export default function FeaturedOfferList() {
+  const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
-  try {
-    const res = await getHeroSlides();
+    setLoading(true);
+    try {
+      const res = await getFeaturedOffers();
 
-    // console.log("HERO SLIDES RESPONSE ===>", res.data);
+    //   console.log("FEATURED OFFERS RESPONSE ===>", res.data);
 
-    // 👉 FIX: Always extract results array from pagination
-    const arr = Array.isArray(res.data.results) ? res.data.results : [];
+      const arr = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data.results)
+        ? res.data.results
+        : [];
 
-    setSlides(arr);
-  } catch (err) {
-    console.error(err);
-  }
-
-  setLoading(false);
-};
-
+      setOffers(arr);
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     load();
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this slide?")) return;
+    if (!window.confirm("Delete this featured offer?")) return;
     try {
-      await deleteHeroSlide(id);
+      await deleteFeaturedOffer(id);
       load();
     } catch (err) {
       console.error(err);
-      alert("Unable to delete slide");
+      alert("Unable to delete featured offer");
     }
   };
 
@@ -52,10 +54,10 @@ export default function HeroSlidesList() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold text-slate-50">Hero Slides</h1>
+        <h1 className="text-lg font-semibold text-slate-50">Featured Offers</h1>
 
-        <Link to="/admin/homepage/hero-slides/create">
-          <Button>Add Slide</Button>
+        <Link to="/homepage/featured-offers/create">
+          <Button>Add Offer</Button>
         </Link>
       </div>
 
@@ -67,6 +69,7 @@ export default function HeroSlidesList() {
               <tr className="border-b border-slate-700">
                 <th className="text-left py-2">Image</th>
                 <th className="text-left py-2">Title</th>
+                <th className="text-left py-2">Text</th>
                 <th className="text-left py-2">Order</th>
                 <th className="text-left py-2">Active</th>
                 <th className="text-right py-2">Actions</th>
@@ -74,45 +77,52 @@ export default function HeroSlidesList() {
             </thead>
 
             <tbody>
-              {slides.map((slide) => (
+              {offers.map((offer) => (
                 <tr
-                  key={slide.id}
+                  key={offer.id}
                   className="border-b border-slate-800 hover:bg-slate-900/40"
                 >
                   <td className="py-2">
-                    <img
-                      src={slide.image}
-                      alt=""
-                      className="w-20 h-12 rounded object-cover"
-                    />
+                    {offer.image ? (
+                      <img
+                        src={offer.image}
+                        alt=""
+                        className="w-20 h-12 rounded object-cover"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-slate-500">
+                        No image
+                      </span>
+                    )}
                   </td>
 
-                  <td className="py-2">{slide.title}</td>
+                  <td className="py-2">{offer.title}</td>
 
-                  <td className="py-2">{slide.sort_order}</td>
+                  <td className="py-2 max-w-xs truncate">{offer.text}</td>
+
+                  <td className="py-2">{offer.sort_order}</td>
 
                   <td className="py-2">
                     <span
                       className={`px-2 py-1 text-[10px] rounded ${
-                        slide.is_active
+                        offer.is_active
                           ? "bg-emerald-600/30 text-emerald-400"
                           : "bg-red-600/30 text-red-400"
                       }`}
                     >
-                      {slide.is_active ? "Active" : "Inactive"}
+                      {offer.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
 
                   <td className="py-2 text-right space-x-2">
                     <Link
-                      to={`/admin/homepage/hero-slides/${slide.id}/edit`}
+                      to={`/homepage/featured-offers/${offer.id}/edit`}
                       className="text-emerald-400 hover:underline"
                     >
                       Edit
                     </Link>
-
                     <button
-                      onClick={() => handleDelete(slide.id)}
+                      onClick={() => handleDelete(offer.id)}
                       className="text-red-400 hover:underline"
                     >
                       Delete
@@ -120,41 +130,59 @@ export default function HeroSlidesList() {
                   </td>
                 </tr>
               ))}
+
+              {offers.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="py-4 text-center text-xs text-slate-500"
+                  >
+                    No featured offers found. Click &quot;Add Offer&quot; to
+                    create one.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Mobile Card View */}
+        {/* Mobile Cards */}
         <div className="md:hidden space-y-4">
-          {slides.map((slide) => (
+          {offers.map((offer) => (
             <div
-              key={slide.id}
+              key={offer.id}
               className="bg-slate-900 p-3 rounded-xl border border-slate-800"
             >
-              <img
-                src={slide.image}
-                className="w-full h-28 object-cover rounded mb-2"
-                alt=""
-              />
+              {offer.image && (
+                <img
+                  src={offer.image}
+                  className="w-full h-28 object-cover rounded mb-2"
+                  alt=""
+                />
+              )}
 
               <div className="text-slate-200 text-sm font-semibold">
-                {slide.title}
+                {offer.title}
               </div>
 
-              <div className="text-[11px] text-slate-400">
-                Order: {slide.sort_order}
+              <div className="text-[11px] text-slate-400 line-clamp-2">
+                {offer.text}
+              </div>
+
+              <div className="text-[11px] text-slate-500 mt-1">
+                Order: {offer.sort_order}
               </div>
 
               <div className="mt-2 flex justify-between text-xs">
                 <Link
-                  to={`/admin/homepage/hero-slides/${slide.id}/edit`}
+                  to={`/homepage/featured-offers/${offer.id}/edit`}
                   className="text-emerald-400"
                 >
                   Edit
                 </Link>
 
                 <button
-                  onClick={() => handleDelete(slide.id)}
+                  onClick={() => handleDelete(offer.id)}
                   className="text-red-400"
                 >
                   Delete
@@ -162,6 +190,12 @@ export default function HeroSlidesList() {
               </div>
             </div>
           ))}
+
+          {offers.length === 0 && (
+            <p className="text-center text-xs text-slate-500">
+              No featured offers found.
+            </p>
+          )}
         </div>
       </Card>
     </div>
