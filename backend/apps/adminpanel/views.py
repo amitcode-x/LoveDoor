@@ -460,3 +460,20 @@ class AdminPaymentDetailView(generics.RetrieveAPIView):
     serializer_class = AdminPaymentSerializer
     queryset = Payment.objects.select_related("order", "user")
     lookup_field = "id"
+
+
+
+class AdminUnseenOrderCountView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def get(self, request):
+        count = Order.objects.filter(is_seen_by_admin=False).count()
+        return Response({"count": count})
+
+
+class AdminMarkOrdersSeenView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def post(self, request):
+        Order.objects.filter(is_seen_by_admin=False).update(is_seen_by_admin=True)
+        return Response({"message": "All orders marked as seen"})

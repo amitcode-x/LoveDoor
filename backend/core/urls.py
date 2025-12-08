@@ -1,26 +1,7 @@
-"""
-URL configuration for core project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
-
-
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -34,22 +15,15 @@ urlpatterns = [
     path("api/homepage/", include("apps.homepage.urls", namespace="homepage")),
     path("api/footer/", include("apps.footer.urls", namespace="footer")),
 
-    # ADMIN PANEL (includes admin orders)
-    path("api/admin/", include("apps.adminpanel.urls", namespace="adminpanel")),
+    # ADMIN PANEL (FIXED)
+    path("api/admin/", include(("apps.adminpanel.urls", "adminpanel"), namespace="adminpanel")),
 
     # ADMIN FOOTER
     path("api/admin/footer/", include("apps.footer.urls_admin", namespace="footer_admin")),
     
+    # ADMIN HOMEPAGE
     path("api/admin/homepage/", include("apps.homepage.urls_admin", namespace="homepage_admin")),
-    
-    
-    
-    path("api/admin/homepage/", include("apps.homepage.urls_admin")),
-
-
-
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

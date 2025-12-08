@@ -53,6 +53,10 @@ class OrderCreateView(APIView):
         # ⭐ NEW: Set order status to CONFIRMED immediately after creation
         order.status = "CONFIRMED"
         order.save(update_fields=["status"])
+        
+        order.is_seen_by_admin = False
+        order.save(update_fields=["is_seen_by_admin"])
+
 
         # ⭐ Payment record (KEEP AS IT IS)
         Payment.objects.create(

@@ -122,6 +122,13 @@ export function deleteOrderItem(orderNumber, itemId) {
 }
 
 
+// order indicator
+export const getUnseenOrdersCount = () =>
+  adminAxios.get("/admin/orders/unseen-count/");
+
+export const markOrdersSeen = () =>
+  adminAxios.post("/admin/orders/mark-seen/");
+
 
 /* ============================================================
    💳 PAYMENTS

@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -10,35 +11,30 @@ import {
   Link2,
   Mail,
   Phone,
-  FileText, // ⭐ Contact icon added
+  FileText,
   RotateCcw,
-   Truck,
-   Undo2,Star
+  Truck,
 } from "lucide-react";
+
+import { getUnseenOrdersCount, markOrdersSeen } from "../../api/adminApi";
+
 
 const menuItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/orders", label: "Orders", icon: ShoppingBag },
   { to: "/products", label: "Products", icon: Package },
-
-  // MAIN PRODUCT CATEGORIES
   { to: "/categories", label: "Categories", icon: Shapes },
 
-  // HOMEPAGE
   { to: "/homepage", label: "Homepage", icon: Home },
   { to: "/homepage/static-hero", label: "Static Hero", icon: Home },
-    { to: "/admin/homepage/hero-slides", label: "Hero Slides", icon: Home },
-    { to: "/homepage/featured-offers", label: "Featured Offers", icon: Home },
-    { to: "/homepage/secondary-hero", label: "Secondary Hero", icon: Home },
-    { to: "/homepage/gift-offer", label: "Gift  offer", icon: Home },
+  { to: "/admin/homepage/hero-slides", label: "Hero Slides", icon: Home },
+  { to: "/homepage/featured-offers", label: "Featured Offers", icon: Home },
+  { to: "/homepage/secondary-hero", label: "Secondary Hero", icon: Home },
+  { to: "/homepage/gift-offer", label: "Gift offer", icon: Home },
 
-    
-    { to: "/admin/homepage/service-features", label: "Service Features", icon: Home },
+  { to: "/admin/homepage/service-features", label: "Service Features", icon: Home },
 
-
-  // **BOTTOM NAV CATEGORIES (NEW)**
- { to: "/bottom-nav", label: "Bottom Nav Categories", icon: Shapes },
-
+  { to: "/bottom-nav", label: "Bottom Nav Categories", icon: Shapes },
 
   { to: "/users", label: "Users", icon: Users },
   { to: "/payments", label: "Payments", icon: CreditCard },
@@ -56,8 +52,34 @@ const menuItems = [
   { to: "/footer/return-refund", label: "Return & Refund", icon: RotateCcw },
 ];
 
-
 export default function Sidebar({ collapsed, onToggle }) {
+  const [unseenCount, setUnseenCount] = useState(0);
+  const location = useLocation();
+
+  // auto fetch unseen count every 5 sec
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await getUnseenOrdersCount();
+        setUnseenCount(res.data.count);
+      } catch (err) {
+        console.log("Failed to fetch unseen count");
+      }
+    }
+
+    load();
+    const interval = setInterval(load, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // reset unseen on visiting /orders
+  useEffect(() => {
+    if (location.pathname.startsWith("/orders")) {
+      markOrdersSeen();
+      setUnseenCount(0);
+    }
+  }, [location.pathname]);
+
   return (
     <aside
       className={`${
@@ -91,15 +113,24 @@ export default function Sidebar({ collapsed, onToggle }) {
             to={to}
             end={end}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition ${
+              `flex items-center justify-between px-3 py-2 rounded-xl text-sm transition ${
                 isActive
                   ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/40"
                   : "text-slate-300 hover:bg-slate-800 hover:text-slate-100"
               }`
             }
           >
-            <Icon className="w-4 h-4 shrink-0" />
-            {!collapsed && <span>{label}</span>}
+            <div className="flex items-center gap-3">
+              <Icon className="w-4 h-4 shrink-0" />
+              {!collapsed && <span>{label}</span>}
+            </div>
+
+            {/* 🔥 ONLY for Orders tab show indicator */}
+            {!collapsed && label === "Orders" && unseenCount > 0 && (
+              <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
+                {unseenCount}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>

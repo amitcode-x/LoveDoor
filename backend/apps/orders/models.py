@@ -73,6 +73,8 @@ class Order(models.Model):
         max_length=100,
         blank=True
     )  # Razorpay order id / payment id etc.
+    
+    is_seen_by_admin = models.BooleanField(default=False)   # ⭐ NEW FIELD
 
     status = models.CharField(
         max_length=20,

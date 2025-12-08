@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getOrders } from "../../api/adminApi";
+import { getOrders, markOrdersSeen } from "../../api/adminApi";
 
 import Card from "../../components/UI/Card";
 import Button from "../../components/UI/Button";
@@ -39,7 +39,20 @@ export default function OrderList() {
   }
 
   useEffect(() => {
-    loadOrders();
+    async function init() {
+      // 🔥 STEP 1: Mark all unseen orders as seen
+      try {
+        await markOrdersSeen();
+        window.dispatchEvent(new Event("ordersSeen")); // sidebar count reset
+      } catch (e) {
+        console.log("Failed to mark orders as seen");
+      }
+
+      // 🔥 STEP 2: Load all orders
+      loadOrders();
+    }
+
+    init();
   }, []);
 
   const handleFilterChange = (e) => {
@@ -118,15 +131,15 @@ export default function OrderList() {
             orders.map((o) => (
               <Tr key={o.id}>
                 <Td>
-  <div className="flex items-center gap-2">
-    <img
-      src={o.items?.[0]?.product_image}
-      className="w-10 h-10 rounded object-cover border border-slate-700"
-      alt=""
-    />
-    <span>{o.order_number}</span>
-  </div>
-</Td>
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={o.items?.[0]?.product_image}
+                      className="w-10 h-10 rounded object-cover border border-slate-700"
+                      alt=""
+                    />
+                    <span>{o.order_number}</span>
+                  </div>
+                </Td>
 
                 <Td>{o.user?.username || "-"}</Td>
                 <Td>
