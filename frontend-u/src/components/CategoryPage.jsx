@@ -46,7 +46,7 @@ export default function CategoryPage() {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-15">
 
       {/* ⭐ CATEGORY BANNER — (MAIN FIX) */}
       {categoryInfo?.banner_image && (

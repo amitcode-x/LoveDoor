@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 
-// Professional Lucide Icons
 import {
   Home,
   ShoppingBag,
@@ -12,7 +11,7 @@ import {
   Gem,
   Briefcase,
   Gift,
-  Circle
+  Circle,
 } from "lucide-react";
 
 // Fallback (always 9 only)
@@ -47,6 +46,8 @@ const getIconComponent = (name) => {
 
 export default function BottomNav() {
   const [categories, setCategories] = useState([]);
+  const [isVisible, setIsVisible] = useState(true); 
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     axiosClient
@@ -54,14 +55,12 @@ export default function BottomNav() {
       .then((res) => {
         const backendList = res.data?.results || [];
 
-        // Convert backend result
         let backendCats = backendList.map((c) => ({
           name: c.name,
           path: `/category/${c.slug}`,
           icon: getIconComponent(c.icon_name || c.name),
         }));
 
-        // Merge backend + fallback
         let merged = [...backendCats];
 
         fallbackCategories.forEach((f) => {
@@ -76,7 +75,6 @@ export default function BottomNav() {
           }
         });
 
-        // Ensure only 9
         merged = merged.slice(0, 9);
 
         setCategories(merged);
@@ -91,23 +89,125 @@ export default function BottomNav() {
       });
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < 10) {
+        setIsVisible(true);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <div className="w-full bg-white border-t md:border-none">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex flex-wrap gap-6 justify-center text-sm font-medium">
-        {categories.map((c, i) => {
-          const Icon = c.icon;
-          return (
-            <Link
-              key={i}
-              to={c.path}
-              className="flex items-center gap-1 hover:text-red-500 transition"
-            >
-              <Icon size={16} />
-              <span>{c.name}</span>
-            </Link>
-          );
-        })}
+    <>
+      <style>{`
+        .category-link {
+          position: relative;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-link::before {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 50%;
+          width: 0;
+          height: 2px;
+          background: linear-gradient(90deg, #ec4899, #8b5cf6);
+          transform: translateX(-50%);
+          transition: width 0.3s ease;
+        }
+
+        .category-link:hover::before {
+          width: 100%;
+        }
+
+        .category-link:hover {
+          transform: translateY(-2px);
+          color: #9333ea;
+        }
+
+        .category-link:hover .icon-wrapper {
+          transform: scale(1.15) rotate(5deg);
+          background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        }
+
+        .icon-wrapper {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+.bottom-nav-container {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  will-change: opacity, transform;
+}
+
+.bottom-nav-container.nav-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bottom-nav-container.nav-hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+`}</style>
+
+      <div
+        className={`bottom-nav-container fixed left-0 h-14 w-full bg-white hidden md:block z-50 ${
+          isVisible ? "nav-visible" : "nav-hidden"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 ">
+          <div className="flex gap-8 justify-center items-center overflow-x-auto scrollbar-hide">
+            {categories.map((c, i) => {
+              const Icon = c.icon;
+              return (
+                <Link
+                  key={i}
+                  to={c.path}
+                  className="category-link flex flex-col items-center gap-1 text-xs font-semibold text-gray-700 px-2 py-1 rounded-lg hover:bg-white/80 group min-w-fit"
+                >
+                  <div className="icon-wrapper w-7 h-7 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+                    <Icon
+                      size={14}
+                      className="text-purple-600 group-hover:text-white transition-colors"
+                    />
+                  </div>
+
+                  {/* FIXED TEXT WRAP + CONSISTENT GAP */}
+                  <span className="relative whitespace-normal leading-tight text-center text-[12px]  break-words">
+                    {c.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
