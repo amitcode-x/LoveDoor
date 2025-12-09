@@ -1,120 +1,225 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import {
+  UserCircle,
+  Mail,
+  Phone,
+  LogOut,
+  MapPin,
+  Package,
+  Edit,
+  Heart,
+  ShoppingCart,
+  Home,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState({
-    username: "",
-    email: "",
-    first_name: "",
-    last_name: "",
-    phone: "",
-  });
-  const [message, setMessage] = useState("");
+  const [profile, setProfile] = useState({});
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    axiosClient.get("/auth/me/").then((res) => {
-      setProfile(res.data);
-      setLoading(false);
-    });
+    loadProfile();
   }, []);
 
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+  const loadProfile = async () => {
+    const res = await axiosClient.get("/auth/me/");
+    setProfile(res.data);
+    setLoading(false);
   };
 
   const updateProfile = async (e) => {
     e.preventDefault();
-    setMessage("");
-
     try {
       const res = await axiosClient.put("/auth/profile/", profile);
       setProfile(res.data);
-      setMessage("Profile updated successfully!");
-    } catch (error) {
-      setMessage("Error updating profile. Try again.");
+      setEditMode(false);
+    } catch (err) {
+      console.log("Update failed", err);
     }
   };
 
-  if (loading) return <p className="p-6">Loading profile...</p>;
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  if (loading) return <p className="p-6 text-slate-400">Loading profile...</p>;
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">My Profile</h1>
+    <div className="p-6 max-w-5xl mx-auto space-y-8">
 
-      {message && (
-        <p className="mb-4 text-green-600 font-medium">{message}</p>
-      )}
-
-      <form onSubmit={updateProfile} className="space-y-4 bg-white p-6 border rounded shadow">
-
-        {/* Username */}
-        <div>
-          <label className="font-medium block mb-1">Username</label>
-          <input
-            name="username"
-            className="border p-2 w-full rounded"
-            value={profile.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="font-medium block mb-1">Email</label>
-          <input
-            name="email"
-            type="email"
-            className="border p-2 w-full rounded"
-            value={profile.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* First Name */}
-        <div>
-          <label className="font-medium block mb-1">First Name</label>
-          <input
-            name="first_name"
-            className="border p-2 w-full rounded"
-            value={profile.first_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Last Name */}
-        <div>
-          <label className="font-medium block mb-1">Last Name</label>
-          <input
-            name="last_name"
-            className="border p-2 w-full rounded"
-            value={profile.last_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Phone */}
-        <div>
-          <label className="font-medium block mb-1">Phone</label>
-          <input
-            name="phone"
-            className="border p-2 w-full rounded"
-            value={profile.phone || ""}
-            onChange={handleChange}
-          />
+      {/* ================= TOP HEADER (User Info + Logout) ================= */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <UserCircle className="w-20 h-20 text-slate-300" />
+          <div>
+            <h1 className="text-2xl font-bold text-slate-100">
+              {profile.first_name} {profile.last_name}
+            </h1>
+            <p className="text-slate-400 text-sm">{profile.email}</p>
+          </div>
         </div>
 
         <button
-          type="submit"
-          className="w-full bg-black text-white py-2 rounded mt-2"
+          onClick={handleLogout}
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition"
         >
-          Save Changes
+          <LogOut size={18} /> Logout
         </button>
-      </form>
+      </div>
+
+      {/* ================= PROFILE NAV GRID ================= */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div
+          onClick={() => navigate("/profile")}
+          className="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 cursor-pointer flex items-center gap-4"
+        >
+          <UserCircle className="w-8 h-8 text-emerald-400" />
+          <p className="text-slate-200 font-medium">Profile</p>
+        </div>
+
+        <div
+          onClick={() => navigate("/my-orders")}
+          className="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 cursor-pointer flex items-center gap-4"
+        >
+          <Package className="w-8 h-8 text-blue-400" />
+          <p className="text-slate-200 font-medium">My Orders</p>
+        </div>
+
+        <div
+          onClick={() => navigate("/addresses")}
+          className="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 cursor-pointer flex items-center gap-4"
+        >
+          <MapPin className="w-8 h-8 text-purple-400" />
+          <p className="text-slate-200 font-medium">Addresses</p>
+        </div>
+
+        <div
+          onClick={() => navigate("/wishlist")}
+          className="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 cursor-pointer flex items-center gap-4"
+        >
+          <Heart className="w-8 h-8 text-pink-400" />
+          <p className="text-slate-200 font-medium">Wishlist</p>
+        </div>
+
+        <div
+          onClick={() => navigate("/cart")}
+          className="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 cursor-pointer flex items-center gap-4"
+        >
+          <ShoppingCart className="w-8 h-8 text-yellow-400" />
+          <p className="text-slate-200 font-medium">My Cart</p>
+        </div>
+
+        <div
+          onClick={() => navigate("/shop")}
+          className="p-5 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 cursor-pointer flex items-center gap-4"
+        >
+          <Home className="w-8 h-8 text-teal-400" />
+          <p className="text-slate-200 font-medium">Shop</p>
+        </div>
+      </div>
+
+      {/* ================= PERSONAL INFORMATION ================= */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-4">
+
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-slate-100">Personal Information</h2>
+
+          {!editMode && (
+            <button
+              onClick={() => setEditMode(true)}
+              className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-sm"
+            >
+              <Edit size={16} /> Edit
+            </button>
+          )}
+        </div>
+
+        {/* ================= NORMAL VIEW ================= */}
+        {!editMode && (
+          <div className="space-y-3 text-slate-300">
+            <p><b>Username:</b> {profile.username}</p>
+            <p className="flex items-center gap-2"><Mail size={16} /> {profile.email}</p>
+            <p className="flex items-center gap-2"><Phone size={16} /> {profile.phone || "Not added"}</p>
+          </div>
+        )}
+
+        {/* ================= EDIT MODE FORM ================= */}
+        {editMode && (
+          <form onSubmit={updateProfile} className="space-y-3">
+
+            <div className="text-center mb-4">
+              <h2 className="text-lg font-bold text-slate-100">
+                Editing: {profile.first_name} {profile.last_name}
+              </h2>
+              <p className="text-slate-400 text-sm">{profile.email}</p>
+            </div>
+
+            <input
+              className="w-full p-2 rounded bg-slate-800 border border-slate-700 text-white"
+              placeholder="Enter username"
+              value={profile.username}
+              name="username"
+              onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+            />
+
+            <input
+              className="w-full p-2 rounded bg-slate-800 border border-slate-700 text-white"
+              placeholder="Enter email address"
+              value={profile.email}
+              name="email"
+              onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+            />
+
+            <input
+              className="w-full p-2 rounded bg-slate-800 border border-slate-700 text-white"
+              placeholder="Enter first name"
+              value={profile.first_name}
+              name="first_name"
+              onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
+            />
+
+            <input
+              className="w-full p-2 rounded bg-slate-800 border border-slate-700 text-white"
+              placeholder="Enter last name"
+              value={profile.last_name}
+              name="last_name"
+              onChange={(e) => setProfile({ ...profile, last_name: e.target.value })}
+            />
+
+            <input
+              className="w-full p-2 rounded bg-slate-800 border border-slate-700 text-white"
+              placeholder="Enter phone number"
+              value={profile.phone || ""}
+              name="phone"
+              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+            />
+
+            <button
+              type="submit"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg"
+            >
+              Save Changes
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setEditMode(false)}
+              className="ml-3 text-slate-400 hover:text-slate-300"
+            >
+              Cancel
+            </button>
+
+          </form>
+        )}
+
+      </div>
+
     </div>
   );
 }
