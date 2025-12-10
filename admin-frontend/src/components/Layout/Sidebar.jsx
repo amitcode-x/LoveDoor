@@ -18,8 +18,8 @@ import {
 
 import { getUnseenOrdersCount, markOrdersSeen } from "../../api/adminApi";
 
-
 const menuItems = [
+  { to: "/profile", label: "Profile", icon: Users }, // ⭐ NEW
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/orders", label: "Orders", icon: ShoppingBag },
   { to: "/products", label: "Products", icon: Package },
@@ -56,39 +56,45 @@ export default function Sidebar({ collapsed, onToggle }) {
   const [unseenCount, setUnseenCount] = useState(0);
   const location = useLocation();
 
-  // auto fetch unseen count every 5 sec
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await getUnseenOrdersCount();
-        setUnseenCount(res.data.count);
-      } catch (err) {
-        console.log("Failed to fetch unseen count");
-      }
-    }
+  // ⭐ COMMON FUNCTION - re-usable everywhere
+  async function load() {
+    const token = localStorage.getItem("admin_access_token");
+    if (!token) return; // logged out → no polling
 
-    load();
-    const interval = setInterval(load, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // reset unseen on visiting /orders
-useEffect(() => {
-  async function resetSeen() {
-    if (location.pathname.startsWith("/orders")) {
-      try {
-        await markOrdersSeen();
-        const res = await getUnseenOrdersCount();
-        setUnseenCount(res.data.count);
-      } catch (err) {
-        console.log("Failed to mark orders seen");
-      }
+    try {
+      const res = await getUnseenOrdersCount();
+      setUnseenCount(res.data.count);
+    } catch (err) {
+      console.log("Failed to fetch unseen count");
     }
   }
 
-  resetSeen();
-}, [location.pathname]);
+  // ⭐ Initial load + polling
+  useEffect(() => {
+    load(); // first time
 
+    const interval = setInterval(() => {
+      load();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ⭐ Visiting /orders resets unseen count
+  useEffect(() => {
+    async function resetSeen() {
+      if (location.pathname.startsWith("/orders")) {
+        try {
+          await markOrdersSeen();
+          setUnseenCount(0);
+        } catch (err) {
+          console.log("Failed to mark orders seen");
+        }
+      }
+    }
+
+    resetSeen();
+  }, [location.pathname]);
 
   return (
     <aside
@@ -135,7 +141,6 @@ useEffect(() => {
               {!collapsed && <span>{label}</span>}
             </div>
 
-            {/* 🔥 ONLY for Orders tab show indicator */}
             {!collapsed && label === "Orders" && unseenCount > 0 && (
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
                 {unseenCount}

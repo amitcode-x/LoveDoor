@@ -53,6 +53,12 @@ import ServiceFeatureCreate from "../pages/homepage/ServiceFeatureCreate";
 import ServiceFeatureEdit from "../pages/homepage/ServiceFeatureEdit";
 
 
+// admin profile
+
+
+import AdminProfile from "../pages/profile/AdminProfile";
+
+
 
 
 import ManageFooter from "../pages/footer/ManageFooter";
@@ -85,9 +91,12 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AdminLayout />
+
           </ProtectedRoute>
         }
       >
+          {/* ⭐ ADD PROFILE ROUTE HERE */}
+        <Route path="profile" element={<AdminProfile />} />
         {/* Dashboard */}
         <Route index element={<Dashboard />} />
         {/* Orders */}

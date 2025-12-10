@@ -17,6 +17,8 @@ from .serializers import (
     AdminOrderSerializer,
     AdminOrderStatusUpdateSerializer,
     AdminFooterBrandInfoSerializer,
+     AdminProfileSerializer,
+    AdminChangePasswordSerializer,
     
     
 )
@@ -479,3 +481,53 @@ class AdminMarkOrdersSeenView(APIView):
     def post(self, request):
         Order.objects.filter(is_seen_by_admin=False).update(is_seen_by_admin=True)
         return Response({"message": "All orders marked as seen"})
+
+
+
+class AdminProfileView(APIView):
+    """
+    GET  /api/admin/profile/          -> current admin ka profile
+    PUT  /api/admin/profile/          -> profile update (name, email)
+    """
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def get(self, request):
+        serializer = AdminProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        serializer = AdminProfileSerializer(
+            request.user, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminChangePasswordView(APIView):
+    """
+    POST /api/admin/profile/change-password/
+    body:
+    {
+      "old_password": "...",
+      "new_password": "...",
+      "confirm_password": "..."
+    }
+    """
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
+
+    def post(self, request):
+        serializer = AdminChangePasswordSerializer(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        new_password = serializer.validated_data["new_password"]
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {"message": "Password changed successfully."},
+            status=status.HTTP_200_OK,
+        )

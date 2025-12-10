@@ -388,3 +388,17 @@ export const getReturnRefund = () =>
 
 export const updateReturnRefund = (data) =>
   adminAxios.put("/admin/footer/return-refund/", data);
+
+
+
+
+/* ============================================================
+   👤 ADMIN PROFILE
+============================================================ */
+export const getAdminProfile = () => adminAxios.get("/admin/profile/");
+
+export const updateAdminProfile = (data) =>
+  adminAxios.put("/admin/profile/", data);
+
+export const changeAdminPassword = (data) =>
+  adminAxios.post("/admin/profile/change-password/", data);

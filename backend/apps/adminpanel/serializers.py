@@ -186,3 +186,65 @@ class AdminFooterBrandInfoSerializer(serializers.ModelSerializer):
             "copyright_text",
             "owner_text",
         ]
+
+
+from django.contrib.auth.models import User
+from rest_framework import serializers
+
+# ... yaha tumhare existing serializers already honge
+# AdminUserOrderSerializer, AdminUserSerializer, AdminCategorySerializer, etc.
+# Unko bilkul mat chhedna, sirf neeche ye naya code add karo.
+
+class AdminProfileSerializer(serializers.ModelSerializer):
+    """
+    Admin ka khud ka profile (current logged-in user).
+    Username change nahi karne denge (read_only).
+    """
+    username = serializers.CharField(read_only=True)
+    is_staff = serializers.BooleanField(read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
+    last_login = serializers.DateTimeField(read_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "is_superuser",
+            "last_login",
+            "date_joined",
+        ]
+
+
+class AdminChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        old_password = attrs.get("old_password")
+        new_password = attrs.get("new_password")
+        confirm_password = attrs.get("confirm_password")
+
+        if not user.check_password(old_password):
+            raise serializers.ValidationError(
+                {"old_password": "Old password is incorrect."}
+            )
+
+        if new_password != confirm_password:
+            raise serializers.ValidationError(
+                {"confirm_password": "New password and confirm password do not match."}
+            )
+
+        if len(new_password) < 6:
+            raise serializers.ValidationError(
+                {"new_password": "Password must be at least 6 characters."}
+            )
+
+        return attrs

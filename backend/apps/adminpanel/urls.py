@@ -19,6 +19,8 @@ from .views import (
     AdminPaymentDetailView,
     AdminUnseenOrderCountView,
     AdminMarkOrdersSeenView,
+        AdminProfileView,             # ⭐ ADD THIS
+    AdminChangePasswordView, 
 )
 
 app_name = "adminpanel"
@@ -77,4 +79,18 @@ urlpatterns = [
 
     # Footer brand
     path("footer/brand/", AdminFooterBrandView.as_view(), name="footer_brand"),
+    
+    
+    
+    
+        # ⭐ NEW PROFILE ROUTES
+    path("profile/", AdminProfileView.as_view(), name="admin_profile"),
+    path(
+        "profile/change-password/",
+        AdminChangePasswordView.as_view(),
+        name="admin_change_password",
+    ),
+    
+    
+    
 ]
