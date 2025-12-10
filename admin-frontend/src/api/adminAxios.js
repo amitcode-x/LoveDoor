@@ -8,6 +8,7 @@ const adminAxios = axios.create({
   timeout: 10000,
 });
 
+// ADD TOKEN
 adminAxios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("admin_access_token");
@@ -17,13 +18,26 @@ adminAxios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// FIXED 401 HANDLING
 adminAxios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+
+    // Agar 401 aaya but request sirf sidebar ke unseen-count/mark-seen ka ho → logout mat karo
+    const url = error.config?.url || "";
+    const safeUrls = [
+      "/admin/orders/unseen-count/",
+      "/admin/orders/mark-seen/",
+    ];
+
+    const isSafeRequest = safeUrls.some((u) => url.includes(u));
+
+    if (status === 401 && !isSafeRequest) {
       localStorage.removeItem("admin_access_token");
       window.location.href = "/login";
     }
+
     return Promise.reject(error);
   }
 );

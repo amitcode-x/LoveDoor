@@ -73,12 +73,22 @@ export default function Sidebar({ collapsed, onToggle }) {
   }, []);
 
   // reset unseen on visiting /orders
-  useEffect(() => {
+useEffect(() => {
+  async function resetSeen() {
     if (location.pathname.startsWith("/orders")) {
-      markOrdersSeen();
-      setUnseenCount(0);
+      try {
+        await markOrdersSeen();
+        const res = await getUnseenOrdersCount();
+        setUnseenCount(res.data.count);
+      } catch (err) {
+        console.log("Failed to mark orders seen");
+      }
     }
-  }, [location.pathname]);
+  }
+
+  resetSeen();
+}, [location.pathname]);
+
 
   return (
     <aside
