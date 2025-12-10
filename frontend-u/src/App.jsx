@@ -21,6 +21,7 @@ import TrackOrder from "./pages/TrackOrder";
 
 // Footer Section
 import FooterSection from "./components/home/FooterSection";
+import TawkTo from "./components/TawkTo";
 
 // Footer Pages
 import AboutUs from "./pages/footer/AboutUs";
@@ -59,6 +60,8 @@ export default function App() {
 
   return (
     <BrowserRouter>
+
+     <TawkTo />
       {/* ⭐ Scroll to Top */}
       <ScrollToTop />
 
