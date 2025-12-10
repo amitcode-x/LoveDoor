@@ -93,7 +93,7 @@ export default function Home() {
   const top = Array.isArray(popular) ? popular.slice(0, 3) : [];
 
   return (
-    <div className="bg-white p-10">
+    <div className="min-h-screen md:py-10 bg-gradient-to-br from-gray-50 via-white to-gray-100">
 
       {/* 1️⃣ Static Hero */}
       <Suspense fallback={<Loader />}>
@@ -112,21 +112,33 @@ export default function Home() {
       {/* 3️⃣ Categories */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <CategorySection categories={categories} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
+            <div className="max-w-7xl mx-auto">
+              <CategorySection categories={categories} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
       {/* 4️⃣ Popular Products */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <PopularProducts products={popular} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-white">
+            <div className="max-w-7xl mx-auto">
+              <PopularProducts products={popular} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
       {/* 5️⃣ Featured Offers */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <FeaturedOffers offers={homeConfig?.featured_offers || []} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
+            <div className="max-w-7xl mx-auto">
+              <FeaturedOffers offers={homeConfig?.featured_offers || []} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
@@ -140,28 +152,44 @@ export default function Home() {
       {/* 7️⃣ New Arrivals */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <NewArrivals products={newest} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-gradient-to-r from-blue-50 to-purple-50">
+            <div className="max-w-7xl mx-auto">
+              <NewArrivals products={newest} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
       {/* 8️⃣ Gift Offer */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <GiftOffer data={homeConfig?.gift_offer} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
+            <div className="max-w-7xl mx-auto">
+              <GiftOffer data={homeConfig?.gift_offer} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
-      {/* 9️⃣ Recent + Top */}
+      {/* 9️⃣ Recent + Top Products */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <RecentAndTopProducts recent={recent} top={top} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-white">
+            <div className="max-w-7xl mx-auto">
+              <RecentAndTopProducts recent={recent} top={top} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
       {/* 🔟 Services */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <ServiceFeatures features={homeConfig?.service_features || []} />
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-gradient-to-r from-gray-50 to-blue-50">
+            <div className="max-w-7xl mx-auto">
+              <ServiceFeatures features={homeConfig?.service_features || []} />
+            </div>
+          </section>
         </AnimateOnScroll>
       </Suspense>
 
