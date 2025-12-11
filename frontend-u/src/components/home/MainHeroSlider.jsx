@@ -9,7 +9,7 @@ export default function MainHeroSlider({ slides }) {
 
     const interval = setInterval(() => {
       setIndex((i) => (i + 1) % slides.length);
-    }, 4000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [slides]);

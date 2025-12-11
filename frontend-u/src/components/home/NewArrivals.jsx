@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
 import { FiHeart } from "react-icons/fi";
 
-// ⭐ Rating Component
 function Rating({ value }) {
   const num = Number(value || 0);
 
@@ -21,104 +20,82 @@ function Rating({ value }) {
   );
 }
 
-// ⭐ Fix image URL
 const getImage = (url) => {
   if (!url) return "";
   if (url.startsWith("http")) return url;
   return `http://127.0.0.1:8000${url}`;
 };
 
-// ⭐ CARD UI - SAME AS POPULAR PRODUCTS
 function Card({ product }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const inWishlist = isInWishlist(product.id);
 
-  // Discount %
   const discount =
     product.discount_price > 0
-      ? Math.round(
-          ((product.price - product.discount_price) / product.price) * 100
-        )
+      ? Math.round(((product.price - product.discount_price) / product.price) * 100)
       : 0;
 
   const discountColor = discount >= 50 ? "bg-green-500" : "bg-red-500";
 
   return (
     <div className="group relative flex-shrink-0 min-w-[160px] sm:min-w-[180px] max-w-[180px] sm:max-w-[200px]">
-      
-      {/* 3D Glassmorphism Card */}
       <div className="relative bg-white/60 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-lg border border-white/30 transition-all duration-500 hover:bg-white/80 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl">
-        
-        {/* Shine Effect on Hover */}
+
         <div className="absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/30 to-transparent pointer-events-none"></div>
 
-        {/* ⭐ NEW Badge */}
         {product.show_new_badge && (
           <span className="absolute top-2 left-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-[9px] sm:text-[10px] font-bold px-2 py-1 rounded-full shadow-lg z-20 animate-pulse">
             NEW
           </span>
         )}
 
-        {/* ⭐ Discount Badge */}
         {discount > 0 && (
-          <span
-            className={`absolute ${product.show_new_badge ? "top-9" : "top-2"} 
-              left-2 ${discountColor} text-white text-[9px] sm:text-[10px] font-bold 
-              px-2 py-1 rounded-full shadow-lg z-20`}
-          >
+          <span className={`absolute ${product.show_new_badge ? "top-9" : "top-2"} 
+            left-2 ${discountColor} text-white text-[9px] sm:text-[10px] font-bold 
+            px-2 py-1 rounded-full shadow-lg z-20`}>
             {discount}% OFF
           </span>
         )}
 
-        {/* ❤️ Wishlist Button with Glass Effect */}
         <button
           onClick={() => toggleWishlist(product)}
           className={`absolute top-2 right-2 p-1.5 sm:p-2 rounded-full backdrop-blur-md border shadow-lg transition-all duration-300 z-20
-            ${
-              inWishlist 
-                ? "bg-red-500 text-white border-red-400 scale-110" 
-                : "bg-white/70 text-gray-700 border-white/50 hover:bg-red-50 hover:border-red-300"
-            }`}
-        >
+            ${inWishlist 
+              ? "bg-red-500 text-white border-red-400 scale-110" 
+              : "bg-white/70 text-gray-700 border-white/50 hover:bg-red-50 hover:border-red-300"
+            }`}>
           <FiHeart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
 
         <Link to={`/product/${product.slug}`}>
-          {/* Image Container with Hover Effect */}
           <div className="relative rounded-lg sm:rounded-xl overflow-hidden bg-gray-100 mb-3">
             <img
               src={getImage(product.thumbnail)}
               alt={product.name}
               className="w-full h-32 sm:h-36 object-cover group-hover:scale-110 transition-transform duration-500"
             />
-            {/* Image Overlay on Hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           </div>
 
-          {/* Product Name */}
           <h3 className="text-xs sm:text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-red-500 transition-colors duration-300 min-h-[32px]">
             {product.name}
           </h3>
         </Link>
 
-        {/* ⭐ Price with Gradient */}
         <p className="text-base sm:text-lg font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent mt-2">
           ₹{product.effective_price}
         </p>
 
-        {/* Old Price + Discount */}
         {discount > 0 && (
           <p className="text-xs text-gray-500 line-through">
             ₹{product.price}
           </p>
         )}
 
-        {/* ⭐ Rating */}
         <div className="mt-1">
           <Rating value={product.average_rating} />
         </div>
 
-        {/* Bottom Glow Effect */}
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-3 bg-red-500/0 group-hover:bg-red-500/20 blur-xl rounded-full transition-all duration-500"></div>
       </div>
     </div>
@@ -128,21 +105,24 @@ function Card({ product }) {
 export default function NewArrivals({ products }) {
   return (
     <section className="w-full">
-      {/* Glassmorphism Container */}
-      <div className="relative bg-white/40 backdrop-blur-xl rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl border border-white/20">
-        
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 via-purple-100/20 to-pink-100/30 rounded-2xl -z-10"></div>
 
-        {/* Header + View All */}
+      {/* ⭐ SAME GIFT-OFFER STYLE GRADIENT BG */}
+      <div className="relative bg-white/40 backdrop-blur-xl rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl border border-white/20">
+
+        {/* ⭐ UPDATED GRADIENT */}
+        <div className="absolute inset-0 bg-gradient-to-br 
+          from-white/60 via-pink-100/50 to-orange-100/80 
+          rounded-2xl -z-10"></div>
+
+        {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
             New Arrivals
           </h2>
 
           <Link
             to="/all-products?show=new"
-            className="text-xs sm:text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
+            className="text-xs sm:text-sm font-semibold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
           >
             View All
             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +131,7 @@ export default function NewArrivals({ products }) {
           </Link>
         </div>
 
-        {/* ⭐ Horizontal Scroll - NO SCROLLBAR with Extra Padding */}
+        {/* Horizontal scroll */}
         <div 
           className="flex gap-3 sm:gap-4 overflow-x-auto py-4 scroll-smooth"
           style={{
@@ -161,9 +141,7 @@ export default function NewArrivals({ products }) {
           }}
         >
           <style>{`
-            div::-webkit-scrollbar {
-              display: none;
-            }
+            div::-webkit-scrollbar { display: none; }
           `}</style>
 
           {products.length > 0 ? (
@@ -173,7 +151,6 @@ export default function NewArrivals({ products }) {
           )}
         </div>
 
-        {/* Scroll Hint */}
         <div className="text-center mt-2 text-xs text-gray-400">
           ← Scroll for more →
         </div>

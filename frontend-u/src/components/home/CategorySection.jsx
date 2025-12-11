@@ -12,14 +12,12 @@ import {
   HeartHandshake,
 } from "lucide-react";
 
-// ⭐ Backend se agar relative URL aaye to full URL banao
 const fixURL = (url) => {
   if (!url) return null;
   if (url.startsWith("http")) return url;
   return `http://127.0.0.1:8000${url}`;
 };
 
-// ⭐ Auto Icon logic
 const getAutoIcon = (cat) => {
   const key = (cat.slug || cat.name || "").toLowerCase();
   if (key.includes("electronic") || key.includes("mobile") || key.includes("laptop")) return Laptop;
@@ -34,7 +32,6 @@ const getAutoIcon = (cat) => {
   return ShoppingBag;
 };
 
-// ⭐ MAIN PRIORITY FUNCTION
 const getCategoryDisplay = (cat) => {
   if (cat.category_image) return { type: "image", value: fixURL(cat.category_image) };
   if (cat.category_image_url) return { type: "image", value: cat.category_image_url };
@@ -47,17 +44,21 @@ const getCategoryDisplay = (cat) => {
 export default function CategorySection({ categories }) {
   return (
     <section className="w-full">
-      {/* Glassmorphism Container with Extra Padding for Hover */}
-      <div className="relative bg-white/40 backdrop-blur-xl rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl border border-white/20">
-        
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-red-100/30 via-pink-100/20 to-orange-100/30 rounded-2xl -z-10"></div>
+      <div className="relative rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl border border-white/30 overflow-hidden bg-white/30 backdrop-blur-xl">
+
+        {/* Background Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-pink-100/60 to-orange-100/60 -z-10"></div>
+
+        {/* Glow Effects */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-300/60 to-orange-300/70 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-red-300/70 to-yellow-300/70 rounded-full blur-3xl -z-10"></div>
 
         {/* Header */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4 relative z-10">
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
             Shop by Category
           </h2>
+
           <Link
             to="/all-products"
             className="text-xs sm:text-sm font-semibold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
@@ -69,63 +70,58 @@ export default function CategorySection({ categories }) {
           </Link>
         </div>
 
-        {/* Horizontal Scroll Container - NO SCROLLBAR with Extra Padding */}
+        {/* Scroll Container */}
         <div 
-          className="flex gap-3 sm:gap-4 overflow-x-auto py-4"
-          style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-            WebkitOverflowScrolling: 'touch'
-          }}
+          className="flex gap-3 sm:gap-4 overflow-x-auto py-4 relative z-10"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <style>{`
-            .category-scroll::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
+          <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
           {categories.map((cat) => {
             const display = getCategoryDisplay(cat);
 
             return (
-              <Link
+              <Link 
                 key={cat.id}
                 to={`/category/${cat.slug}`}
                 className="group flex-shrink-0 relative"
               >
-                {/* 3D Card with Glassmorphism */}
-                <div className="relative bg-white/60 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-4 min-w-[100px] sm:min-w-[120px] flex flex-col items-center transition-all duration-500 hover:bg-gradient-to-br hover:from-red-500 hover:to-pink-500 hover:scale-105 hover:-translate-y-1 hover:shadow-2xl border border-white/30 hover:border-white/50">
+                <div className="
+                  relative bg-white/40 backdrop-blur-md 
+                  rounded-xl sm:rounded-2xl p-3 sm:p-4 
+                  min-w-[100px] sm:min-w-[120px] 
+                  flex flex-col items-center transition-all duration-500
+
+                  /* ⭐ Updated Hover Gradient (Soft Pastel Like GiftOffer) */
+                  hover:bg-gradient-to-br 
+                  hover:from-white/60 
+                  hover:via-pink-100/50 
+                  hover:to-orange-100/50 
+
+                  hover:scale-105 hover:-translate-y-1 hover:shadow-2xl 
+                  border border-white/40 hover:border-white/60
+                ">
                   
-                  {/* Shine Effect on Hover */}
+                  {/* Shine */}
                   <div className="absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none"></div>
 
-                  {/* Icon Container - SMALLER SIZE */}
-                  <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-sm flex items-center justify-center overflow-hidden mb-2 group-hover:bg-white transition-all duration-500 shadow-lg group-hover:shadow-xl">
-                    
-                    {/* Inner Glow */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-200/0 to-green-200/0 group-hover:from-green-200/40 group-hover:to-green-200/40 transition-all duration-500"></div>
-                    
+                  {/* Icon Box */}
+                  <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center overflow-hidden mb-2 shadow-md group-hover:bg-white">
                     {display.type === "image" ? (
-                      <img
-                        src={display.value}
-                        alt={cat.name}
-                        className="w-full h-full object-cover relative z-10 group-hover:scale-110 transition-transform duration-500"
-                      />
+                      <img src={display.value} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     ) : display.type === "icon" ? (
-                      <display.value className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800 group-hover:text-green-500 transition-colors duration-500 relative z-10" />
+                      <display.value className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800 group-hover:text-green-600 transition-colors duration-500" />
                     ) : (
-                      <span className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-green-500 transition-colors duration-500 relative z-10">
-                        {display.value}
-                      </span>
+                      <span className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-green-600 transition-colors duration-500">{display.value}</span>
                     )}
                   </div>
 
-                  {/* Category Name */}
-                  <p className="text-xs sm:text-sm font-semibold text-gray-700 group-hover:text-white text-center transition-colors duration-500 line-clamp-2 relative z-10">
+                  {/* Name */}
+                  <p className="text-xs sm:text-sm font-semibold text-gray-700 group-hover:text-red-600 text-center transition-colors duration-500 line-clamp-2">
                     {cat.name}
                   </p>
 
-                  {/* Bottom Glow Effect */}
+                  {/* Bottom Glow */}
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-4 bg-green-500/0 group-hover:bg-green-500/30 blur-xl rounded-full transition-all duration-500"></div>
                 </div>
               </Link>
@@ -133,10 +129,7 @@ export default function CategorySection({ categories }) {
           })}
         </div>
 
-        {/* Scroll Hint */}
-        <div className="text-center mt-2 text-xs text-gray-400">
-          ← Scroll for more →
-        </div>
+        <div className="text-center mt-2 text-xs text-gray-400">← Scroll for more →</div>
       </div>
     </section>
   );

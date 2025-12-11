@@ -123,7 +123,7 @@ export default function Home() {
       {/* 4️⃣ Popular Products */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-white">
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
             <div className="max-w-7xl mx-auto">
               <PopularProducts products={popular} />
             </div>
@@ -152,7 +152,7 @@ export default function Home() {
       {/* 7️⃣ New Arrivals */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-gradient-to-r from-blue-50 to-purple-50">
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 ">
             <div className="max-w-7xl mx-auto">
               <NewArrivals products={newest} />
             </div>
@@ -174,7 +174,7 @@ export default function Home() {
       {/* 9️⃣ Recent + Top Products */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-white">
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 ">
             <div className="max-w-7xl mx-auto">
               <RecentAndTopProducts recent={recent} top={top} />
             </div>
@@ -185,7 +185,7 @@ export default function Home() {
       {/* 🔟 Services */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 bg-gradient-to-r from-gray-50 to-blue-50">
+          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 ">
             <div className="max-w-7xl mx-auto">
               <ServiceFeatures features={homeConfig?.service_features || []} />
             </div>

@@ -13,13 +13,9 @@ import axiosClient from "../../api/axiosClient";
 export default function FooterSection({ footer }) {
   if (!footer) return null;
 
-  // SAFE FALLBACKS
   const safeBrand = footer.brand || {};
   const safeNewsletter = footer.newsletter || {};
-
-  const socialLinks = Array.isArray(footer.social_links)
-    ? footer.social_links
-    : [];
+  const socialLinks = Array.isArray(footer.social_links) ? footer.social_links : [];
   const columns = Array.isArray(footer.columns) ? footer.columns : [];
   const payments = Array.isArray(footer.payments) ? footer.payments : [];
 
@@ -33,128 +29,127 @@ export default function FooterSection({ footer }) {
     }
   }, [message]);
 
- const handleSubscribe = async (e) => {
-  e.preventDefault();
-  setMessage("");
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    setMessage("");
 
-  try {
-    const res = await axiosClient.post("/footer/subscribe/", { email });
+    try {
+      const res = await axiosClient.post("/footer/subscribe/", { email });
+      if (res.status === 201) {
+        setMessage("🎉 Subscription successful!");
+        setEmail("");
+      }
+    } catch (err) {
+      const status = err.response?.status;
+      const msg = err.response?.data?.message;
 
-    // Success (201)
-    if (res.status === 201) {
-      setMessage("🎉 Subscription successful!");
-      setEmail("");
+      if (status === 409 || msg === "This email is already subscribed.") {
+        setMessage("Use another email — this one is already subscribed!");
+        return;
+      }
+      if (status === 400) {
+        setMessage("Please enter a valid email address!");
+        return;
+      }
+      setMessage("Subscription failed. Try again!");
     }
-  } catch (err) {
-    const status = err.response?.status;
-    const msg = err.response?.data?.message;
-
-    // 🟡 Duplicate Email (409)
-    if (status === 409 || msg === "This email is already subscribed.") {
-      setMessage("Use another email — this one is already subscribed!");
-      return;
-    }
-
-    // 🔴 Invalid email / Missing email (400)
-    if (status === 400) {
-      setMessage("Please enter a valid email address!");
-      return;
-    }
-
-    // 🔴 Any other unexpected error
-    setMessage("Subscription failed. Try again!");
-  }
-};
-
+  };
 
   return (
-    <footer className="w-full bg-gray-900 text-gray-300 pt-14 rounded-t-3xl">
-      {/* Newsletter Section */}
-      {safeNewsletter?.is_enabled && (
-        <div className="max-w-7xl mx-auto px-4 pb-10">
-          <div className="bg-gray-800/50 backdrop-blur-lg p-8 rounded-2xl border border-gray-700 shadow-lg">
-            <h3 className="text-2xl font-bold mb-2 text-white">
-              {safeNewsletter?.title || "Get Updates"}
-            </h3>
+    <footer className="w-full relative overflow-hidden">
 
-            <p className="text-gray-400 mb-6 max-w-xl">
-              {safeNewsletter?.description || ""}
-            </p>
+      {/* SAME GRADIENT (NO CHANGE) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-pink-100/50 to-orange-100/50"></div>
 
-            <form
-              onSubmit={handleSubscribe}
-              className="flex flex-col sm:flex-row gap-4 max-w-md"
-            >
-              <input
-                type="email"
-                required
-                placeholder={safeNewsletter?.placeholder || "Enter your email"}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="px-5 py-3 rounded-full text-white flex-1 focus:outline-none shadow-md"
-              />
+      {/* Decorative Glows */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-red-300/30 to-pink-300/30 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-orange-300/30 to-yellow-300/30 rounded-full blur-3xl"></div>
 
-              <button
-                type="submit"
-                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-3 rounded-full font-semibold hover:opacity-90 transition"
-              >
-                {safeNewsletter?.button_text || "Subscribe"}
-              </button>
-            </form>
+      {/* MAIN CONTAINER (Mobile spacing perfect) */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6">
 
-            {message && (
-              <p className="text-sm mt-3 text-green-400">{message}</p>
-            )}
+        {/* Newsletter Section */}
+        {safeNewsletter?.is_enabled && (
+          <div className="mb-6 flex justify-center px-2 sm:px-0">
+            <div className="bg-white/50 backdrop-blur-xl p-4 sm:p-5 rounded-xl border border-white/50 shadow-xl max-w-md w-full text-center">
+              
+              <h3 className="text-lg sm:text-xl font-bold mb-1 bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+                {safeNewsletter?.title || "Get Updates"}
+              </h3>
+
+              <p className="text-gray-600 text-xs sm:text-sm mb-3 leading-normal">
+                {safeNewsletter?.description || ""}
+              </p>
+
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 justify-center">
+                <input
+                  type="email"
+                  required
+                  placeholder={safeNewsletter?.placeholder || "Enter your email"}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="px-4 py-2 rounded-lg bg-white/80 text-gray-800 flex-1 focus:outline-none focus:ring-2 focus:ring-red-300 shadow-sm text-sm"
+                />
+
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-red-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg text-sm"
+                >
+                  {safeNewsletter?.button_text || "Subscribe"}
+                </button>
+              </form>
+
+              {message && (
+                <p className="text-xs sm:text-sm mt-2 text-green-600 font-medium">{message}</p>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Footer Middle */}
-      <div className="border-t border-gray-800 border-b">
-        <div className="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-10 text-sm">
+        {/* Grid Content */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 mb-4 px-2 sm:px-0">
+
           {/* Brand Info */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">
+          <div className="col-span-2 sm:col-span-3 lg:col-span-2">
+            <h4 className="text-base sm:text-lg font-bold mb-2 bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
               {safeBrand?.site_name || "Brand"}
             </h4>
 
-            <p className="text-gray-400 mb-4">{safeBrand?.description || ""}</p>
+            <p className="text-gray-600 text-xs sm:text-sm mb-2 line-clamp-2">
+              {safeBrand?.description || ""}
+            </p>
 
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               {socialLinks.map((s, i) => (
-                <a key={i} href={s.url} target="_blank">
-                  {s.platform === "facebook" && (
-                    <FaFacebookF className="text-gray-400 hover:text-white cursor-pointer text-lg" />
-                  )}
-                  {s.platform === "instagram" && (
-                    <FaInstagram className="text-gray-400 hover:text-white cursor-pointer text-lg" />
-                  )}
-                  {s.platform === "twitter" && (
-                    <FaTwitter className="text-gray-400 hover:text-white cursor-pointer text-lg" />
-                  )}
-                  {s.platform === "linkedin" && (
-                    <FaLinkedinIn className="text-gray-400 hover:text-white cursor-pointer text-lg" />
-                  )}
-                  {s.platform === "youtube" && (
-                    <FaYoutube className="text-gray-400 hover:text-white cursor-pointer text-lg" />
-                  )}
+                <a 
+                  key={i} 
+                  href={s.url} 
+                  target="_blank"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center 
+                    hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg group"
+                >
+                  {s.platform === "facebook" && <FaFacebookF className="text-gray-600 group-hover:text-white text-sm" />}
+                  {s.platform === "instagram" && <FaInstagram className="text-gray-600 group-hover:text-white text-sm" />}
+                  {s.platform === "twitter" && <FaTwitter className="text-gray-600 group-hover:text-white text-sm" />}
+                  {s.platform === "linkedin" && <FaLinkedinIn className="text-gray-600 group-hover:text-white text-sm" />}
+                  {s.platform === "youtube" && <FaYoutube className="text-gray-600 group-hover:text-white text-sm" />}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Dynamic Columns */}
+          {/* Columns */}
           {columns.map((col) => (
             <div key={col.id}>
-              <h4 className="font-semibold mb-4 text-white">{col.title}</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="text-sm sm:text-base font-bold mb-2 text-gray-800">{col.title}</h4>
+              <ul className="space-y-1 text-gray-600">
                 {Array.isArray(col.links) &&
                   col.links.map((lnk, idx) => (
                     <li key={idx}>
                       <Link
                         to={lnk.url}
                         target={lnk.open_in_new_tab ? "_blank" : "_self"}
-                        className="hover:text-white"
+                        className="text-xs sm:text-sm hover:text-red-500 transition-colors"
                       >
                         {lnk.label}
                       </Link>
@@ -164,27 +159,36 @@ export default function FooterSection({ footer }) {
             </div>
           ))}
 
-          {/* Payment Methods */}
-          <div>
-            <h4 className="font-semibold mb-4 text-white">We Accept</h4>
-            <div className="flex gap-3 flex-wrap">
-              {payments.map((p, idx) => (
-                <img
-                  key={idx}
-                  src={p.image}
-                  className="max-w-xs object-contain bg-white p-1 rounded"
-                />
-              ))}
+          {/* Payments */}
+          {payments.length > 0 && (
+            <div className="col-span-2 sm:col-span-3 lg:col-span-1">
+              <h4 className="text-sm sm:text-base font-bold mb-2 text-gray-800">We Accept</h4>
+              <div className="flex gap-2 flex-wrap">
+                {payments.map((p, idx) => (
+                  <img
+                    key={idx}
+                    src={p.image}
+                    alt="Payment"
+                    className="h-6 sm:h-7 object-contain bg-white/60 backdrop-blur-sm p-1 rounded shadow-sm"
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          )}
 
-      {/* Bottom */}
-      <div className="text-center py-6 text-xs text-gray-500">
-        {safeBrand?.copyright_text}
-        <br />
-        {safeBrand?.owner_text}
+        </div>
+
+        {/* Bottom Text */}
+        <div className="border-t border-white/40 pt-3 text-center px-2 sm:px-0">
+          <p className="text-xs sm:text-sm text-gray-600">
+            {safeBrand?.copyright_text}
+          </p>
+          {safeBrand?.owner_text && (
+            <p className="text-xs text-gray-500 mt-1">
+              {safeBrand?.owner_text}
+            </p>
+          )}
+        </div>
       </div>
     </footer>
   );
