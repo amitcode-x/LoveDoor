@@ -10,7 +10,7 @@ export default function Topbar({ onMobileToggle }) {
   const toggleMenu = () => setOpenMenu((prev) => !prev);
 
   return (
-    <header className="h-14 border-b border-slate-800 bg-slate-900/70 backdrop-blur flex items-center justify-between px-4 relative">
+    <header className="h-14 border-b border-slate-800 bg-slate-900/70 backdrop-blur flex items-center justify-between px-4 relative z-[9999]">
 
       {/* ⭐ MOBILE MENU BUTTON */}
       <button

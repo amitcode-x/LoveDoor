@@ -95,7 +95,7 @@ function ProductCard({ product }) {
           </div>
 
           {/* Name */}
-          <h3 className="text-xs sm:text-sm font-semibold text-gray-800 line-clamp-2 
+          <h3 className="text-xs  sm:text-sm  text-gray-800 line-clamp-2 
           group-hover:text-red-500 transition-colors duration-300 min-h-[32px]">
             {product.name}
           </h3>

@@ -133,7 +133,7 @@ export default function Navbar() {
                 to="/" 
                 className="text-2xl font-bold tracking-wide leading-tight transition-all-smooth hover:scale-105"
               >
-                <span className="gradient-text">LoveDoor</span>
+                <span    className="gradient-text">LoveDoor</span>
                 <br />
                 <span className="text-[10px] font-normal text-gray-500">
                   LoveDoor to Galaxy of Gift

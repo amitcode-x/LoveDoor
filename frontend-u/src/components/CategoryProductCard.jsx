@@ -64,7 +64,7 @@ export default function CategoryProductCard({ product }) {
 
       {/* Product Name */}
       <Link to={`/product/${product.slug}`}>
-        <h3 className="mt-2 text-sm font-semibold line-clamp-2">
+        <h3 className="mt-2 text-sm line-clamp-2">
           {product.name}
         </h3>
       </Link>

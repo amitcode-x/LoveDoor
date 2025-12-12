@@ -77,7 +77,7 @@ function Card({ product }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           </div>
 
-          <h3 className="text-xs sm:text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-red-500 transition-colors duration-300 min-h-[32px]">
+          <h3 className="text-xs sm:text-sm  text-gray-800 line-clamp-2 group-hover:text-red-500 transition-colors duration-300 min-h-[32px]">
             {product.name}
           </h3>
         </Link>

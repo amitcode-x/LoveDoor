@@ -14,26 +14,43 @@ import {
   Check,
   X,
   Camera,
-  Award,
-  TrendingUp,
-  Clock,
+  Truck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useWishlist } from "../context/WishlistContext"; // Import wishlist context
 
 export default function Profile() {
   const navigate = useNavigate();
+ const { wishlistItems = [] } = useWishlist();
+ // Get real wishlist
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [ordersCount, setOrdersCount] = useState(0);
 
   useEffect(() => {
     loadProfile();
+    loadOrdersCount();
   }, []);
 
   const loadProfile = async () => {
     const res = await axiosClient.get("/auth/me/");
     setProfile(res.data);
     setLoading(false);
+  };
+
+  const loadOrdersCount = async () => {
+    try {
+      const res = await axiosClient.get("/orders/");
+      // If orders is paginated
+      if (res.data.results) {
+        setOrdersCount(res.data.count || res.data.results.length);
+      } else if (Array.isArray(res.data)) {
+        setOrdersCount(res.data.length);
+      }
+    } catch (err) {
+      console.log("Orders count error:", err);
+    }
   };
 
   const updateProfile = async (e) => {
@@ -52,18 +69,54 @@ export default function Profile() {
     navigate("/login");
   };
 
+  // ONLY 2 STATS: Orders & Wishlist
   const quickStats = [
-    { icon: Package, label: "Orders", value: "12", color: "from-blue-500 to-cyan-500" },
-    { icon: Heart, label: "Wishlist", value: "8", color: "from-pink-500 to-red-500" },
-    { icon: Award, label: "Points", value: "450", color: "from-yellow-500 to-orange-500" },
-    { icon: TrendingUp, label: "Saved", value: "₹2,340", color: "from-green-500 to-emerald-500" },
+    { 
+      icon: Package, 
+      label: "Orders", 
+      value: ordersCount.toString(), 
+      color: "from-blue-500 to-cyan-500",
+      onClick: () => navigate("/my-orders")
+    },
+    { 
+      icon: Heart, 
+      label: "Wishlist", 
+      value: (wishlistItems?.length || 0).toString(),
+ // Real wishlist count
+      color: "from-pink-500 to-red-500",
+      onClick: () => navigate("/wishlist")
+    },
   ];
 
   const navItems = [
-    { icon: Package, label: "My Orders", path: "/my-orders", color: "from-blue-500 to-cyan-500", desc: "Track your orders" },
-    { icon: MapPin, label: "Addresses", path: "/addresses", color: "from-purple-500 to-pink-500", desc: "Manage addresses" },
-    { icon: Heart, label: "Wishlist", path: "/wishlist", color: "from-pink-500 to-red-500", desc: "Saved items" },
-    { icon: ShoppingCart, label: "My Cart", path: "/cart", color: "from-orange-500 to-yellow-500", desc: "View cart" },
+    { 
+      icon: Truck, 
+      label: "Track Order", 
+      path: "/track-order", 
+      color: "from-blue-500 to-cyan-500", 
+      desc: "Track your orders" 
+    },
+    { 
+      icon: MapPin, 
+      label: "Addresses", 
+      path: "/addresses", 
+      color: "from-purple-500 to-pink-500", 
+      desc: "Manage addresses" 
+    },
+    { 
+      icon: Heart, 
+      label: "Wishlist", 
+      path: "/wishlist", 
+      color: "from-pink-500 to-red-500", 
+      desc: "Saved items" 
+    },
+    { 
+      icon: ShoppingCart, 
+      label: "My Cart", 
+      path: "/cart", 
+      color: "from-orange-500 to-yellow-500", 
+      desc: "View cart" 
+    },
   ];
 
   if (loading) {
@@ -137,22 +190,23 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* ================= QUICK STATS ================= */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        {/* ================= QUICK STATS (ONLY 2) ================= */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
           {quickStats.map((stat, idx) => (
             <div
               key={idx}
-              className="group relative bg-white/60 backdrop-blur-lg border border-white/40 rounded-xl sm:rounded-2xl p-4 sm:p-5 hover:bg-white/80 cursor-pointer transition-all duration-500 hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-2xl"
+              onClick={stat.onClick}
+              className="group relative bg-white/60 backdrop-blur-lg border border-white/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-white/80 cursor-pointer transition-all duration-500 hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-2xl"
             >
               {/* Shine Effect */}
               <div className="absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/30 to-transparent"></div>
 
               <div className="relative z-10">
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg group-hover:shadow-xl transition-all duration-500 group-hover:scale-110`}>
-                  <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg group-hover:shadow-xl transition-all duration-500 group-hover:scale-110`}>
+                  <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </div>
                 <p className="text-xs sm:text-sm text-gray-600 mb-1">{stat.label}</p>
-                <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+                <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
                   {stat.value}
                 </p>
               </div>

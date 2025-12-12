@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+* {
+  font-family: "Outfit", sans-serif ;
+}
+
+
 
 /* Hide scrollbar but keep scroll */
 .no-scrollbar {
