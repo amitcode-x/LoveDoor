@@ -39,8 +39,12 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 # --------------------------------------------
 # DEBUG & ALLOWED HOSTS
 # --------------------------------------------
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+
+DEBUG = os.environ.get("DEBUG") == "True"
+# DEBUG = True
+# ALLOWED_HOSTS = ["*"]
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # --------------------------------------------
 # APPLICATIONS
