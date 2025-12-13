@@ -44,7 +44,12 @@ DEBUG = os.environ.get("DEBUG") == "True"
 # DEBUG = True
 # ALLOWED_HOSTS = ["*"]
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [
+    "lovedoor-backend.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
+
 
 # --------------------------------------------
 # APPLICATIONS
@@ -227,9 +232,10 @@ EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 # BACKEND BASE URL
 # --------------------------------------------
 if os.getenv("DJANGO_PRODUCTION") == "true":
-    BACKEND_BASE_URL = "https://your-domain.com"
+    BACKEND_BASE_URL = "https://lovedoor-backend.onrender.com"
 else:
     BACKEND_BASE_URL = "http://127.0.0.1:8000"
+
 
 # --------------------------------------------
 # CORS SETTINGS (VERY IMPORTANT)
