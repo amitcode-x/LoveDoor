@@ -43,7 +43,7 @@ export default function FeaturedOffers({ offers }) {
 
         {/* ⭐ Horizontal Scroll */}
         <div
-          className="flex gap-3 sm:gap-4 overflow-x-auto py-3 scroll-smooth relative z-10"
+          className="flex gap-6 sm:gap-4 overflow-x-auto py-3 scroll-smooth relative z-10"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -98,7 +98,7 @@ export default function FeaturedOffers({ offers }) {
               <div className="mt-3 flex flex-col items-center">
 
                 <h3 className="
-                  text-gray-800 font-bold text-xs sm:text-sm leading-tight 
+                  text-gray-800  text-xs sm:text-2xl leading-tight 
                   text-center line-clamp-2 mb-1
                   group-hover:bg-gradient-to-r group-hover:from-red-500 group-hover:to-pink-500 
                   group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300
@@ -106,7 +106,7 @@ export default function FeaturedOffers({ offers }) {
                   {offer.title}
                 </h3>
 
-                <p className="text-gray-600 text-[9px] sm:text-[10px] text-center line-clamp-2 mb-2">
+                <p className="text-gray-600 text-[9px] sm:text-[12px] text-center line-clamp-2 mb-2">
                   {offer.text}
                 </p>
 
