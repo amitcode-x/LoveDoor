@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     'apps.footer',
     
     
-     "cloudinary",
+    "cloudinary",
     "cloudinary_storage",
 ]
 
@@ -200,6 +200,12 @@ STATIC_URL = "/static/"
 
 MEDIA_URL = "/media/"
 # MEDIA_ROOT = BASE_DIR / "media"
+
+
+# STATIC FILES
+# STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 # --------------------------------------------
 # REST FRAMEWORK + JWT
