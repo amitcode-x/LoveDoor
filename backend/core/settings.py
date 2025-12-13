@@ -7,6 +7,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # --------------------------------------------
 # LOAD THE .env FILE
 # --------------------------------------------
@@ -62,7 +67,47 @@ INSTALLED_APPS = [
     'apps.wishlist',
     'apps.homepage',
     'apps.footer',
+    
+    
+     "cloudinary",
+    "cloudinary_storage",
 ]
+
+
+# ==============================
+# Cloudinary Configuration
+# ==============================
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+)
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+}
+
+
+# ==============================
+# Django 4.2+ Storage Configuration (REQUIRED)
+# ==============================
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+
 
 # --------------------------------------------
 # MIDDLEWARE
@@ -139,9 +184,13 @@ USE_TZ = True
 # STATIC & MEDIA FILES
 # --------------------------------------------
 STATIC_URL = "/static/"
+# ==============================
+# Cloudinary Media Storage
+# ==============================
+
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# MEDIA_ROOT = BASE_DIR / "media"
 
 # --------------------------------------------
 # REST FRAMEWORK + JWT
