@@ -9,7 +9,7 @@ const API_BASE_URL =
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
 });
 
 // Automatically attach JWT token to all requests
