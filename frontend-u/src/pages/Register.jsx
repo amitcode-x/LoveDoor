@@ -42,78 +42,76 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center py-12 px-4">
-      {/* Background Gradient */}
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center py-10 px-4">
       <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-pink-100/60 to-orange-100/60"></div>
-      
-      {/* Glow Effects */}
+
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-300/40 to-orange-300/50 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-red-300/50 to-yellow-300/50 rounded-full blur-3xl"></div>
 
-      {/* Register Form */}
-      <div className="relative z-10 w-full max-w-md">
+      {/* 🔽 COMPACT CARD */}
+      <div className="relative z-10 w-full max-w-sm">
         <form
           onSubmit={handleSubmit}
-          className="group bg-white/40 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.15)] transition-all duration-500"
+          className="group bg-white/40 backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-white/30 transition-all duration-500"
         >
-          {/* Shine Effect */}
           <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none"></div>
 
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-red-500 mb-4 shadow-lg">
-              <UserPlus className="text-white" size={28} />
+          <div className="text-center mb-5">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-red-500 mb-3 shadow-lg">
+              <UserPlus className="text-white" size={24} />
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent mb-2">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
               Create Account
             </h2>
-            <p className="text-sm text-gray-600">Join us and start shopping</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Join us and start shopping
+            </p>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-4 bg-red-100/80 backdrop-blur-sm border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm font-semibold animate-shake">
+            <div className="mb-4 bg-red-100/80 border border-red-300 text-red-700 px-3 py-2 rounded-xl text-sm font-semibold animate-shake">
               {error}
             </div>
           )}
 
-          {/* Username */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <div className="mb-3">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
               Username
             </label>
             <input
-              className="w-full bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all placeholder-gray-500"
+              className="w-full bg-white/60 border border-white/40 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-pink-400"
               placeholder="Choose a username"
               value={form.username}
-              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, username: e.target.value })
+              }
               required
             />
           </div>
 
-          {/* Email */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <div className="mb-3">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
               Email
             </label>
             <input
               type="email"
-              className="w-full bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all placeholder-gray-500"
+              className="w-full bg-white/60 border border-white/40 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-pink-400"
               placeholder="your@email.com"
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })
+              }
               required
             />
           </div>
 
-          {/* First & Last Name */}
-          <div className="mb-4 grid grid-cols-2 gap-3">
+          <div className="mb-3 grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 First Name
               </label>
               <input
-                className="w-full bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all placeholder-gray-500"
+                className="w-full bg-white/60 border border-white/40 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-pink-400"
                 placeholder="First"
                 value={form.first_name}
                 onChange={(e) =>
@@ -124,11 +122,11 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Last Name
               </label>
               <input
-                className="w-full bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all placeholder-gray-500"
+                className="w-full bg-white/60 border border-white/40 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-pink-400"
                 placeholder="Last"
                 value={form.last_name}
                 onChange={(e) =>
@@ -139,41 +137,47 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <div className="mb-3">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Lock
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={16}
+              />
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl pl-10 pr-12 py-3 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all placeholder-gray-500"
+                className="w-full bg-white/60 border border-white/40 rounded-xl pl-9 pr-11 py-2.5 focus:ring-2 focus:ring-pink-400"
                 placeholder="Create password"
                 value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, password: e.target.value })
+                }
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
-          {/* Confirm Password */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <div className="mb-5">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
               Confirm Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Lock
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={16}
+              />
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className="w-full bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl pl-10 pr-12 py-3 focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition-all placeholder-gray-500"
+                className="w-full bg-white/60 border border-white/40 rounded-xl pl-9 pr-11 py-2.5 focus:ring-2 focus:ring-pink-400"
                 placeholder="Re-enter password"
                 value={form.confirm_password}
                 onChange={(e) =>
@@ -183,37 +187,44 @@ export default function Register() {
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
               >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showConfirmPassword ? (
+                  <EyeOff size={16} />
+                ) : (
+                  <Eye size={16} />
+                )}
               </button>
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white py-3 rounded-xl font-bold hover:from-pink-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white py-2.5 rounded-xl font-bold shadow-lg disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                Creating Account...
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                Creating...
               </>
             ) : (
               <>
-                <UserPlus size={20} />
+                <UserPlus size={18} />
                 Create Account
               </>
             )}
           </button>
 
-          {/* Login Link */}
-          <p className="text-center mt-6 text-sm text-gray-600">
+          <p className="text-center mt-5 text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-pink-600 hover:text-pink-700 font-semibold underline">
+            <Link
+              to="/login"
+              className="text-pink-600 hover:text-pink-700 font-semibold underline"
+            >
               Login
             </Link>
           </p>
