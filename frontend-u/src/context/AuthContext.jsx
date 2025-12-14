@@ -28,9 +28,10 @@ export function AuthProvider({ children }) {
   // -------------------------------
   const login = async (identifier, password) => {
     const res = await axiosClient.post("/auth/login/", {
-      username: identifier,
-      password,
-    });
+  identifier: identifier,
+  password,
+});
+
 
     localStorage.setItem("access_token", res.data.tokens.access);
     localStorage.setItem("refresh_token", res.data.tokens.refresh);
