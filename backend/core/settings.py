@@ -7,7 +7,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 
-
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -17,7 +16,6 @@ import cloudinary.api
 # --------------------------------------------
 load_dotenv()
 
-# Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --------------------------------------------
@@ -32,17 +30,12 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 NEWSLETTER_ADMIN_EMAIL = os.getenv("NEWSLETTER_ADMIN_EMAIL")
-
-# ⭐ ADD THIS → LOAD GOOGLE CLIENT ID FROM .env
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 # --------------------------------------------
 # DEBUG & ALLOWED HOSTS
 # --------------------------------------------
-
-DEBUG = os.environ.get("DEBUG") == "True"
-# DEBUG = True
-# ALLOWED_HOSTS = ["*"]
+DEBUG = os.getenv("DEBUG") == "True"
 
 ALLOWED_HOSTS = [
     "lovedoor-backend.onrender.com",
@@ -50,61 +43,44 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
-
 # --------------------------------------------
 # APPLICATIONS
 # --------------------------------------------
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 
-    # Third-party
-    'rest_framework',
-    'corsheaders',
-    'django_extensions',
+    "rest_framework",
+    "corsheaders",
+    "django_extensions",
 
-    # Custom Apps
-    'apps.users',
-    'apps.products',
-    'apps.orders',
-    'apps.payments',
-    'apps.adminpanel',
-    'apps.wishlist',
-    'apps.homepage',
-    'apps.footer',
-    
-    
+    "apps.users",
+    "apps.products",
+    "apps.orders",
+    "apps.payments",
+    "apps.adminpanel",
+    "apps.wishlist",
+    "apps.homepage",
+    "apps.footer",
+
     "cloudinary",
     "cloudinary_storage",
 ]
 
-
-# ==============================
-# Cloudinary Configuration
-# ==============================
-
+# --------------------------------------------
+# CLOUDINARY
+# --------------------------------------------
 cloudinary.config(
-    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.environ.get("CLOUDINARY_API_KEY"),
-    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
-}
-
-
-# ==============================
-# Django 4.2+ Storage Configuration (REQUIRED)
-# ==============================
 
 STORAGES = {
     "default": {
@@ -115,59 +91,52 @@ STORAGES = {
     },
 }
 
-
-
-
 # --------------------------------------------
-# MIDDLEWARE
+# MIDDLEWARE  ✅ FIXED ORDER
 # --------------------------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    "django.middleware.security.SecurityMiddleware",
 
-    # CORS Middleware (MUST be at top)
-    'corsheaders.middleware.CorsMiddleware',
+    # ✅ MUST be before SessionMiddleware
+    "corsheaders.middleware.CorsMiddleware",
 
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-ROOT_URLCONF = 'core.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = 'core.wsgi.application'
 
 # --------------------------------------------
-# DATABASE (Using ENV Variables)
+# CSRF FIX  ✅ MOST IMPORTANT
+# --------------------------------------------
+CSRF_TRUSTED_ORIGINS = [
+    "https://lovedoor.vercel.app",
+    "https://*.vercel.app",
+    "https://lovedoor-backend.onrender.com",
+]
+
+# --------------------------------------------
+# URLS / WSGI
+# --------------------------------------------
+ROOT_URLCONF = "core.urls"
+WSGI_APPLICATION = "core.wsgi.application"
+
+# --------------------------------------------
+# DATABASE
 # --------------------------------------------
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT"),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
+        },
     }
 }
 
@@ -175,14 +144,14 @@ DATABASES = {
 # PASSWORD VALIDATION
 # --------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 # --------------------------------------------
-# INTERNATIONALIZATION
+# I18N
 # --------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -190,25 +159,14 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------
-# STATIC & MEDIA FILES
+# STATIC / MEDIA
 # --------------------------------------------
 STATIC_URL = "/static/"
-# ==============================
-# Cloudinary Media Storage
-# ==============================
-
-
-MEDIA_URL = "/media/"
-# MEDIA_ROOT = BASE_DIR / "media"
-
-
-# STATIC FILES
-# STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
+MEDIA_URL = "/media/"
 
 # --------------------------------------------
-# REST FRAMEWORK + JWT
+# REST + JWT
 # --------------------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -223,28 +181,26 @@ SIMPLE_JWT = {
 }
 
 # --------------------------------------------
-# EMAIL SETTINGS
+# EMAIL
 # --------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 
 # --------------------------------------------
 # BACKEND BASE URL
 # --------------------------------------------
-if os.getenv("DJANGO_PRODUCTION") == "true":
-    BACKEND_BASE_URL = "https://lovedoor-backend.onrender.com"
-else:
-    BACKEND_BASE_URL = "http://127.0.0.1:8000"
-
+BACKEND_BASE_URL = (
+    "https://lovedoor-backend.onrender.com"
+    if os.getenv("DJANGO_PRODUCTION") == "true"
+    else "http://127.0.0.1:8000"
+)
 
 # --------------------------------------------
-# CORS SETTINGS (VERY IMPORTANT)
+# CORS
 # --------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
