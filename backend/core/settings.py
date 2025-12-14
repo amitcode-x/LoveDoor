@@ -12,7 +12,7 @@ import cloudinary.uploader
 import cloudinary.api
 
 # --------------------------------------------
-# LOAD THE .env FILE
+# LOAD ENV
 # --------------------------------------------
 load_dotenv()
 
@@ -28,12 +28,12 @@ RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
 NEWSLETTER_ADMIN_EMAIL = os.getenv("NEWSLETTER_ADMIN_EMAIL")
+
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 # --------------------------------------------
-# DEBUG & ALLOWED HOSTS
+# DEBUG & HOSTS
 # --------------------------------------------
 DEBUG = os.getenv("DEBUG") == "True"
 
@@ -54,10 +54,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    # Third party
     "rest_framework",
     "corsheaders",
     "django_extensions",
 
+    # Local apps
     "apps.users",
     "apps.products",
     "apps.orders",
@@ -67,6 +69,7 @@ INSTALLED_APPS = [
     "apps.homepage",
     "apps.footer",
 
+    # Media
     "cloudinary",
     "cloudinary_storage",
 ]
@@ -92,7 +95,7 @@ STORAGES = {
 }
 
 # --------------------------------------------
-# MIDDLEWARE  ✅ FIXED ORDER
+# MIDDLEWARE  ✅ ORDER FIXED
 # --------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -109,7 +112,7 @@ MIDDLEWARE = [
 ]
 
 # --------------------------------------------
-# CSRF FIX  ✅ MOST IMPORTANT
+# CSRF (VERY IMPORTANT FOR LOGIN)
 # --------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
     "https://lovedoor.vercel.app",
@@ -118,10 +121,28 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # --------------------------------------------
-# URLS / WSGI
+# URL / WSGI
 # --------------------------------------------
 ROOT_URLCONF = "core.urls"
 WSGI_APPLICATION = "core.wsgi.application"
+
+# --------------------------------------------
+# TEMPLATES  ✅ FIXED (ADMIN ERROR SOLVED)
+# --------------------------------------------
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],  # ✅ REQUIRED
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
 
 # --------------------------------------------
 # DATABASE
@@ -151,7 +172,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # --------------------------------------------
-# I18N
+# INTERNATIONALIZATION
 # --------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -163,6 +184,7 @@ USE_TZ = True
 # --------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
 MEDIA_URL = "/media/"
 
 # --------------------------------------------
