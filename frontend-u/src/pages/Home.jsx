@@ -1,35 +1,49 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 
-// Animation + Loader
+// Loader + Animation
 import Loader from "../components/home/Loader";
 import AnimateOnScroll from "../components/home/AnimateOnScroll";
 
 // ==========================
-// LAZY IMPORTS
+// 🔥 ABOVE THE FOLD (EAGER)
 // ==========================
-const StaticHero = lazy(() => import("../components/home/StaticHero"));
-const MainHeroSlider = lazy(() => import("../components/home/MainHeroSlider"));
+import StaticHero from "../components/home/StaticHero";
+import MainHeroSlider from "../components/home/MainHeroSlider";
+
+// ==========================
+// ⚡ LAZY LOADED SECTIONS
+// ==========================
 const CategorySection = lazy(() =>
   import("../components/home/CategorySection")
 );
 const PopularProducts = lazy(() =>
   import("../components/home/PopularProducts")
 );
-const FeaturedOffers = lazy(() => import("../components/home/FeaturedOffers"));
-const SecondaryHero = lazy(() => import("../components/home/SecondaryHero"));
-const NewArrivals = lazy(() => import("../components/home/NewArrivals"));
-const GiftOffer = lazy(() => import("../components/home/GiftOffer"));
+const FeaturedOffers = lazy(() =>
+  import("../components/home/FeaturedOffers")
+);
+const SecondaryHero = lazy(() =>
+  import("../components/home/SecondaryHero")
+);
+const NewArrivals = lazy(() =>
+  import("../components/home/NewArrivals")
+);
+const GiftOffer = lazy(() =>
+  import("../components/home/GiftOffer")
+);
 const RecentAndTopProducts = lazy(() =>
   import("../components/home/RecentAndTopProducts")
 );
 const ServiceFeatures = lazy(() =>
   import("../components/home/ServiceFeatures")
 );
-const FooterSection = lazy(() => import("../components/home/FooterSection"));
+const FooterSection = lazy(() =>
+  import("../components/home/FooterSection")
+);
 
 // ========================
-// 🎨 PRODUCT SKELETON LOADER
+// PRODUCT SKELETON
 // ========================
 const ProductSkeleton = ({ count = 4 }) => (
   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -38,31 +52,17 @@ const ProductSkeleton = ({ count = 4 }) => (
         key={idx}
         className="bg-white/40 backdrop-blur-xl rounded-2xl p-4 shadow-xl border border-white/30 animate-pulse"
       >
-        {/* Image Skeleton */}
         <div className="w-full aspect-square bg-gradient-to-br from-pink-200/50 to-orange-200/50 rounded-xl mb-3"></div>
-        
-        {/* Title Skeleton */}
         <div className="h-4 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-full mb-2"></div>
         <div className="h-4 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-full mb-3 w-3/4"></div>
-        
-        {/* Rating Skeleton */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="h-3 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-full w-20"></div>
-          <div className="h-3 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-full w-8"></div>
-        </div>
-        
-        {/* Price Skeleton */}
-        <div className="h-5 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-full mb-3 w-1/2"></div>
-        
-        {/* Button Skeleton */}
-        <div className="h-9 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-lg w-full"></div>
+        <div className="h-5 bg-gradient-to-r from-pink-200/50 to-orange-200/50 rounded-full w-1/2"></div>
       </div>
     ))}
   </div>
 );
 
 // ========================
-// 🎨 CATEGORY SKELETON LOADER
+// CATEGORY SKELETON
 // ========================
 const CategorySkeleton = () => (
   <div className="flex gap-4 overflow-hidden">
@@ -83,199 +83,122 @@ export default function Home() {
   const [popular, setPopular] = useState([]);
   const [newest, setNewest] = useState([]);
   const [homeConfig, setHomeConfig] = useState(null);
-  
-  // ⭐ Loading states
+
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
   // ========================
-  // 1️⃣ FETCH HOMEPAGE CONFIG
+  // FETCH HOMEPAGE CONFIG
   // ========================
   useEffect(() => {
     axiosClient
       .get("/homepage/")
       .then((res) => setHomeConfig(res.data))
-      .catch((err) => console.log("Homepage config error:", err));
+      .catch(() => {});
   }, []);
 
   // ========================
-  // 2️⃣ FETCH CATEGORIES + PRODUCTS
+  // FETCH PRODUCTS + CATEGORIES
   // ========================
   useEffect(() => {
+    let mounted = true;
+
     async function fetchData() {
       try {
-        // ⭐ Categories loading
         setLoadingCategories(true);
         const catRes = await axiosClient.get("/products/categories/");
-        setCategories(
-          Array.isArray(catRes.data?.results)
-            ? catRes.data.results
-            : Array.isArray(catRes.data)
-            ? catRes.data
-            : []
-        );
-        setLoadingCategories(false);
+        if (mounted) {
+          setCategories(catRes.data?.results || []);
+          setLoadingCategories(false);
+        }
 
-        // ⭐ Products loading
         setLoadingProducts(true);
         const [popRes, newRes] = await Promise.all([
           axiosClient.get("/products/?featured=true"),
           axiosClient.get("/products/?ordering=-created_at"),
         ]);
 
-        setPopular(
-          Array.isArray(popRes.data?.results)
-            ? popRes.data.results
-            : Array.isArray(popRes.data)
-            ? popRes.data
-            : []
-        );
-
-        setNewest(
-          Array.isArray(newRes.data?.results)
-            ? newRes.data.results
-            : Array.isArray(newRes.data)
-            ? newRes.data
-            : []
-        );
-        setLoadingProducts(false);
-      } catch (err) {
-        console.error("Homepage data fetch error:", err);
+        if (mounted) {
+          setPopular(popRes.data?.results || []);
+          setNewest(newRes.data?.results || []);
+          setLoadingProducts(false);
+        }
+      } catch {
         setLoadingCategories(false);
         setLoadingProducts(false);
       }
     }
 
     fetchData();
+    return () => (mounted = false);
   }, []);
 
-  // Safety slices
-  const recent = Array.isArray(newest) ? newest.slice(0, 3) : [];
-  const top = Array.isArray(popular) ? popular.slice(0, 3) : [];
+  const recent = newest.slice(0, 3);
+  const top = popular.slice(0, 3);
 
   return (
     <div className="min-h-screen md:py-10 bg-gradient-to-br from-gray-50 via-white to-gray-100">
 
-      {/* 1️⃣ Static Hero */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <StaticHero data={homeConfig?.static_hero} />
-        </AnimateOnScroll>
-      </Suspense>
+      {/* 🔥 HERO (FAST FIRST PAINT) */}
+      <AnimateOnScroll>
+        <StaticHero data={homeConfig?.static_hero} />
+      </AnimateOnScroll>
 
-      {/* 2️⃣ Main Slider */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <MainHeroSlider slides={homeConfig?.hero_slides || []} />
-        </AnimateOnScroll>
-      </Suspense>
+      <AnimateOnScroll>
+        <MainHeroSlider slides={homeConfig?.hero_slides || []} />
+      </AnimateOnScroll>
 
-      {/* 3️⃣ Categories */}
+      {/* ⚡ ALL LAZY SECTIONS */}
       <Suspense fallback={<Loader />}>
         <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
-            <div className="max-w-7xl mx-auto">
-              {loadingCategories ? (
-                <CategorySkeleton />
-              ) : (
-                <CategorySection categories={categories} />
-              )}
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            {loadingCategories ? (
+              <CategorySkeleton />
+            ) : (
+              <CategorySection categories={categories} />
+            )}
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 4️⃣ Popular Products */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
-            <div className="max-w-7xl mx-auto">
-              {loadingProducts ? (
-                <ProductSkeleton count={4} />
-              ) : (
-                <PopularProducts products={popular} />
-              )}
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            {loadingProducts ? (
+              <ProductSkeleton />
+            ) : (
+              <PopularProducts products={popular} />
+            )}
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 5️⃣ Featured Offers */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
-            <div className="max-w-7xl mx-auto">
-              <FeaturedOffers offers={homeConfig?.featured_offers || []} />
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            <FeaturedOffers offers={homeConfig?.featured_offers || []} />
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 6️⃣ Secondary Hero */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
           <SecondaryHero data={homeConfig?.secondary_hero} />
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 7️⃣ New Arrivals */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 ">
-            <div className="max-w-7xl mx-auto">
-              {loadingProducts ? (
-                <ProductSkeleton count={4} />
-              ) : (
-                <NewArrivals products={newest} />
-              )}
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            {loadingProducts ? (
+              <ProductSkeleton />
+            ) : (
+              <NewArrivals products={newest} />
+            )}
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 8️⃣ Gift Offer */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6">
-            <div className="max-w-7xl mx-auto">
-              <GiftOffer data={homeConfig?.gift_offer} />
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            <GiftOffer data={homeConfig?.gift_offer} />
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 9️⃣ Recent + Top Products */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 ">
-            <div className="max-w-7xl mx-auto">
-              {loadingProducts ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <ProductSkeleton count={3} />
-                  <ProductSkeleton count={3} />
-                </div>
-              ) : (
-                <RecentAndTopProducts recent={recent} top={top} />
-              )}
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            {loadingProducts ? (
+              <ProductSkeleton count={3} />
+            ) : (
+              <RecentAndTopProducts recent={recent} top={top} />
+            )}
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 🔟 Services */}
-      <Suspense fallback={<Loader />}>
-        <AnimateOnScroll>
-          <section className="w-full px-3 sm:px-4 md:px-6 py-4 md:py-6 ">
-            <div className="max-w-7xl mx-auto">
-              <ServiceFeatures features={homeConfig?.service_features || []} />
-            </div>
+          <section className="px-4 py-6 max-w-7xl mx-auto">
+            <ServiceFeatures features={homeConfig?.service_features || []} />
           </section>
-        </AnimateOnScroll>
-      </Suspense>
 
-      {/* 1️⃣1️⃣ Footer */}
-      <Suspense fallback={<Loader />}>
-        <FooterSection />
+          <FooterSection />
+        </AnimateOnScroll>
       </Suspense>
     </div>
   );
