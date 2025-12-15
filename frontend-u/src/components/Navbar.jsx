@@ -6,7 +6,14 @@ import { useWishlist } from "../context/WishlistContext";
 import SearchBar from "./SearchBar";
 import BottomNav from "./BottomNav";
 
-import { FiMenu, FiUser, FiLogOut, FiSearch, FiHeart, FiX } from "react-icons/fi";
+import {
+  FiMenu,
+  FiUser,
+  FiLogOut,
+  FiSearch,
+  FiHeart,
+  FiX,
+} from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
 import SideDrawer from "./SideDrawer";
 import CartDrawer from "../pages/CartDrawer";
@@ -28,7 +35,7 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.pageYOffset;
-      
+
       if (currentScroll > 100) {
         setScrolled(true);
       } else {
@@ -119,7 +126,6 @@ export default function Navbar() {
         {/* =============== DESKTOP & TABLET VIEW =============== */}
         <div className="hidden md:block">
           <div className="max-w-7xl mx-auto px-12 py-3 flex items-center justify-between gap-4">
-            
             {/* LEFT → Menu + Logo */}
             <div className="flex items-center gap-3">
               <button
@@ -129,13 +135,15 @@ export default function Navbar() {
                 <FiMenu className="w-6 h-6 text-gray-700" />
               </button>
 
-              <Link 
-                to="/" 
-                className="text-2xl font-bold tracking-wide leading-tight transition-all-smooth hover:scale-105"
+              <Link
+                to="/"
+                className="flex flex-col leading-tight transition-all-smooth"
               >
-                <span    className="gradient-text">LoveDoor</span>
-                <br />
-                <span className="text-[10px] font-normal text-gray-500">
+                <span className="gradient-text text-xl font-bold leading-none">
+                  LoveDoor
+                </span>
+
+                <span className="text-[9px] text-gray-500 leading-none mt-2">
                   LoveDoor to Galaxy of Gift
                 </span>
               </Link>
@@ -150,7 +158,6 @@ export default function Navbar() {
 
             {/* RIGHT → Wishlist | Cart | Account */}
             <div className="flex items-center gap-5">
-              
               {/* Wishlist */}
               <Link
                 to="/wishlist"
@@ -197,41 +204,43 @@ export default function Navbar() {
                     {user ? (
                       <>
                         <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-3 mb-3">
-                          <p className="font-bold text-gray-800">Hello, {user.username}! 👋</p>
+                          <p className="font-bold text-gray-800">
+                            Hello, {user.username}! 👋
+                          </p>
                         </div>
 
                         <div className="flex flex-col gap-2 mb-3">
-                          <Link 
-                            to="/profile" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/profile"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             👤 Profile
                           </Link>
-                          <Link 
-                            to="/my-orders" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/my-orders"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             📦 My Orders
                           </Link>
-                          <Link 
-                            to="/addresses" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/addresses"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             📍 Addresses
                           </Link>
-                          <Link 
-                            to="/shop" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/shop"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             🛍️ Shop
                           </Link>
-                          <Link 
-                            to="/" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             🏠 Home
@@ -254,34 +263,36 @@ export default function Navbar() {
                     ) : (
                       <>
                         <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg p-3 mb-3">
-                          <p className="font-bold text-gray-800">Welcome, Guest! 🎁</p>
+                          <p className="font-bold text-gray-800">
+                            Welcome, Guest! 🎁
+                          </p>
                         </div>
 
                         <div className="flex flex-col gap-2 mb-3">
-                          <Link 
-                            to="/login" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/login"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             🔐 Login
                           </Link>
-                          <Link 
-                            to="/register" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/register"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             ✨ Register
                           </Link>
-                          <Link 
-                            to="/shop" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/shop"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             🛍️ Shop
                           </Link>
-                          <Link 
-                            to="/" 
-                            onClick={() => setAccountOpen(false)} 
+                          <Link
+                            to="/"
+                            onClick={() => setAccountOpen(false)}
                             className="hover:text-purple-600 transition-all-smooth px-2 py-1.5 rounded hover:bg-purple-50"
                           >
                             🏠 Home
@@ -312,11 +323,17 @@ export default function Navbar() {
                 <FiMenu className="w-6 h-6 text-gray-700" />
               </button>
 
-              <Link 
-                to="/" 
-                className="text-xl font-bold tracking-wide transition-all-smooth"
+              <Link
+                to="/"
+                className="flex flex-col leading-tight transition-all-smooth"
               >
-                <span className="gradient-text">LoveDoor</span>
+                <span className="gradient-text text-xl font-bold leading-none">
+                  LoveDoor
+                </span>
+
+                <span className="text-[6px] text-gray-500 leading-none mt-1">
+                  LoveDoor to Galaxy of Gift
+                </span>
               </Link>
             </div>
 
