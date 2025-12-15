@@ -118,8 +118,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://lovedoor.vercel.app",
     "https://*.vercel.app",
     "https://lovedoor-backend.onrender.com",
+    "https://admin-lovedoor.vercel.app",
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    "https://lovedoor.vercel.app",
+    "https://admin-lovedoor.vercel.app",
+]
 # --------------------------------------------
 # URL / WSGI
 # --------------------------------------------
