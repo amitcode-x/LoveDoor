@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { memo } from "react";
 import {
   Laptop,
   Shirt,
@@ -41,7 +42,7 @@ const getCategoryDisplay = (cat) => {
   return { type: "letter", value: (cat.name || "?")[0] };
 };
 
-export default function CategorySection({ categories }) {
+function CategorySection({ categories }) {
   return (
     <section className="w-full">
       <div className="relative rounded-2xl p-4 sm:p-5 md:p-6 shadow-2xl border border-white/30 overflow-hidden bg-white/30 backdrop-blur-xl">
@@ -71,9 +72,9 @@ export default function CategorySection({ categories }) {
         </div>
 
         {/* Scroll Container */}
-        <div 
+        <div
           className="flex gap-3 sm:gap-4 overflow-x-auto py-4 relative z-10"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
@@ -81,38 +82,45 @@ export default function CategorySection({ categories }) {
             const display = getCategoryDisplay(cat);
 
             return (
-              <Link 
+              <Link
                 key={cat.id}
                 to={`/category/${cat.slug}`}
                 className="group flex-shrink-0 relative"
               >
-                <div className="
-                  relative bg-white/40 backdrop-blur-md 
-                  rounded-xl sm:rounded-2xl p-3 sm:p-4 
-                  min-w-[100px] sm:min-w-[120px] 
-                  flex flex-col items-center transition-all duration-500
-
-                  /* ⭐ Updated Hover Gradient (Soft Pastel Like GiftOffer) */
-                  hover:bg-gradient-to-br 
-                  hover:from-white/60 
-                  hover:via-pink-100/50 
-                  hover:to-orange-100/50 
-
-                  hover:scale-105 hover:-translate-y-1 hover:shadow-2xl 
-                  border border-white/40 hover:border-white/60
-                ">
-                  
+                <div
+                  className="
+                    relative bg-white/40 backdrop-blur-md 
+                    rounded-xl sm:rounded-2xl p-3 sm:p-4 
+                    min-w-[100px] sm:min-w-[120px] 
+                    flex flex-col items-center transition-all duration-500
+                    hover:bg-gradient-to-br 
+                    hover:from-white/60 
+                    hover:via-pink-100/50 
+                    hover:to-orange-100/50 
+                    hover:scale-105 hover:-translate-y-1 hover:shadow-2xl 
+                    border border-white/40 hover:border-white/60
+                  "
+                >
                   {/* Shine */}
                   <div className="absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none"></div>
 
                   {/* Icon Box */}
                   <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center overflow-hidden mb-2 shadow-md group-hover:bg-white">
                     {display.type === "image" ? (
-                      <img src={display.value} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <img
+                        src={display.value}
+                        alt={cat.name}
+                        loading="lazy"
+                        decoding="async"
+                        sizes="48px"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
                     ) : display.type === "icon" ? (
                       <display.value className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800 group-hover:text-green-600 transition-colors duration-500" />
                     ) : (
-                      <span className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-green-600 transition-colors duration-500">{display.value}</span>
+                      <span className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-green-600 transition-colors duration-500">
+                        {display.value}
+                      </span>
                     )}
                   </div>
 
@@ -134,3 +142,5 @@ export default function CategorySection({ categories }) {
     </section>
   );
 }
+
+export default memo(CategorySection);

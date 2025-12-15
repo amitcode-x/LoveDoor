@@ -87,12 +87,16 @@ export default function ProductCardBase({ product }) {
           />
         </button>
 
-        {/* Image */}
+        {/* Image (🔥 OPTIMIZED) */}
         <Link to={`/product/${product.slug}`}>
           <div className="relative rounded-lg sm:rounded-xl overflow-hidden bg-gray-100 mb-2">
             <img
               src={getImage(product.thumbnail)}
               alt={product.name}
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
               className="w-full h-32 sm:h-40 object-cover group-hover:scale-110 transition-transform duration-500"
             />
           </div>

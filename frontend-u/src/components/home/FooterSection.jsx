@@ -57,59 +57,58 @@ export default function FooterSection({ footer }) {
 
   return (
     <footer className="w-full relative overflow-hidden">
-
-      {/* SAME GRADIENT (NO CHANGE) */}
+      {/* SAME GRADIENT */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-pink-100/50 to-orange-100/50"></div>
 
       {/* Decorative Glows */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-red-300/30 to-pink-300/30 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-orange-300/30 to-yellow-300/30 rounded-full blur-3xl"></div>
 
-      {/* MAIN CONTAINER (Mobile spacing perfect) */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6">
 
-        {/* Newsletter Section */}
+        {/* Newsletter */}
         {safeNewsletter?.is_enabled && (
           <div className="mb-6 flex justify-center px-2 sm:px-0">
             <div className="bg-white/50 backdrop-blur-xl p-4 sm:p-5 rounded-xl border border-white/50 shadow-xl max-w-md w-full text-center">
-              
               <h3 className="text-lg sm:text-xl font-bold mb-1 bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
                 {safeNewsletter?.title || "Get Updates"}
               </h3>
 
-              <p className="text-gray-600 text-xs sm:text-sm mb-3 leading-normal">
+              <p className="text-gray-600 text-xs sm:text-sm mb-3">
                 {safeNewsletter?.description || ""}
               </p>
 
-              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 justify-center">
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   required
-                  placeholder={safeNewsletter?.placeholder || "Enter your email"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder={safeNewsletter?.placeholder || "Enter your email"}
                   className="px-4 py-2 rounded-lg bg-white/80 text-gray-800 flex-1 focus:outline-none focus:ring-2 focus:ring-red-300 shadow-sm text-sm"
                 />
 
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-red-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg text-sm"
+                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg text-sm"
                 >
                   {safeNewsletter?.button_text || "Subscribe"}
                 </button>
               </form>
 
               {message && (
-                <p className="text-xs sm:text-sm mt-2 text-green-600 font-medium">{message}</p>
+                <p className="text-xs sm:text-sm mt-2 text-green-600 font-medium">
+                  {message}
+                </p>
               )}
             </div>
           </div>
         )}
 
-        {/* Grid Content */}
+        {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 mb-4 px-2 sm:px-0">
 
-          {/* Brand Info */}
+          {/* Brand */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-2">
             <h4 className="text-base sm:text-lg font-bold mb-2 bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
               {safeBrand?.site_name || "Brand"}
@@ -121,18 +120,18 @@ export default function FooterSection({ footer }) {
 
             <div className="flex items-center gap-2 sm:gap-3">
               {socialLinks.map((s, i) => (
-                <a 
-                  key={i} 
-                  href={s.url} 
+                <a
+                  key={i}
+                  href={s.url}
                   target="_blank"
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center 
-                    hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 transition-all duration-300 shadow-md hover:shadow-lg group"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-md"
                 >
-                  {s.platform === "facebook" && <FaFacebookF className="text-gray-600 group-hover:text-white text-sm" />}
-                  {s.platform === "instagram" && <FaInstagram className="text-gray-600 group-hover:text-white text-sm" />}
-                  {s.platform === "twitter" && <FaTwitter className="text-gray-600 group-hover:text-white text-sm" />}
-                  {s.platform === "linkedin" && <FaLinkedinIn className="text-gray-600 group-hover:text-white text-sm" />}
-                  {s.platform === "youtube" && <FaYoutube className="text-gray-600 group-hover:text-white text-sm" />}
+                  {s.platform === "facebook" && <FaFacebookF />}
+                  {s.platform === "instagram" && <FaInstagram />}
+                  {s.platform === "twitter" && <FaTwitter />}
+                  {s.platform === "linkedin" && <FaLinkedinIn />}
+                  {s.platform === "youtube" && <FaYoutube />}
                 </a>
               ))}
             </div>
@@ -141,7 +140,9 @@ export default function FooterSection({ footer }) {
           {/* Columns */}
           {columns.map((col) => (
             <div key={col.id}>
-              <h4 className="text-sm sm:text-base font-bold mb-2 text-gray-800">{col.title}</h4>
+              <h4 className="text-sm sm:text-base font-bold mb-2 text-gray-800">
+                {col.title}
+              </h4>
               <ul className="space-y-1 text-gray-600">
                 {Array.isArray(col.links) &&
                   col.links.map((lnk, idx) => (
@@ -162,23 +163,27 @@ export default function FooterSection({ footer }) {
           {/* Payments */}
           {payments.length > 0 && (
             <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-              <h4 className="text-sm sm:text-base font-bold mb-2 text-gray-800">We Accept</h4>
+              <h4 className="text-sm sm:text-base font-bold mb-2 text-gray-800">
+                We Accept
+              </h4>
               <div className="flex gap-2 flex-wrap">
                 {payments.map((p, idx) => (
                   <img
                     key={idx}
                     src={p.image}
                     alt="Payment"
+                    loading="lazy"
+                    decoding="async"
+                    fetchpriority="low"
                     className="h-6 sm:h-7 object-contain bg-white/60 backdrop-blur-sm p-1 rounded shadow-sm"
                   />
                 ))}
               </div>
             </div>
           )}
-
         </div>
 
-        {/* Bottom Text */}
+        {/* Bottom */}
         <div className="border-t border-white/40 pt-3 text-center px-2 sm:px-0">
           <p className="text-xs sm:text-sm text-gray-600">
             {safeBrand?.copyright_text}
