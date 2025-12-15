@@ -31,10 +31,31 @@ export default function Profile() {
   const [ordersCount, setOrdersCount] = useState(0);
   const { logout } = useAuth();
 
-  useEffect(() => {
-    loadProfile();
-    loadOrdersCount();
-  }, []);
+useEffect(() => {
+  async function loadAll() {
+    try {
+      const [profileRes, ordersRes] = await Promise.all([
+        axiosClient.get("/auth/me/"),
+        axiosClient.get("/orders/"),
+      ]);
+
+      setProfile(profileRes.data);
+
+      if (ordersRes.data?.results) {
+        setOrdersCount(ordersRes.data.count || ordersRes.data.results.length);
+      } else if (Array.isArray(ordersRes.data)) {
+        setOrdersCount(ordersRes.data.length);
+      }
+    } catch (err) {
+      console.log("Profile load error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  loadAll();
+}, []);
+
 
   const loadProfile = async () => {
     const res = await axiosClient.get("/auth/me/");

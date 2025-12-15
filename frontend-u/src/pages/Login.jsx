@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
 import { Mail, Lock, LogIn, Eye, EyeOff } from "lucide-react";
+
+// 🔥 Lazy load Google Login (heavy lib)
+const GoogleLogin = lazy(() =>
+  import("@react-oauth/google").then((m) => ({ default: m.GoogleLogin }))
+);
 
 export default function Login() {
   const { login, googleLogin } = useAuth();
@@ -45,7 +49,6 @@ export default function Login() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-300/40 to-orange-300/50 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-red-300/50 to-yellow-300/50 rounded-full blur-3xl"></div>
 
-      {/* 🔽 COMPACT CARD */}
       <div className="relative z-10 w-full max-w-sm">
         <form
           onSubmit={handleSubmit}
@@ -71,15 +74,13 @@ export default function Login() {
             </div>
           )}
 
+          {/* Email */}
           <div className="mb-4">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Email or Username
             </label>
             <div className="relative">
-              <Mail
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={16}
-              />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input
                 type="text"
                 className="w-full bg-white/60 border border-white/40 rounded-xl pl-9 pr-4 py-2.5 focus:ring-2 focus:ring-pink-400"
@@ -93,15 +94,13 @@ export default function Login() {
             </div>
           </div>
 
+          {/* Password */}
           <div className="mb-2">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Password
             </label>
             <div className="relative">
-              <Lock
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={16}
-              />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input
                 type={showPassword ? "text" : "password"}
                 className="w-full bg-white/60 border border-white/40 rounded-xl pl-9 pr-11 py-2.5 focus:ring-2 focus:ring-pink-400"
@@ -123,18 +122,16 @@ export default function Login() {
           </div>
 
           <div className="mb-5 text-right">
-            <Link
-              to="/forgot-password"
-              className="text-sm text-pink-600 hover:text-pink-700 font-medium underline"
-            >
+            <Link to="/forgot-password" className="text-sm text-pink-600 underline">
               Forgot Password?
             </Link>
           </div>
 
+          {/* Login Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white py-2.5 rounded-xl font-bold transition-all shadow-lg disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white py-2.5 rounded-xl font-bold shadow-lg disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -149,27 +146,28 @@ export default function Login() {
             )}
           </button>
 
+          {/* OR */}
           <div className="flex items-center my-5">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
             <span className="px-3 text-gray-500 text-xs font-medium">OR</span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
           </div>
 
+          {/* 🔥 Lazy Google Login */}
           <div className="flex justify-center mb-5">
-            <div className="bg-white/60 rounded-xl p-2 border border-white/40 shadow-md">
-              <GoogleLogin
-                onSuccess={(cred) => googleLogin(cred.credential, navigate)}
-                onError={() => setError("Google login failed")}
-              />
-            </div>
+            <Suspense fallback={<div className="text-xs text-gray-500">Loading Google Login…</div>}>
+              <div className="bg-white/60 rounded-xl p-2 border border-white/40 shadow-md">
+                <GoogleLogin
+                  onSuccess={(cred) => googleLogin(cred.credential, navigate)}
+                  onError={() => setError("Google login failed")}
+                />
+              </div>
+            </Suspense>
           </div>
 
           <p className="text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-pink-600 hover:text-pink-700 font-semibold underline"
-            >
+            <Link to="/register" className="text-pink-600 underline font-semibold">
               Create Account
             </Link>
           </p>
