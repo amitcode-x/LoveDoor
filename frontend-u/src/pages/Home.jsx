@@ -104,30 +104,35 @@ export default function Home() {
     let mounted = true;
 
     async function fetchData() {
-      try {
-        setLoadingCategories(true);
-        const catRes = await axiosClient.get("/products/categories/");
-        if (mounted) {
-          setCategories(catRes.data?.results || []);
-          setLoadingCategories(false);
-        }
+  try {
+    setLoadingCategories(true);
+    setLoadingProducts(true);
 
-        setLoadingProducts(true);
-        const [popRes, newRes] = await Promise.all([
-          axiosClient.get("/products/?featured=true"),
-          axiosClient.get("/products/?ordering=-created_at"),
-        ]);
+    const [
+      catRes,
+      popRes,
+      newRes
+    ] = await Promise.all([
+      axiosClient.get("/products/categories/"),
+      axiosClient.get("/products/?featured=true"),
+      axiosClient.get("/products/?ordering=-created_at"),
+    ]);
 
-        if (mounted) {
-          setPopular(popRes.data?.results || []);
-          setNewest(newRes.data?.results || []);
-          setLoadingProducts(false);
-        }
-      } catch {
-        setLoadingCategories(false);
-        setLoadingProducts(false);
-      }
+    if (mounted) {
+      setCategories(catRes.data?.results || []);
+      setPopular(popRes.data?.results || []);
+      setNewest(newRes.data?.results || []);
     }
+  } catch (err) {
+    console.error("Home fetch failed", err);
+  } finally {
+    if (mounted) {
+      setLoadingCategories(false);
+      setLoadingProducts(false);
+    }
+  }
+}
+
 
     fetchData();
     return () => (mounted = false);
