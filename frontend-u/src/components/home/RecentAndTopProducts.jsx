@@ -28,7 +28,7 @@ function VerticalCard({ product }) {
             alt={product.name}
             loading="lazy"
             decoding="async"
-            fetchpriority="low"
+            fetchPriority="low"
             sizes="(max-width: 640px) 80px, 120px"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />

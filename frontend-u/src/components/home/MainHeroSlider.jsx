@@ -58,7 +58,7 @@ export default function MainHeroSlider({ slides }) {
                       alt={slide.title || `Slide ${i + 1}`}
                       loading={i === 0 ? "eager" : "lazy"}
                       decoding="async"
-                      fetchpriority={i === 0 ? "high" : "low"}
+                      fetchPriority={i === 0 ? "high" : "low"}
                       sizes="(max-width: 768px) 100vw, 50vw"
                       className="w-full h-full object-cover"
                     />

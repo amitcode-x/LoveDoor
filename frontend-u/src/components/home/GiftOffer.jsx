@@ -17,7 +17,7 @@ export default function GiftOffer({ data }) {
                 alt={data.title || "Gift Offer"}
                 loading="lazy"
                 decoding="async"
-                fetchpriority="low"
+                fetchPriority="low"
                 sizes="(max-width: 640px) 100vw, 1200px"
                 className="w-full h-full object-cover scale-100 hover:scale-105 transition-transform duration-700"
               />

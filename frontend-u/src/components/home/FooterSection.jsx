@@ -174,7 +174,7 @@ export default function FooterSection({ footer }) {
                     alt="Payment"
                     loading="lazy"
                     decoding="async"
-                    fetchpriority="low"
+                    fetchPriority="low"
                     className="h-6 sm:h-7 object-contain bg-white/60 backdrop-blur-sm p-1 rounded shadow-sm"
                   />
                 ))}

@@ -27,7 +27,7 @@ function SecondaryHero({ data }) {
                 src={data.final_image}
                 alt={data.title || "Banner"}
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
                 decoding="async"
                 sizes="(max-width: 640px) 100vw, 1200px"
                 className="w-full h-full object-cover scale-100 

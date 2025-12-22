@@ -94,7 +94,7 @@ function FeaturedOffers({ offers }) {
                     alt={offer.title}
                     loading="lazy"
                     decoding="async"
-                    fetchpriority="low"
+                    fetchPriority="low"
                     sizes="(max-width: 640px) 170px, 190px"
                     className="w-full h-full object-cover group-hover:scale-110 
                     transition-transform duration-700"
