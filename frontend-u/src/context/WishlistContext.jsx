@@ -47,25 +47,31 @@ const toggleWishlist = async (product) => {
     return;
   }
 
-  try {
-    const res = await axiosClient.post(`/wishlist/toggle/${product.id}/`);
-    const { in_wishlist } = res.data;
+  const alreadyInWishlist = isInWishlist(product.id);
 
-    if (in_wishlist) {
-      // ADD SAFELY
-      setWishlistItems((prev) => [
-        { product },
-        ...prev.filter((i) => i?.product?.id !== product.id),
-      ]);
+  // ✅ 1. UI IMMEDIATELY UPDATE (Optimistic)
+  setWishlistItems((prev) => {
+    if (alreadyInWishlist) {
+      return prev.filter((item) => item?.product?.id !== product.id);
     } else {
-      // REMOVE SAFELY
-      setWishlistItems((prev) =>
-        prev.filter((item) => item?.product?.id !== product.id)
-      );
+      return [{ product }, ...prev];
     }
+  });
 
+  try {
+    // ✅ 2. API BACKGROUND ME
+    await axiosClient.post(`/wishlist/toggle/${product.id}/`);
   } catch (err) {
     console.error("Toggle wishlist failed", err);
+
+    // 🔁 3. Rollback if API fails
+    setWishlistItems((prev) => {
+      if (alreadyInWishlist) {
+        return [{ product }, ...prev];
+      } else {
+        return prev.filter((item) => item?.product?.id !== product.id);
+      }
+    });
   }
 };
 
